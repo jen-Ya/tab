@@ -1,6 +1,12 @@
 # tab
 
-indentation based programming language with minimal syntax and maximal flexibility
+**This is my personal toy language, used for exploring concepts of programming language design.**
+
+It is an indentation-based programming language characterized by minimal syntax and maximum flexibility.
+
+
+Implementations are currently available in Golang and JavaScript.
+
 
 ## Examples
 
