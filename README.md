@@ -110,12 +110,15 @@ fn fibo x
 			fibo (- x 2)
 ```
 
-## Golang Implementation
+## Golang implementation
 
 The source is in the `./go` directory.
 
 The Implementation supports extensions written in go. You can find examples in `./tab/tabgo/plugins`.
 
+## NodeJS implementation
+
+The source is in the `./js` directory.
 
 ## Discussion
 
