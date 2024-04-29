@@ -1,0 +1,7 @@
+/node_modules
+/.vscode
+/dist/tab.cjs
+/todo.md
+/tab/drafts
+/vscode
+/webpack-tab

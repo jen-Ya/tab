@@ -1,0 +1,25 @@
+require './assert.tab' assert
+
+# Single line comment
+
+#
+	multiline
+	comment
+#
+
+#
+	#
+		nested comments are okay
+	#
+	this # is okay to, multiline-comments are tokenized based on indentation
+#
+
++ 1 2 3 # inline comment
+
+assert
+	=
+		li
+			1
+			# 2
+			3
+		li 1 3

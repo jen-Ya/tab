@@ -1,0 +1,13 @@
+require './js-raw-fn.tab'
+
+let round (js-raw 'Math.round')
+let ceil (js-raw 'Math.ceil')
+let floor (js-raw 'Math.floor')
+let sqrt (js-raw  'Math.sqrt')
+let pow (js-raw 'Math.pow')
+let % (js-raw '(a, b) => a % b')
+let min (js-raw 'Math.min')
+let max (js-raw 'Math.max')
+let abs (js-raw 'Math.abs')
+let sign (js-raw 'Math.sign')
+let log2 (js-raw 'Math.log2')

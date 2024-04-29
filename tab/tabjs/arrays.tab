@@ -1,0 +1,27 @@
+let reverse
+	js-raw "a => Array.from(a).toReversed()"
+
+let find
+	js-raw "
+		async (a, fn) => {
+			for(const e of a) {
+				if(await fn(e)) return e
+			}
+			return new TalNil();
+		}
+	"
+
+let to-array
+	js-raw "a => Array.from(a)"
+
+let find-index
+	js-raw "
+		async (a, fn) => {
+			let i = 0;
+			for(const e of a) {
+				if(await fn(e)) return i
+				i++
+			}
+			return new TalNil();
+		}
+	"

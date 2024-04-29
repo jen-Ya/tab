@@ -1,0 +1,53 @@
+fn iter-new values
+	f ()
+		if
+			is-empty values
+			# if done
+			li nil nil
+			# if not done
+			li
+				first values
+				iter-new (rest values)
+
+fn iter-each (iter func)
+	let step (iter)
+	let value (nth step 0)
+	let next-iter (nth step 1)
+	if next-iter
+		do
+			func value
+			iter-each next-iter func
+
+fn iter-filter (iter filter)
+	f ()
+		let step (iter)
+		let next-iter (nth step 1)
+		let value (nth step 0)
+		unless next-iter
+			# if filtered iterator is done, return done
+			li nil nil
+			if (filter value)
+				# if filter allows value, return it
+				li value (iter-filter next-iter filter)
+				# else continue iteration
+				((iter-filter next-iter filter))
+
+fn iter-map (iter mapper)
+	f ()
+		let step (iter)
+		let next-iter (nth step 1)
+		let value (nth step 0)
+		unless next-iter
+			# if filtered iterator is done, return done
+			li nil nil
+			li (mapper value) (iter-map next-iter mapper)
+
+fn iter-collect (iter)
+	fn collect (iter values)
+		let step (iter)
+		let next-iter (nth step 1)
+		let value (nth step 0)
+		unless next-iter
+			values
+			collect next-iter (append values value)
+	collect iter ()

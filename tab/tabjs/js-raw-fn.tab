@@ -1,0 +1,4 @@
+macro js-raw-fn (key code)
+	qq
+		let (unq key)
+			js-raw (unq code)

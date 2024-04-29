@@ -1,0 +1,23 @@
+fn loop _
+	timeout 1000
+		f _
+			println "Hello, world!"
+			(loop)
+
+(loop)
+
+# println 'hello'
+# println 'hello'
+# println 'hello'
+# println 'hello'
+# println 'hello'
+# println 'hello'
+# println 'hello'
+# println 'hello'
+# println 'hello'
+# println 'hello'
+# println 'hello'
+
+# # for-range i 10000
+# # 	println i 'wait'
+# # 	timeout 1000

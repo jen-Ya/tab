@@ -1,0 +1,9 @@
+require './exec.tab'
+require '../linewise.tab'
+require '../pipe.tab'
+
+pipe
+	exec-sync 'ls'
+	linewise
+	f filenames (str-join filenames ',\n')
+	println

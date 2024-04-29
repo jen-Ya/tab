@@ -1,0 +1,15 @@
+let js-call (js-raw "
+	(obj, path, args) => path.reduce((obj, key) => obj[key], obj).apply(obj, args);
+")
+
+# e.g. js-call-macro console.log 123 321
+macro js-call-macro (funcpath .. args)
+	let parts (str-split (str funcpath) '.')
+	let obj (symbol (first parts))
+	let path (rest parts)
+	qq
+		js-call (unq obj) (unq path) (unq args)
+
+let console (js-raw 'console')
+
+js-call-macro console.log 123 345

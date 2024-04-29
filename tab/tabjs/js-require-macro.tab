@@ -1,0 +1,10 @@
+macro js-require-macro (filename .. require-keys)
+	qq
+		(f (env)
+			let exports
+				(js-raw "require") (unq filename)
+			let req-keys (quote (unq require-keys))
+			map req-keys
+				f req-key
+					env-set env req-key (get exports req-key)
+		) .env

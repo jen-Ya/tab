@@ -1,0 +1,201 @@
+fn is-token-type (token type)
+	= type
+		get token 'type'
+
+fn parse tokens
+	let next (var (first tokens))
+	let tail (var tokens)
+	fn peek (.. expected)
+		fn recursion (offset expects)
+			cond
+				is-empty expects
+				true
+
+				>= offset
+					count (deref tail)
+				throw
+					str 'Offset out of range'
+
+				is-empty (deref tail)
+				false
+
+				not
+					is-token-type
+						nth (deref tail) offset
+						first expects
+				false
+
+				true
+				recursion (+ offset 1) (rest expects)
+		recursion 0 expected
+	fn consume expected
+		unless (peek expected)
+			throw
+				str 'unexpected token ' (get (deref next) 'type') ' of type ' (get (deref next) 'value') ', expected ' expected
+		# println 'consumed ' (deref next)
+		let consumed (deref next)
+		reset tail (rest (deref tail))
+		reset next (first (deref tail))
+		consumed
+
+	fn c-indent () (consume 'indent')
+	fn c-dedent () (consume 'dedent')
+	fn c-open () (consume '(')
+	fn c-close () (consume ')')
+	fn c-symbol () (consume 'symbol')
+	fn c-string () (consume 'string')
+	fn c-number () (consume 'number')
+	fn c-nil () (consume 'nil')
+	fn c-boolean () (consume 'boolean')
+	fn c-eol () (consume 'eol')
+
+	fn c-atom ()
+		cond
+			peek 'symbol'
+			(c-symbol)
+
+			peek 'string'
+			(c-string)
+
+			peek 'number'
+			(c-number)
+
+			peek 'nil'
+			(c-nil)
+
+			peek 'boolean'
+			(c-boolean)
+
+			true
+			throw
+				str 'atom not implemented ' (get (deref next) 'type') ' / ' (get (deref next) 'value')
+
+	fn arg ()
+		unless (peek '(')
+			(c-atom)
+			do
+				(c-open)
+				if (peek ')')
+					do
+						(c-close)
+						dict
+							'type'
+							'list'
+							'value'
+							(li)
+					do
+						let exp nil
+						if (peek 'indent')
+							do
+								(c-indent)
+								let exp (expression)
+								(c-dedent)
+							let exp (expression)
+						(c-close)
+						if
+							= (get exp 'type') 'list'
+							exp
+							dict
+								'type'
+								'list'
+								'value'
+								li exp
+	fn inline-args ()
+		let args (var ())
+		until
+			or
+				peek 'eol'
+				peek ')'
+				peek 'eof'
+				peek 'dedent'
+				peek 'indent'
+			reset args
+				append
+					deref args
+					(arg)
+		deref args
+
+	fn indent-args ()
+		let args (var ())
+		fn recursion ()
+			cond
+				peek 'eol'
+				do
+					(c-eol)
+					(recursion)
+
+				peek 'dedent'
+				(c-dedent)
+
+				peek 'eof'
+				nil
+
+				true
+				do
+					reset args
+						append
+							deref args
+							(expression)
+					(recursion)
+		if
+			peek 'indent'
+			do
+				(c-indent)
+				(recursion)
+				deref args
+			do
+				deref args
+
+	fn expression ()
+		let head (arg)
+		let args
+			concat
+				(inline-args)
+				(indent-args)
+		if
+			= (count args) 0
+			head
+			dict
+				'type'
+				'list'
+				'value'
+				cons
+					head
+					args
+
+	fn lines ()
+		let exps (var ())
+		fn recurse ()
+			cond
+				peek 'eof'
+				dict
+					'type'
+					'list'
+					'value'
+					cons
+						dict
+							'type'
+							'symbol'
+							'value'
+							'do'
+						deref exps
+
+				peek 'eol'
+				do
+					c-eol
+					(recurse)
+				true
+				do
+					reset exps
+						append
+							deref exps
+							(expression)
+					while (peek 'eol')
+						consume 'eol'
+					(recurse)
+		(recurse)
+
+	try
+		(lines)
+		catch err
+			println 'ParserError: ' err

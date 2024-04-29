@@ -1,0 +1,10 @@
+require './assert.tab'
+
+# Should create map without errors
+let a
+	dict
+		'foo'
+		'bar'
+
+# Should get 'bar'
+assert-eq (get a 'foo') 'bar'

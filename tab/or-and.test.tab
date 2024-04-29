@@ -1,0 +1,33 @@
+require './assert.tab' assert
+
+let last-result (var nil)
+
+fn f-false ()
+	reset last-result false
+	false
+
+fn f-true ()
+	reset last-result true
+	true
+
+and
+	(f-true)
+	(f-true)
+	(f-false)
+	(f-true)
+	(f-true)
+
+assert
+	= (deref last-result) false
+	'Last result not false'
+
+or
+	(f-false)
+	(f-false)
+	(f-true)
+	(f-false)
+	(f-false)
+
+assert
+	= (deref last-result) true
+	'Last result not true'

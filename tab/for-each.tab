@@ -1,0 +1,3 @@
+macro for-each (array var .. body)
+	qq
+		map (unq array) (f (unq var) (..unq body))

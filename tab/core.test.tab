@@ -1,0 +1,342 @@
+require './assert.tab'
+
+assert-eq
+	+ 2 2 2
+	6
+
+assert-eq
+	- 6 3 2
+	1
+
+assert-eq
+	* 1 2 3
+	6
+
+assert-eq
+	/ 16 2 2
+	4
+
+assert-eq
+	list 1 2 3
+	quote (1 2 3)
+
+assert
+	is-list ()
+
+assert-not
+	is-list 2
+
+assert
+	is-empty ()
+
+assert-not
+	is-empty (list 1 2 3)
+
+assert-eq
+	count (list 1 2 3)
+	3
+
+assert
+	= 42 (* 21 2)
+
+assert
+	< 5 100
+
+assert
+	<= 5 5
+
+assert
+	> 10 2
+
+assert
+	>= 20 20
+
+assert
+	not false
+
+assert-eq
+	pr-str 1 true nil
+	'1 true nil'
+
+assert-eq
+	str 'a' 1 'b'
+	'a1b'
+
+assert-eq
+	read-string 'println "hello"'
+	quote (println 'hello')
+
+assert-eq
+	file-read (path-join .dirname 'hello.tab')
+	"
+		println "hello"
+			"world"
+	"
+
+let test-var (var 4)
+
+assert
+	is-var test-var
+
+assert-eq
+	deref test-var
+	4
+
+reset test-var 5
+
+assert-eq
+	deref test-var
+	5
+
+swap test-var + 2
+
+assert-eq
+	deref test-var
+	7
+
+assert-eq
+	cons 1 (li 2 3)
+	li 1 2 3
+
+assert-eq
+	concat (li 1 2) (li 3 4)
+	li 1 2 3 4
+
+assert-eq
+	nth (li 0 1 2 3) 2
+	2
+
+assert-eq
+	first (li 'hallo' 'ballo')
+	'hallo'
+
+assert-eq
+	rest (li 1 2 3)
+	li 2 3
+
+assert-throw
+	f _ (throw 1)
+
+assert-eq
+	apply
+		str
+		1
+		2
+		li 3 4
+	'1234'
+
+assert-eq
+	map (li 1 2) str
+	li '1' '2'
+
+assert-eq
+	char-at 'hello' 1
+	'e'
+
+assert
+	is-nil nil
+
+assert
+	is-true true
+
+assert
+	not false
+
+assert
+	is-symbol (symbol 'x')
+
+assert-eq
+	dict 'a' 2
+	dict 'a' 2
+
+# Should throw error?
+# assert-throw
+# 	dict 'a'
+
+assert
+	is-map (dict 'a' 2)
+
+assert-eq
+	assoc
+		dict 'a' 42 'b' 3
+		'b'
+		10
+		'c'
+		20
+	dict 'a' 42 'b' 10 'c' 20
+
+assert-eq
+	dissoc
+		dict 'a' 42 'b' 3
+		'b'
+	dict 'a' 42
+
+assert-eq
+	get (dict 'a' 42) 'a'
+	42
+
+assert
+	has (dict 'a' 42) 'a'
+
+assert-not
+	has (dict 'a' 42) 'b'
+
+assert-eq
+	keys (dict 'a' 42 'b' 12)
+	li 'a' 'b'
+
+assert-eq
+	vals (dict 'a' 42 'b' 12)
+	li 42 12
+
+assert
+	is-func li
+
+assert
+	is-string '123'
+
+assert
+	is-number 123
+
+assert-eq
+	type 2
+	'Number'
+
+assert-eq
+	sub-str 'hello' 1 3
+	'el'
+
+assert-eq
+	str-len 'hello'
+	5
+
+assert
+	str-ends-with 'hello' 'o'
+
+assert-not
+	str-ends-with 'hello' 'h'
+
+assert
+	str-starts-with 'hello' 'h'
+
+assert-not
+	str-starts-with 'hello' 'o'
+
+assert
+	!= 1 2
+
+assert-eq
+	append (li 1 2) 3
+	li 1 2 3
+
+assert-eq
+	parse-number '42'
+	42
+
+try
+	assert
+		or
+			false
+			false
+			true
+			throw 'Unreachable code'
+	catch e
+		println e
+
+try
+	assert-not
+		and
+			true
+			true
+			false
+			throw 'Unreachable code'
+	catch e
+		println e
+
+assert
+	< 0
+		count (read-dir .dirname)
+
+assert-eq
+	path-join '/' 'asd'
+	'/asd'
+
+assert-no-throw
+	f _ (file-write '/tmp/123' '123\n')
+
+assert-eq
+	str-join (li 1 2 3) ','
+	'1,2,3'
+
+assert-eq
+	slice (li 0 1 2 3 4 5) 1 3
+	li 1 2
+
+assert-eq
+	last (li 1 2 3 4)
+	4
+
+#
+	Not stable yet:
+	is-undefined
+	call-js
+	to-js
+	from-js
+	js-eval
+	js-raw
+	express
+	js-parse
+	js-gen
+	timeout
+#
+
+assert-eq
+	quote li
+	symbol 'li'
+
+assert
+	if true
+		true
+		false
+
+assert
+	cond
+		< 6 3
+		false
+		> 6 3
+		true
+
+assert-eq
+	eval 1
+	1
+
+# nested function calls
+
+fn higher-order-func _ (f x 42)
+
+assert-eq
+	((higher-order-func))
+	42
+
+# Equality checks
+
+assert
+	= nil nil
+
+assert-not
+	= nil 42
+
+assert
+	= 42 42
+
+assert-not
+	= 42 "42"
+
+assert-not
+	= 0 nil
+
+assert-not
+	= 0 ""
+
+assert
+	if nil false true

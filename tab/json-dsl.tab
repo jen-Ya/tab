@@ -1,0 +1,22 @@
+# { creates a dict using key-value pairs
+macro { (.. key-values)
+	let flatargs (var ())
+	map key-values (f key-value
+		let key
+			nth key-value 0
+		let values
+			rest key-value
+		let value
+			if
+				= (count values) 1
+				nth values 0
+				values
+		swap flatargs append
+			key
+			value
+	)
+	qq
+		dict
+			..unq (deref flatargs)
+
+let [ li

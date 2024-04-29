@@ -1,0 +1,4 @@
+require '~/tabjs/strings.tab' str-split
+
+fn linewise string
+	str-split string '\n'

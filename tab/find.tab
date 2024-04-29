@@ -1,0 +1,9 @@
+fn find (values function)
+	if (is-empty values)
+		nil
+		do # else
+			let value (first values)
+			if (function value)
+				value
+				# else
+				find (rest values) function

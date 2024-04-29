@@ -1,0 +1,31 @@
+require './assert.tab'
+require './gcd-lcm.tab' lcm gcd
+require '~/reduce.tab' reduce
+
+assert-eq
+	lcm 5 3
+	15
+
+assert-eq
+	lcm 5 5
+	5
+
+assert-eq
+	gcd 28 5
+	1
+
+assert-eq
+	gcd 28 28
+	28
+
+assert-eq
+	gcd 28 14
+	14
+
+assert-eq
+	reduce (li 5 10 3) lcm
+	30
+
+assert-eq
+	reduce (li 20 40 30 25) gcd
+	5

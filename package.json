@@ -1,0 +1,17 @@
+{
+  "name": "tab",
+  "type": "module",
+  "dependencies": {
+    "tab": "."
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jk": "github:jen-Ya/eslint-plugin-jk",
+    "eslint-plugin-n": "^15.2.5",
+    "eslint-plugin-promise": "^6.0.1",
+    "path-browserify": "^1.0.1",
+    "webpack-cli": "^5.0.0"
+  }
+}

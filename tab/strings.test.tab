@@ -1,0 +1,78 @@
+require '~/assert.tab' assert assert-not assert-eq assert-neq
+require './strings.tab'
+
+assert
+	str-ends-with "hello world" "world"
+assert
+	str-ends-with "hello world" ""
+assert
+	str-ends-with "hello world" "hello world"
+assert-not
+	str-ends-with "hello world" "hello"
+
+assert
+	str-starts-with "hello world" "hello"
+assert
+	str-starts-with "hello world" ""
+assert
+	str-starts-with "hello world" "hello world"
+assert-not
+	str-starts-with "hello world" "world"
+
+assert-eq
+	str-join (li 1 2 3) '-'
+	'1-2-3'
+assert-eq
+	str-join (li 1 2 3) '00'
+	'1002003'
+assert-eq
+	str-join (li 1) '-'
+	'1'
+assert-eq
+	str-join () '-'
+	''
+assert-neq
+	str-join (li 1 2 3) '>'
+	'1-2-3'
+
+assert
+	is-char-any 'a' 'abc'
+assert
+	is-char-any 'c' 'abc'
+assert-not
+	is-char-any 'a' ''
+assert-not
+	is-char-any '' 'abc'
+assert-not
+	is-char-any 'ab' 'abc'
+
+assert-eq
+	str-replace-all "hello world" "world" "universe"
+	"hello universe"
+assert-eq
+	str-replace-all "hello world, world" "world" "universe"
+	"hello universe, universe"
+
+# undefined behaviour
+# assert-eq
+# 	str-replace-all "hello world" "" "universe"
+# 	"hello world"
+
+assert-eq
+	str-replace-all "" "world" "universe"
+	""
+assert-eq
+	str-replace-all "hello world" "world" ""
+	"hello "
+
+# assert-eq
+# 	str-split '1-2-3' '-'
+# 	li '1' '2' '3'
+
+# assert-eq
+# 	str-split '-' '-'
+# 	li '' ''
+
+# assert-eq
+# 	str-split '1--2-3' '-'
+# 	li '1' '' '2' '3'

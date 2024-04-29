@@ -1,0 +1,13 @@
+macro let-all (.. pairs)
+	if (is-empty pairs)
+		# return nil when no pairs are left
+		nil
+		do
+			# let first pair and continue with rest
+			let first-pair (first pairs)
+			let key (nth first-pair 0)
+			let value (nth first-pair 1)
+			qq
+				do
+					let (unq key) (unq value)
+					let-all (..unq (rest pairs))

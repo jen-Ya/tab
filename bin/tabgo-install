@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd "$TABHOME/../go/cmd"
+go install tabgo.go

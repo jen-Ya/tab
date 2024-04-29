@@ -1,0 +1,38 @@
+fn lt0 x (< x 0)
+
+fn gte0 x (>= x 0)
+
+fn quicksort (values compare)
+	if (is-empty values)
+		values
+		# else
+		concat
+			quicksort
+				list< (first values) (rest values) compare
+				compare
+			li (first values)
+			quicksort
+				list>= (first values) (rest values) compare
+				compare
+
+fn list< (a b compare)
+	cond
+		is-nil a
+		()
+		is-empty b
+		()
+		lt0 (compare a (first b))
+		list< a (rest b) compare
+		true # else
+		cons (first b) (list< a (rest b) compare)
+
+fn list>= (a b compare)
+	cond
+		is-nil a
+		()
+		is-empty b
+		()
+		gte0 (compare a (first b))
+		list>= a (rest b) compare
+		true
+		cons (first b) (list>= a (rest b) compare)

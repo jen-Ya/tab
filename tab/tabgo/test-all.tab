@@ -1,0 +1,68 @@
+#!/usr/bin/env tabgo
+
+require '~/filter.tab' filter
+
+if (is-nil time-ms)
+	require '~/tabjs/time.tab' time-ms
+
+#
+	Get all files in current directory, that end with .test.tab, excluding this file
+#
+# let tests
+# 	filter
+# 		read-dir
+# 			path-join .tabhome 'tabgo'
+# 		f filename
+# 			and
+# 				str-ends-with filename '.test.tab'
+# 				not
+# 					str-ends-with .filename filename
+
+let tests (map (li
+	'assert.test.tab'
+	# 'basename.test.tab' # basename '' -> '.' in tabgo
+	'comments.test.tab'
+	'cond.test.tab'
+	'destruct.test.tab'
+	'early-return.test.tab'
+	'enumerate.test.tab'
+	'eval.test.tab'
+	'every.test.tab'
+	'filter.test.tab'
+	'find-index.test.tab'
+	'find.test.tab'
+	'gcd-lcm.test.tab'
+	'hashmap.test.tab'
+	'iter.test.tab'
+	'iter%.test.tab'
+	'let-all.test.tab'
+	'pairwise.test.tab'
+	# 'parse-argv.test.tab' # moved to drafts
+	# something inbetween
+	'quicksort.test.tab'
+	'reduce.test.tab'
+	'reverse.test.tab'
+	'scope.test.tab'
+	# 'strings.test.tab' # implementation uses list functions on strings
+	'switch.test.tab' # uses tabjs/math
+	# 'syntax.test.tab' # fails
+	# tokenizer.test.tab # check later
+	# parser.test.tab # check later
+	'while.test.tab'
+	'zip.test.tab'
+	'group.test.tab'
+) (f filename
+	path-join .tabhome filename
+))
+
+#
+	Run all the files
+#
+let start0 (time-ms)
+each tests (f test
+	println 'TESTING: ' test
+	let start (time-ms)
+	require test
+	println 'DURATION: ' (- (time-ms) start)
+)
+println 'TOTAL DURATION: ' (- (time-ms) start0)

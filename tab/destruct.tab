@@ -1,0 +1,52 @@
+require './pairwise.tab'
+
+fn dlet-dict (keys values)
+	# Skip first symbol { and group key value pairs
+	let pairs
+		pairwise (rest keys)
+	if (is-empty pairs) nil
+		do # else
+			let first-pair (first pairs)
+			let first-key (nth first-pair 0)
+			let first-sym (nth first-pair 1)
+			if
+				= first-key (symbol '..')
+				# if spread operator, assign all remaining values to next key
+				qq
+					dlet (unq first-sym) (unq values)
+				# else assign first value to first key
+				# and recurse with rest of keys and values
+				qq
+					do
+						dlet (unq first-sym) (get (unq values) (unq first-key))
+						dlet ({ (..unq (slice keys 3)) ) (dissoc (unq values) (unq first-key))
+
+fn dlet-list (keys values)
+	cond
+		# all keys and values assigned
+		is-empty keys
+		nil
+
+		# if spread operator, assign all remaining values to next key
+		= (first keys) (symbol '..')
+		qq
+			dlet (unq (nth keys 1)) (unq values)
+
+		# else assign first value to first key
+		# and recurse with rest of keys and values
+		q else
+		qq
+			do
+				dlet (unq (first keys)) (first (unq values))
+				dlet (unq (rest keys)) (rest (unq values))
+
+macro dlet (key value)
+	if (is-list key)
+		if (= (first key) (symbol '{'))
+			# key is a dict, e.g. dlet ({ 'a' b) ...
+			dlet-dict key value
+			# else key is a list, e.g. dlet (a b) ...
+			dlet-list key value
+		# else key is a single symbol, e.g. dlet a ...
+		qq
+			let (unq key) (unq value)

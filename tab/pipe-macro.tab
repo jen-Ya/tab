@@ -1,0 +1,85 @@
+macro pipe (value .. funcs)
+	if (is-empty funcs)
+		# then
+		value
+		# else
+		qq
+			pipe
+				unq (first funcs)
+					unq value
+				..unq (rest funcs)
+
+macro pipe-reversed (value .. funcs)
+	if (is-empty funcs)
+		# then
+		value
+		# else
+		qq
+			(unq value)
+				pipe-reversed (..unq funcs)
+
+macro pipe-apply (value .. funcs)
+	if (is-empty funcs)
+		# then
+		value
+		# else
+		do
+			let func (first funcs)
+			if (is-list func) (do
+				let args (rest func)
+				let func (first func)
+				qq
+					pipe-apply
+						(unq func) (unq value) (..unq args)
+						..unq (rest funcs)
+			) (do #else
+				qq
+					pipe-apply
+						(unq func) (unq value)
+						..unq (rest funcs)
+			)
+
+macro pipe-$ (value .. funcs)
+	fn replace-$ (args)
+		map args (f arg
+			cond
+				= arg (symbol '$')
+				value
+
+				is-list arg
+				replace-$ arg
+
+				true # else
+				arg
+		)
+	if (is-empty funcs)
+		# then
+		value
+		# else
+		do
+			let func (first funcs)
+			if (is-list func) (do
+				let args (rest func)
+				let func (first func)
+				qq
+					pipe-$
+						(unq func) (..unq (replace-$ args))
+						..unq (rest funcs)
+			) (do #else
+				qq
+					pipe-$
+						(unq func) (unq value)
+						..unq (rest funcs)
+			)
+
+
+# pipe-reversed
+# 	println
+# 	macroexpand
+# 	pipe-apply
+# 		42
+# 		* 10
+# 		+ 20
+# 		println '<- cool'
+
+# 	println (+ (* (42) 10) 20) '<- cool'

@@ -1,0 +1,96 @@
+#
+	The idea behind an early return is to throw an exception,
+	then catch it and return its value.
+	If the exception is not a return we raise it further.
+#
+
+# Check if list starts with return
+fn starts-with-return ast
+	= (first ast) (quote return)
+
+# Recursively replaces return with throw
+fn replace-return ast
+	if (is-list ast)
+		# ast is a list
+		if (starts-with-return ast)
+			# ast starts with return
+			# replace with a throw
+			qq
+				throw
+					li
+						quote return
+						unq (nth ast 1)
+			# ast does not start with return
+			# recursively check for returns
+			map ast replace-return
+		# ast is not a list
+		if (= ast (quote return))
+			# ast is return
+			# replace with throw
+			qq
+				throw
+					li
+						quote return
+						nil
+			# leave everything else alone
+			ast
+
+# Macro which allows early returns
+# by wrapping the body with try-catch
+macro early-do (.. body)
+	# find returns in body and replace with throws
+	let _body (replace-return body)
+	# wrap body with try-catch
+	qq
+		try
+			do
+				..unq _body
+			catch exception
+				if (starts-with-return exception)
+					# exception is a return
+					nth exception 1
+					# other exceptions pass through
+					throw exception
+
+# check if list 'ast' starts with specific element 'prefix'
+fn starts-with (ast prefix)
+	= (first ast) prefix
+
+# Recursively replaces 'replace-symbol' with throw
+fn replace-symbol-at-start (ast replace-symbol)
+	if (is-list ast)
+		# ast is a list
+		if (starts-with ast replace-symbol)
+			# ast starts with 'replace-symbol'
+			# replace with a throw
+			qq
+				throw (quote (unq replace-symbol))
+			# ast does not start with 'replace-symbol'
+			# recursively check for 'replace-symbol's
+			map ast
+				f ast
+					replace-symbol-at-start ast replace-symbol
+		# ast is not a list
+		if (= ast replace-symbol)
+			# ast is 'replace-symbol'
+			# replace with a throw
+			qq
+				throw (quote (unq replace-symbol))
+			# ast is not 'replace-symbol'
+			# leave it alone then
+			ast
+
+# Macro which allows early breaks in while
+# by wrapping the body with try-catch
+macro early-while (condition .. body)
+	let _body (replace-symbol-at-start body (quote break))
+	qq
+		try
+			while (unq condition)
+				..unq _body
+			catch exception
+				if (= exception (quote break))
+					# exception is a break
+					nil
+					# other exceptions pass through
+					throw exception

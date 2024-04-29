@@ -1,0 +1,8 @@
+require './zip.tab'
+require './assert.tab'
+
+assert-eq
+	zip
+		li 1 2 3
+		li 'a' 'b' 'c' 'd'
+	q ((1 'a') (2 'b') (3 'c'))

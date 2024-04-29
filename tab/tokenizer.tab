@@ -1,0 +1,336 @@
+let digits
+	li '1' '2' '3' '4' '5' '6' '7' '8' '9' '0'
+let noid
+	li '\n' '#' "'" '"' '(' ')' '\t'
+
+fn string-transform str
+	str-replace-all
+		str-replace-all str '\\n' '\n'
+		'\\t'
+		'\t'
+
+fn is-char-at (str index char)
+	= (char-at str index) char
+
+fn is-char-any (char chars)
+	cond
+		is-empty chars
+		false
+
+		= char (first chars)
+		true
+
+		q else
+		is-char-any char (rest chars)
+
+fn tokenize (text opts)
+	let keep-comments
+		coalesce
+			optget opts 'keep-comments'
+			false
+	let text (+ text '\n')
+	let cursor (var 0)
+	let linecount (var 0)
+	let charcount (var 0)
+	let tokenstart (var (li (deref linecount) (deref charcount)))
+	fn get-cursor () (deref cursor)
+	fn is-cursor-at-end ()
+		>= (get-cursor) (str-len text)
+	fn inc-cursor ()
+		if (is-cursor-at-end)
+			throw 'Cursor out of range'
+		if (is-char-at-cursor '\n')
+			do
+				reset linecount (+ (deref linecount) 1)
+				reset charcount 0
+			reset charcount (+ (deref charcount) 1)
+		reset cursor (+ (deref cursor) 1)
+	let current-indent (var 0)
+	fn get-current-indent () (deref current-indent)
+	fn set-current-indent indent (reset current-indent indent)
+
+	fn char-at-cursor ()
+		char-at text (get-cursor)
+
+	fn is-char-at-cursor char
+		is-char-at text (get-cursor) char
+
+	let tokens (var (list))
+	fn add-token (type value)
+		reset tokens
+			append
+				deref tokens
+				dict
+					'type'
+					type
+					'value'
+					if (is-undefined value) nil value
+					'position'
+					dict
+						'start'
+						deref tokenstart
+						'end'
+						li
+							deref linecount
+							deref charcount
+		reset tokenstart
+			var (li (deref linecount) (deref charcount))
+
+	fn consume chars
+		map chars
+			f char
+				if (is-char-at-cursor char)
+					(inc-cursor)
+					throw (str 'Tokeinze Error: unexpected ' (char-at-cursor) ' expected ' char)
+
+	fn is-peek chars
+		=
+			sub-str
+				text
+				(get-cursor)
+				+ (get-cursor) (str-len chars)
+			chars
+
+	fn is-peek-any (.. opts)
+		cond
+			= 0 (count opts)
+			false
+			is-peek (first opts)
+			true
+			true
+			apply is-peek-any (rest opts)
+
+	fn consume-indent indent
+		for-range x indent
+			consume '\t'
+
+	fn get-indent-rec indent
+		cond
+			>= indent (- (str-len text) (get-cursor))
+			indent
+
+			!= '\t' (char-at text (+ (get-cursor) indent))
+			indent
+
+			true
+			get-indent-rec (+ indent 1)
+
+	fn get-indent ()
+		get-indent-rec 0
+
+	fn eol ()
+		while
+			is-char-at-cursor '\n'
+			consume '\n'
+
+		let previndent (get-current-indent)
+		let indent (get-indent)
+		cond
+			= indent previndent
+			do
+				consume-indent indent
+				add-token 'eol'
+
+			< indent previndent
+			do
+				consume-indent indent
+				for-range i (- previndent indent)
+					add-token 'dedent'
+				set-current-indent indent
+
+			= indent (+ previndent 1)
+			do
+				consume-indent indent
+				add-token 'indent'
+				set-current-indent indent
+
+			true
+			throw (str 'IndentError: unexpected indentation of ' indent ' from ' previndent)
+	# /fn eol
+
+	fn space () (consume ' ')
+
+	fn consume-multiline separator
+		consume separator
+		consume '\n'
+		let value (var '')
+		fn append-value chars
+			reset value (+ (deref value) chars)
+		fn recursion ()
+			until (is-char-at-cursor '\n')
+				append-value (char-at-cursor)
+				(inc-cursor)
+			consume '\n'
+			while (is-char-at-cursor '\n')
+				consume '\n'
+				append-value '\n'
+			let indent (get-indent)
+			let previndent (get-current-indent)
+			if (= indent previndent)
+				do
+					consume-indent indent
+					consume separator
+					string-transform (deref value)
+				do
+					append-value '\n'
+					(recursion)
+		(recursion)
+	# /fn consume-multiline
+
+	fn consume-to-eol ()
+		let value (var '')
+		fn append-value chars
+			reset value (+ (deref value) chars)
+		until (is-char-at-cursor '\n')
+			append-value (char-at-cursor)
+			(inc-cursor)
+		deref value
+
+	fn comment ()
+		if
+			is-char-at text (+ (get-cursor) 1) '\n'
+			do
+				let value (consume-multiline '#')
+				if keep-comments
+					add-token 'comment' value
+			do
+				consume '#'
+				if (is-char-at-cursor ' ')
+					consume ' '
+				let value (consume-to-eol)
+				if keep-comments
+					add-token 'comment' value
+
+	fn string sep
+		if
+			is-char-at text (+ (get-cursor) 1) '\n'
+			add-token 'string' (consume-multiline sep)
+			do
+				consume sep
+				let value (var '')
+				fn append-value chars
+					reset value (+ (deref value) chars)
+				until (is-char-at-cursor sep)
+					append-value (char-at-cursor)
+					(inc-cursor)
+					if (is-cursor-at-end)
+						throw (str 'Tokeinze Error: unterminated string')
+				consume sep
+				add-token 'string' (string-transform (deref value))
+
+	fn number ()
+		let value (var '')
+		fn append-value chars
+			reset value (+ (deref value) chars)
+		while (is-char-any (char-at-cursor) digits)
+			append-value (char-at-cursor)
+			(inc-cursor)
+		if (is-char-at-cursor '.')
+			do
+				consume '.'
+				append-value '.'
+		while (is-char-any (char-at-cursor) digits)
+			append-value (char-at-cursor)
+			(inc-cursor)
+		add-token 'number' (parse-number (deref value))
+
+	fn eof () (add-token 'eof')
+
+	fn symbol ()
+		let value (var '')
+		fn append-value chars
+			reset value (+ (deref value) chars)
+		until (is-char-any (char-at-cursor) noid)
+			append-value (char-at-cursor)
+			(inc-cursor)
+		add-token 'symbol' (deref value)
+
+	fn open ()
+		consume '('
+		add-token '(' '('
+
+	fn close ()
+		consume ')'
+		add-token ')' ')'
+
+	fn iterate ()
+		cond
+			is-peek ' '
+			(space)
+
+			is-peek '#'
+			(comment)
+
+			is-peek-any "'" '"'
+			string (char-at-cursor)
+
+			is-char-any (char-at-cursor) digits
+			(number)
+
+			is-peek '('
+			(open)
+
+			is-peek ')'
+			(close)
+
+			is-peek '\n'
+			(eol)
+
+			# TODO: should be is-peek-word
+			is-peek 'nil'
+			do
+				consume 'nil'
+				add-token 'nil' nil
+
+			# TODO: should be is-peek-word
+			is-peek '_'
+			do
+				consume '_'
+				add-token 'nil' nil
+
+			# TODO: should be is-peek-word
+			is-peek 'true'
+			do
+				consume 'true'
+				add-token 'boolean' true
+
+			# TODO: should be is-peek-word
+			is-peek 'false'
+			do
+				consume 'false'
+				add-token 'boolean' false
+
+			is-peek '\t'
+			throw 'Unexpected tab'
+
+			< (get-cursor) (str-len text)
+			(symbol)
+		# /cond
+		if
+			< (get-cursor) (str-len text)
+			(iterate)
+	# /fn iterate
+
+	(iterate)
+	(eof)
+	deref tokens # return tokens
+# /fn tokenize
+
+# fn tokenize-example example
+# 	let sample
+# 		file-read example
+# 	let tokens
+# 		tokenize sample nil
+# 	println example ':' tokens
+
+# let examples
+# 	li
+# 		# './tab/test.tab'
+# 		# './tab/hello.tab'
+# 		# './tab/comments.tab'
+# 		# './tab/functest.tab'
+# 		# './tab/init.tab'
+# 		# './tab/range.tab'
+# 		'./tab/tokenizer.tab'
+
+# # map tokenize-example examples

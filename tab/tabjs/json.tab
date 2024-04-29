@@ -1,0 +1,7 @@
+let json-read (js-raw 'JSON.parse')
+fn json-write (value pretty)
+	let -json-write (js-raw 'JSON.stringify')
+	let value (to-js value)
+	if pretty
+		-json-write value '' '\t'
+		-json-write value

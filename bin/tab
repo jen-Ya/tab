@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+'use strict';
+
+const runFile = async(filename, env) => {
+	const { rep } = await import('../js/rep.js');
+	await rep(`load-file "${ filename }"`, env);
+};
+
+const runRepl = async(env) => {
+	const { rep } = await import('../js/rep.js');
+	const { readline, ask } = await import('../js/readline.js');
+	const { output } = await import('../js/output.js');
+
+	const getInput = async() => {
+		return await ask('tab: ');
+	};
+
+	const getInputMultiline = async() => {
+		let input = await ask('tab:\n');
+		for(;;) {
+			let line = await ask('');
+			if(line === '') {
+				return input;
+			}
+			input += '\n' + line;
+		}
+	};
+
+	let multiline = false;
+	for(;;) {
+		const input = multiline
+			? await getInputMultiline()
+			: await getInput();
+		if(input === '') {
+			continue;
+		}
+		if(input === '.multi' || input === '.m') {
+			multiline = true;
+			continue;
+		}
+		if(input === '.single' || input === '.s') {
+			multiline = false;
+			continue;
+		}
+		if(input === '.clear' || input === '.c') {
+			// eslint-disable-next-line no-console
+			console.clear();
+			continue;
+		}
+		if(input === '.exit' || input === '.x') {
+			break;
+		}
+		output(await rep(input, env));
+	}
+	readline.close();
+};
+
+const run = async() => {
+	const { makeReplEnv } = await import('../js/repl-env.js');
+	const env = await makeReplEnv();
+	if(process.argv.length >= 3) {
+		let filename = process.argv[2];
+		await runFile(filename, env);
+	} else {
+		await runRepl(env);
+	}
+};
+
+run();

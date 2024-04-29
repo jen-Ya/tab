@@ -1,0 +1,9 @@
+require './js-raw-fn.tab' js-raw-fn # create javascript function from source
+
+js-raw-fn js-pipe "
+	(input, output) => new Promise((resolve, reject) => {
+		input.pipe(output);
+		input.on('error', reject);
+		output.on('finish', resolve);
+	});
+"

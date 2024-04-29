@@ -1,0 +1,12 @@
+macro test-self .caller
+	println
+		'caller:'
+		.caller
+		'filename:'
+		optget .caller 'position' 'filename'
+
+test-self 42
+
+let a test-self
+
+a 43

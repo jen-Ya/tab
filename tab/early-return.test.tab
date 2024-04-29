@@ -1,0 +1,52 @@
+require './assert.tab'
+require './early-return.tab'
+
+# should early return 10
+assert-eq
+	early-do
+		let i 0
+		while (< i 100)
+			increment i
+			if (>= i 10)
+				return i
+		42
+	10
+
+# should early return nil
+assert-eq
+	early-do
+		let i 0
+		while (< i 100)
+			increment i
+			if (>= i 10)
+				return
+		42
+	nil
+
+# should normal return 42
+assert-eq
+	early-do
+		let i 0
+		while (< i 10)
+			increment i
+			if (>= i 20)
+				return i
+		42
+	42
+
+# should early return 10
+let i 0
+early-while (< i 100)
+	increment i
+	if(>= i 10)
+		break i
+assert-eq i 10
+
+# should normal return 10
+let i 0
+early-while (< i 10)
+	increment i
+	if(>= i 100)
+		break i
+	i
+assert-eq i 10

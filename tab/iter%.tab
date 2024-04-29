@@ -1,0 +1,31 @@
+require '~/enumerate.tab' enumerate
+require '~/destruct.tab' dlet
+require '~/filter.tab' filter
+require '~/every.tab' every
+require '~/find.tab' find
+
+#
+	makes macros that allow you to write
+
+	map% (range 10)
+		println %
+
+	instead of
+
+	map (range 10) (f x
+		println x
+	)
+#
+
+fn wrap% func
+	amacro (array .. body)
+		qq
+			(unq func)
+				unq array
+				f % (..unq body)
+
+let each% (wrap% each)
+let map% (wrap% map)
+let filter% (wrap% filter)
+let every% (wrap% every)
+let find% (wrap% find)

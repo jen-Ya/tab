@@ -1,0 +1,50 @@
+let collection (js-raw "
+	(...args) => new Set(...args)
+")
+
+let collection-add (js-raw "
+	(collection, ...args) => { for(let arg of args) { collection.add(arg) } }
+")
+
+let collection-has (js-raw "
+	(collection, item) => collection.has(item);
+")
+
+let intersect (js-raw "
+	(first, ...rest) => {
+		let elements = [];
+		for(let element of first) {
+			let has = true;
+			for(let set of rest) {
+				if(!set.has(element)) {
+					has = false;
+					break;
+				}
+			}
+			if(has) {
+				elements.push(element);
+			}
+		}
+		return new Set(elements);
+	}
+")
+
+let collection-difference (js-raw "
+	(first, second) => {
+		let elements = [];
+		for(let element of first) {
+			if(!second.has(element)) {
+				elements.push(element);
+			}
+		}
+		return new Set(elements);
+	}
+")
+
+let collection-size (js-raw "
+	(collection) => collection.size
+")
+
+let collection-to-list (js-raw "
+	(set) => [...set]
+")

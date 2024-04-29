@@ -1,0 +1,28 @@
+require './regexp.tab'
+require '~/assert.tab'
+
+assert-eq
+	regexp-split
+		'1a2b3c4'
+		regexp '[a-z]'
+	li '1' '2' '3' '4'
+
+assert-eq
+	regexp-match
+		'hello world 123'
+		regexp '([a-z]+) ([0-9]+)'
+	li 'world 123' 'world' '123'
+
+assert-eq
+	regexp-replace
+		'1a2b3c4'
+		regexp '[a-z]'
+		'_'
+	'1_2b3c4'
+
+assert-eq
+	regexp-replace
+		'1a2b3c4'
+		regexp '[A-Z]' 'gi'
+		'_'
+	'1_2_3_4'

@@ -1,0 +1,7 @@
+fn gcd (a b)
+	if (= b 0) a
+		# else
+		gcd b (% a b)
+
+fn lcm (a b)
+	/ (* a b) (gcd a b)

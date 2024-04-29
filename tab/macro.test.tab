@@ -1,0 +1,21 @@
+require './assert.tab' assert
+
+# this macro should skip 'b', but execute 'a' and 'c'.
+macro test-macro (a b c)
+	qq
+		do (unq a) (unq c)
+
+
+let call-count (var 0)
+
+fn inc-call-count ()
+	swap call-count + 1
+
+test-macro
+	(inc-call-count)
+	(inc-call-count)
+	(inc-call-count)
+
+# inc-call-count should have been called only 2 times
+assert
+	= (deref call-count) 2

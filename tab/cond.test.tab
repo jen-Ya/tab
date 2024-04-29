@@ -1,0 +1,15 @@
+require './assert.tab'
+
+assert-eq
+	cond
+		true
+		cond
+			true
+			cond
+				false
+				2
+				true
+				3
+		false
+		4
+	3

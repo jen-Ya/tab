@@ -1,0 +1,42 @@
+fn assert (condition error)
+	unless condition
+		throw
+			cond
+				is-func error
+				(error)
+				is-nil error
+				'Assertion error'
+				true
+				error
+
+fn assert-eq (a b)
+	assert (= a b)
+		f _ (str 'Assertion error: ' a ' != ' b)
+
+fn assert-neq (a b)
+	assert (!= a b)
+		f _ (str 'Assertion error: ' a ' = ' b)
+
+fn assert-not (what)
+	assert (not what)
+		f _ (str 'Assertion error: ' what ' is truthy')
+
+fn assert-throw (func error)
+	assert
+		try
+			do
+				(func)
+				false
+			catch error
+				true
+		coalesce error "Nothing thrown"
+
+fn assert-no-throw (func error)
+	assert
+		try
+			do
+				(func)
+				true
+			catch error
+				false
+		coalesce error "Error thrown"

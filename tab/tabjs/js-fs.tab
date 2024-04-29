@@ -1,0 +1,6 @@
+require '~/tabjs/import.tab' js-import
+let fs (js-import 'fs')
+
+let create-write-stream (get fs 'createWriteStream')
+let create-read-stream (get fs 'createReadStream')
+let file-read-bytes (optget fs 'promises' 'readFile')

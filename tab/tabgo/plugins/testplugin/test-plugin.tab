@@ -1,0 +1,4 @@
+require-plugin 'testplugin.so' do-something
+
+println
+	do-something 42 31

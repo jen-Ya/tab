@@ -1,0 +1,23 @@
+require './assert.tab'
+
+let a 1
+
+let script
+	quote
+		let a 42
+
+fn test ()
+	let a 2
+	fn nested ()
+		let a 3
+		eval script
+		assert-eq a 42
+	(nested)
+	assert-eq a 2
+	eval script
+	assert-eq a 42
+	eval script (env-outer .env)
+
+assert-eq a 1
+(test)
+assert-eq a 42

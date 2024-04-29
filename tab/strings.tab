@@ -1,0 +1,109 @@
+require '~/polyfill.tab' polyfill polyfill-fn
+
+polyfill-fn char-at (string index)
+	sub-str string index (+ index 1)
+
+polyfill-fn char-code (char)
+	throw (q not-implemented)
+
+polyfill-fn is-string (arg)
+	throw (q not-implemented)
+
+# list function works for strings only in tabjs
+polyfill sub-str slice
+
+# list function works for strings only in tabjs
+polyfill str-len count
+
+polyfill-fn str-ends-with (string suffix)
+	=
+		sub-str string (- (str-len string) (str-len suffix))
+		suffix
+
+polyfill-fn str-starts-with (string prefix)
+	=
+		sub-str string 0 (str-len prefix)
+		prefix
+
+polyfill-fn str-join (array separator)
+	let separator (coalesce separator '')
+	if (is-empty array) ''
+		# else
+		apply str
+			first array
+			map (rest array) (f x
+				+ separator x
+			)
+
+polyfill-fn str-replace-all (string from to)
+	let from-len (str-len from)
+	let to-len (str-len to)
+	cond
+		or
+			= string ''
+			= from ''
+			= from to
+		string
+		# if string starts with from
+		str-starts-with string from
+		str
+			to
+			str-replace-all (sub-str string from-len) from to
+		# else continue with next character
+		true
+		str
+			char-at string 0
+			str-replace-all (sub-str string 1) from to
+
+
+polyfill-fn is-char-any (char chars)
+	cond
+		is-empty chars
+		false
+		= (char-at chars 0) char
+		true
+
+		true
+		is-char-any char (sub-str chars 1)
+
+polyfill-fn str-split (string separator)
+	let separator (coalesce separator '')
+	let separator-length (str-len separator)
+	fn add-part-if-not-empty (parts part)
+		if (= part '') parts (append parts part)
+	fn -str-split (string parts part)
+		cond
+			# if string is empty (processed all characters)
+			= string ''
+			# if last part is not empty, add it to parts
+			add-part-if-not-empty parts part
+
+			# if string starts with separator
+			str-starts-with string separator
+			-str-split (sub-str string (+ separator-length 1)) (add-part-if-not-empty parts part) (char-at string separator-length)
+
+			# else continue with next character
+			true
+			-str-split (sub-str string 1) parts (str part (char-at string 0))
+	-str-split string () ''
+
+# 'str-split': (str, char) => {
+# 	if(typeof str !== 'string') {
+# 		throw new Error(`str-split argument str type error: ${ str }`);
+# 	}
+# 	return str.split(char);
+# },
+# 'str-index-of': (string, substring) => {
+# 	let index = string.indexOf(substring);
+# 	if(index === -1) {
+# 		return new TalNil;
+# 	}
+# 	return index;
+# },
+# 'str-last-index-of': (string, substring) => {
+# 	let index = string.lastIndexOf(substring);
+# 	if(index === -1) {
+# 		return new TalNil;
+# 	}
+# 	return index;
+# },

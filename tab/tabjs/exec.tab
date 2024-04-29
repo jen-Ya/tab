@@ -1,0 +1,8 @@
+require '~/tabjs/import.tab' js-import
+
+let child-process (js-import 'node:child_process')
+
+let js-exec-sync (get child-process 'execSync')
+
+fn exec-sync command
+	js-exec-sync command (dict 'encoding' 'utf8')

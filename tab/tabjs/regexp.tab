@@ -1,0 +1,11 @@
+let regexp (js-raw 'RegExp')
+
+fn string-regexp-function name
+	js-raw
+		str '(string, ...args) => string.' name '(...args)'
+
+let regexp-split (string-regexp-function 'split')
+
+let regexp-match (string-regexp-function 'match')
+
+let regexp-replace (string-regexp-function 'replace')

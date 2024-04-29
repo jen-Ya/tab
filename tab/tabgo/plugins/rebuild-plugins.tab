@@ -1,0 +1,16 @@
+let plugins-directory
+	path-join .tabhome 'tabgo/plugins'
+
+let plugins (li "colors" "sqlite3" "testplugin")
+
+let script "
+	cd $path
+	go build -buildmode=plugin *.go
+"
+
+each plugins (f plugin
+	println "building" plugin
+	let dir (path-join plugins-directory plugin)
+	let file (path-join dir (str plugin '.go'))
+	exec 'go' (li 'build' '-buildmode=plugin' file) (dict 'dir' dir)
+)

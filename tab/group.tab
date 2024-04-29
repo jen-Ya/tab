@@ -1,0 +1,21 @@
+require '~/vars.tab'
+require '~/reduce.tab'
+
+# takes a list of values and a dict of key to function
+# returns a dict of key to list of values that pass the function
+fn group (array grouping)
+	# assign each key of grouping to an empty list
+	let groups (reduce
+		cons (dict) (keys grouping)
+		f (groups key)
+			set groups key ()
+	)
+	# for each element in array, add it to all lists that pass the function
+	reduce (cons groups array) (f (groups element)
+		reduce (cons groups (keys grouping)) (f (groups key)
+			let func (get grouping key)
+			if (func element)
+				set groups key (append (get groups key) element)
+				groups
+		)
+	)

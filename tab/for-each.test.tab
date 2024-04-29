@@ -1,0 +1,14 @@
+require './for-each.tab'
+require './assert.tab' assert
+
+let array
+	li 1 2 3 4
+
+let sum (var 0)
+
+for-each array x
+	reset sum
+		+ (deref sum) x
+
+assert
+	= (deref sum) 10

@@ -1,0 +1,6 @@
+fn reverse values
+	if (is-empty values)
+		values
+		append
+			reverse (rest values)
+			first values

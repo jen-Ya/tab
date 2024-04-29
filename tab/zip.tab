@@ -1,0 +1,22 @@
+fn zip (.. lists)
+	fn zip (lists values)
+		if (is-empty lists)
+			# got first of all lists
+			values
+			do # else
+				let first-values (firsts lists ())
+				if (= nil first-values)
+					values
+					# else
+					zip (map lists rest) (append values first-values)
+	fn firsts (lists values)
+		if (is-empty lists)
+			# got first of all lists
+			values
+			do # else
+				let first-list (first lists)
+				if (is-empty first-list)
+					nil # list is empty
+					# else
+					firsts (rest lists) (append values (first first-list))
+	zip lists ()

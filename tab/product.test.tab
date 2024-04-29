@@ -1,0 +1,6 @@
+require '~/assert.tab'
+require './product.tab'
+
+assert-eq
+	product (li 1 2) (li 'a' 'b')
+	li (li 1 'a') (li 1 'b') (li 2 'a') (li 2 'b')

@@ -1,0 +1,37 @@
+fn pipe (value .. funcs)
+	let result (var value)
+	map funcs
+		f func
+			swap result func
+	deref result
+
+let -> pipe
+
+# ->
+# 	42
+# 	f x (* x 10)
+# 	f x (* x 10)
+# 	f x (* x 10)
+# 	f x (* x 8)
+# 	println
+
+fn reverse input-list
+	let reversed (var ())
+	map input-list
+		f input
+			swap reversed
+				f reversed
+					apply li input reversed
+	deref reversed
+
+fn pipe-reversed (.. steps)
+	apply pipe (reverse steps)
+
+let <- pipe-reversed
+
+# <-
+# 	println
+# 	f x (* x 20)
+# 	f x (* x 20)
+# 	f x (* x 20)
+# 	42

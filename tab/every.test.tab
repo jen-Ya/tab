@@ -1,0 +1,8 @@
+require '~/assert.tab'
+require '~/every.tab'
+
+assert
+	every (li 1 2 3) (f x (< x 4))
+
+assert-not
+	every (li 1 2 3) (f x (< x 3))

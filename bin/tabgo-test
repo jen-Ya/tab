@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+tabgo $TABHOME/tabgo/test-all.tab

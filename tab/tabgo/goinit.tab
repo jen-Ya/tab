@@ -1,0 +1,313 @@
+let not
+	lambda x (if x false true)
+
+let li list
+
+let .wrap-do
+	lambda exps
+		with (l (count exps))
+			if (= l 0) nil
+				if (= l 1) (first exps)
+					# else
+					cons (q do) exps
+
+let macro
+	macrof (key args .. body)
+		do
+			if (not (is-list args))
+				let args (li args)
+			if (< (count body) 1)
+				print (str 'Empty macro body: ' key)
+			qq
+				let (unq key)
+					macrof (unq args)
+						unq (.wrap-do body)
+
+macro cond (.. args)
+	if (> (count args) 0)
+		# handle else
+		unless (= (first args) (q else))
+			# it's not an else clause, so check condition
+			li (q if) (first args)
+				if (> (count args) 1)
+					nth args 1
+					# else
+					throw "odd number of forms to cond"
+				# "else" recurse with rest of args
+				cons
+					q cond
+					rest (rest args)
+			# else it's an else clause, so just return the next expression
+			nth args 1
+
+macro amacro (params .. body)
+	qq
+		macrof (unq params)
+			unq (.wrap-do body)
+
+macro alias (key target)
+	qq
+		macro (unq key) (.. args)
+			cons
+				q (unq target)
+				args
+
+alias quote q
+
+macro f (params .. body)
+	qq
+		lambda (unq params)
+			unq (.wrap-do body)
+
+macro fn (name params .. body)
+	qq
+		let (unq name)
+			lambda (unq params)
+				unq (.wrap-do body)
+
+macro unless (condition body alternative)
+	if (is-nil alternative)
+		qq
+			if
+				not (unq condition)
+				unq body
+		qq
+			if
+				not (unq condition)
+				unq body
+				unq alternative
+
+fn is-empty (values)
+	<= (count values) 0
+
+macro or (.. args)
+	if (is-empty args)
+		false
+		li
+			q unless
+			first args
+			cons
+				q or
+				rest args
+			true
+
+macro and (.. args)
+	if (is-empty args)
+		true
+		li
+			q if
+			first args
+			cons
+				q and
+				rest args
+			false
+
+fn each (values func)
+	fn -each (values)
+		unless (is-empty values) (do
+			func (first values)
+			-each (rest values)
+		)
+	-each values
+
+fn flatten (values)
+	if (is-empty values)
+		()
+		if (is-empty (first values))
+			flatten (rest values)
+			cons
+				first (first values)
+				flatten
+					cons
+						rest (first values)
+						rest values
+
+# overwrite only if not specified by host language for performance reasons
+let concat
+	if concat concat
+		f (.. values)
+			flatten values
+
+fn append (values .. more)
+	concat
+		values
+		more
+
+fn map (values func)
+	fn -map (values)
+		if (is-empty values) ()
+			# else
+			cons
+				func (first values)
+				-map (rest values)
+	-map values
+
+fn range (start end)
+	if (is-nil end)
+		range 0 start
+		if
+			>= start end
+			()
+			cons
+				start
+				range (+ start 1) end
+
+fn optget (obj .. keys)
+	if (is-nil obj) nil
+		if (is-empty keys) obj
+			apply optget
+				get obj (first keys)
+				rest keys
+
+fn coalesce (.. vals)
+	let head (first vals)
+	if
+		not (= head nil)
+		# then
+		head
+		# else
+		apply coalesce
+			rest vals
+
+# TODO: is this really needed?
+macro increment var
+	qq
+		let (unq var) (+ (unq var) 1)
+
+# TODO: turns out, this is not how macros work...
+macro while (condition .. body)
+	if (< (count body) 1)
+		throw 'Empty while body'
+	qq
+		if
+			unq condition
+			do
+				..unq body
+				while (unq condition) (..unq body)
+
+macro until (condition .. body)
+	if (< (count body) 1)
+		throw 'Empty until body'
+	qq
+		while (not (unq condition)) (..unq body)
+
+macro for-range (var end .. body)
+	if (< (count body) 1)
+		throw 'Empty for-range body'
+	qq
+		do
+			let (unq var) 0
+			while
+				< (unq var) (unq end)
+				do
+					..unq body
+					increment (unq var)
+
+macro unless (condition body alternative)
+	if (is-nil alternative)
+		qq
+			if
+				not (unq condition)
+				unq body
+		qq
+			if
+				not (unq condition)
+				unq body
+				unq alternative
+
+macro load-file filename
+	qq
+		eval
+			read-string
+				file-read (unq filename)
+				dict 'filename' (unq filename)
+
+# caching of required files
+let .required (dict)
+let .required-plugins (dict)
+let .required-env .env
+
+macro require (filename .. require-keys)
+	if (str-starts-with filename '~')
+		let filename
+			str .tabhome (sub-str filename 1)
+	# get position from caller function
+	let position-filename
+		optget (get-ast-position .caller) 'filename'
+	qq
+		(f (env filename)
+			let position-filename (unq position-filename)
+			let require-keys (quote (unq require-keys))
+			let basedir
+				unless (= position-filename nil)
+					# then
+					dirname position-filename
+					# else
+					.cwd
+			# TODO: some mix up between path resolve and path join...
+			let filename-abs
+				if (str-starts-with filename '/') filename
+					path-resolve basedir filename
+			unless (has .required filename-abs) (do
+				let new-env (env-new .env-root)
+				eval
+					read-string
+						file-read filename-abs
+						dict 'filename' filename-abs
+					new-env
+				env-set .required-env (symbol '.required')
+					set .required filename-abs (get new-env 'data')
+			)
+			let data
+				get .required filename-abs
+			let let-keys
+				if (= (count require-keys) 0)
+					keys data
+					require-keys
+			map let-keys
+				f let-key
+					env-set env (symbol let-key) (get data (str let-key))
+		) .env (unq filename)
+
+macro require-plugin (filename .. require-keys)
+	if (str-starts-with filename '~')
+		let filename
+			str .tabhome (sub-str filename 1)
+	# get position from caller function
+	let position-filename
+		optget (get-ast-position .caller) 'filename'
+	qq
+		(f (env filename)
+			let position-filename (unq position-filename)
+			let require-keys (quote (unq require-keys))
+			let basedir
+				unless (= position-filename nil)
+					# then
+					dirname position-filename
+					# else
+					.cwd
+			# TODO: some mix up between path resolve and path join...
+			let filename-abs
+				if (str-starts-with filename '/') filename
+					path-resolve basedir filename
+			unless (has .required-plugins filename-abs) (do
+				let plugin (load-plugin filename-abs)
+				env-set .required-env (symbol '.required-plugins')
+					set .required-plugins filename-abs plugin
+			)
+			let plugin
+				get .required-plugins filename-abs
+			let let-keys
+				if (= (count require-keys) 0)
+					keys plugin
+					require-keys
+			map let-keys
+				f let-key
+					env-set env (symbol let-key) (get plugin (str let-key))
+		) .env (unq filename)
+
+fn != (a b) (not (= a b))
+
+# for compatibility with tabjs
+fn env-outer env
+	get env 'outer'

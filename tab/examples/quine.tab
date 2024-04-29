@@ -1,0 +1,1 @@
+((f x (print (li x (li (q q) x)))) (q (f x (print (li x (li (q q) x))))))

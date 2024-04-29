@@ -1,0 +1,8 @@
+require './enumerate.tab'
+require './assert.tab'
+
+assert-eq
+	enumerate
+		list 'a' 'b' 'c' 'd'
+	quote
+		(0 'a') (1 'b') (2 'c') (3 'd')

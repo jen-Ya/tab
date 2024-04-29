@@ -1,0 +1,9 @@
+require './reverse.tab' reverse
+require './assert.tab' assert-eq
+
+let values (li 1 2 3 4 5)
+let reversed (reverse values)
+
+assert-eq
+	reversed
+	li 5 4 3 2 1

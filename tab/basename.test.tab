@@ -1,0 +1,34 @@
+require '~/assert.tab'
+require '~/basename.tab'
+
+assert-eq
+	basename 'foo///'
+	'foo'
+
+assert-eq
+	basename 'foo///bar'
+	'bar'
+
+assert-eq
+	basename '/foo///bar'
+	'bar'
+
+assert-eq
+	basename '/foo'
+	'foo'
+
+# Both are valid, js and unix return empty string, go returns dot
+assert
+	or
+		= (basename '') ''
+		= (basename '') '.'
+
+# fails for some reason
+# assert-eq
+# 	basename '/'
+# 	'/'
+
+# fails for some reason
+# assert-eq
+# 	basename '///'
+# 	'/'

@@ -1,0 +1,8 @@
+let time-ms (js-raw '() => +new Date()')
+let performance-now (js-raw 'performance.now')
+let timeout (js-raw '
+	async(ms) => {
+		await new Promise(resolve => setTimeout(resolve, ms));
+		return new TalNil;
+	}
+')

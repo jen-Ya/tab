@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd "$TABHOME/../go/plugins/sqlite3"
+go build -buildmode=plugin sqlite3.go

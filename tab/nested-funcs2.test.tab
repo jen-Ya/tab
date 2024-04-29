@@ -1,0 +1,20 @@
+require '~/assert.tab'
+
+fn a (x)
+	+ x 42
+
+fn b (y)
+	* (a y) 3
+
+fn c (v w)
+	+
+		a v
+		b w
+
+fn d ()
+	c 5 9
+	c 3 7
+
+assert-eq
+	(d)
+	192

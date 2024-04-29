@@ -1,0 +1,8 @@
+require-plugin 'sqlite3.so' sqlite-open sqlite-close sqlite-query
+
+let db (sqlite-open 'tmp.db')
+print db
+let columns
+	(sqlite-query db "select 'hallo', 42, true, current_date")
+println columns
+(sqlite-close db)

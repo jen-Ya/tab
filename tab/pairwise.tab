@@ -1,0 +1,6 @@
+fn pairwise (values)
+	if (is-empty values) ()
+		# else
+		cons
+			slice values 0 2
+			pairwise (slice values 2)

@@ -1,0 +1,10 @@
+fn find-index (values function index)
+	let index (coalesce index 0)
+	if (is-empty values)
+		nil
+		do # else
+			let value (first values)
+			if (function value)
+				index
+				# else
+				find-index (rest values) function (+ index 1)

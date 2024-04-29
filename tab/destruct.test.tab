@@ -1,0 +1,50 @@
+require '~/assert.tab'
+require '~/destruct.tab'
+
+# simple destructing from variable
+# unmatched sumbol (e) is nil
+let mylist (li 1 2 3 4)
+dlet (a b c d e) mylist
+assert-eq d 4
+assert-eq e nil
+
+# simple destructing from literal list
+dlet (aa bb) (li 11 22)
+assert-eq aa 11
+assert-eq bb 22
+
+# destructing spread operator
+dlet (a4 b4 .. c4) (li 1 2 3 4 5)
+assert-eq a4 1
+assert-eq b4 2
+assert-eq c4 (li 3 4 5)
+
+# destructing of variable dict
+let my-dict (dict 'a3' 111 'b3' 222)
+dlet ({ 'a3' a3 'c3' c3 ) my-dict
+assert-eq a3 111
+assert-eq c3 nil
+
+# destructing of literal dict with spread operator
+dlet ({ 'a4' a4 'b4' b4 .. c4) (dict 'a4' 444 'c4' 666 'd4' 777)
+assert-eq a4 444
+assert-eq b4 nil
+assert-eq c4 (dict 'c4' 666 'd4' 777)
+
+# nested destructing
+dlet
+	a5 (b5 c5) ({ 'd5' d5 'e5' (.. e5) )
+	li 1 (li 2 3) (dict 'd5' 4 'e5' (li 5 6 7))
+assert-eq a5 1
+assert-eq b5 2
+assert-eq c5 3
+assert-eq d5 4
+assert-eq e5 (li 5 6 7)
+
+let values6 (dict 'a' 42 'b' (dict 'c' 43 'd' 44))
+
+dlet ({ 'a' a6 'b' ({ 'c' c6 'd' d6)) values6
+
+assert-eq a6 42
+assert-eq c6 43
+assert-eq d6 44

@@ -1,0 +1,10 @@
+require './assert.tab'
+require './reduce.tab'
+
+assert-eq
+	reduce (li 1 2 3 4 5) +
+	15
+
+assert-eq
+	reduce (li 1 2 3 4 5) -
+	-13

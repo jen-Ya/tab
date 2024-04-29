@@ -1,0 +1,20 @@
+# TODO: remove %
+require '~/pairwise.tab'
+
+macro switch (value .. cases)
+	fn mapper pair
+		let compare (nth pair 0)
+		let result (nth pair 1)
+		if (= compare (symbol 'else'))
+			li
+				true
+				result
+			li
+				li (q =) value compare
+				result
+	let conds
+		flatten
+			map (pairwise cases) mapper
+	qq
+		cond
+			..unq conds

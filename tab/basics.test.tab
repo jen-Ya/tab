@@ -1,0 +1,16 @@
+require './assert.tab' assert-eq
+
+# closures
+let a 0
+fn geta ()
+	a
+let a 42
+assert-eq (geta) 42
+
+let b 42
+fn getb ()
+	b
+fn setb ()
+	let b 43
+(setb)
+assert-eq (getb) 42

@@ -1,0 +1,5 @@
+require-plugin 'colors.so' cyan red
+
+println
+	cyan "HALLO BALLO"
+	red "HALLO BALLO"

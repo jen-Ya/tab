@@ -1,0 +1,8 @@
+fn env-has (env sym)
+	cond
+		is-nil env
+		false
+		has (get env 'data') sym
+		true
+		else
+		env-has (get env 'outer') sym

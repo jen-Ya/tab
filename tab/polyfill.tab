@@ -1,0 +1,12 @@
+require '~/env-has.tab' env-has
+
+macro polyfill (sym value)
+	qq
+		unless ((unq env-has) .env (q (unq sym)))
+			let (unq sym) (unq value)
+
+macro polyfill-fn (name args .. body)
+	qq
+		polyfill (unq name) (f (unq args)
+			..unq body
+		)

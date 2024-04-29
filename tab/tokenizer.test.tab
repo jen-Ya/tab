@@ -1,0 +1,18 @@
+require './assert.tab' assert assert-throw
+require './tokenizer.tab' tokenize
+
+# Should throw error on unexpected tab
+assert-throw
+	f _ (tokenize '\t')
+
+# Should tokenize self without errors
+assert
+	tokenize
+		file-read .filename
+
+assert
+	tokenize '
+		(test
+			best # what
+		)
+	'

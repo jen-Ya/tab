@@ -1,0 +1,123 @@
+require "./assert.tab"
+
+fn assert-syntax-error code
+	assert
+		try
+			do
+				read-string code
+				false
+			catch error
+				do
+					# println "this was expected: " error
+					true
+
+fn assert-syntax-ok code
+	assert
+		read-string code
+
+fn assert-syntax-is (code ast)
+	assert-eq
+		read-string code
+		ast
+
+fn print-parsed code
+	println (read-string code)
+
+let ok assert-syntax-ok
+let not-ok assert-syntax-error
+fn same (.. codes)
+	let ast
+		read-string (nth codes 0)
+	map (rest codes)
+		f code
+			assert-eq
+				ast
+				read-string code
+
+fn not-same (code1 code2)
+	assert
+		!=
+			read-string code1
+			read-string code2
+
+# Invalid indentation
+not-ok "
+	(func arg1
+		arg2)
+"
+# Valid indentation
+ok "
+	(func arg1
+		arg2
+	)
+"
+# Valid indentation
+ok "
+	(
+		func arg1
+			arg2
+	)
+"
+# Valid indentation
+ok "
+	ok (
+		func arg1
+			arg2
+	) best
+"
+
+# Valid indentation
+ok "
+	func "
+		multi line
+			string
+	" "single line string" "
+		second multi
+		line string
+	"
+"
+
+not-ok "
+	(
+"
+
+ok "
+	([ ({
+		println 1
+	) ({
+		println 2
+	))
+"
+
+not-ok "
+	"
+		func arg1
+	arg2
+	"
+"
+
+same
+	"func arg1 arg2"
+	"(func arg1 arg2)"
+	"
+		(func
+			arg1
+			arg2
+		)
+	"
+	"
+		(
+			func
+				arg1
+				arg2
+		)
+	"
+	"
+		func
+			arg1
+			arg2
+	"
+
+not-same "a" "(a)"
+
+same "a b" "(a b)"

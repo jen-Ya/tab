@@ -1,0 +1,23 @@
+require './switch.tab'
+require './assert.tab' assert-eq
+
+fn mapper x
+	switch x
+		1
+		'small'
+
+		2
+		'even'
+
+		3
+		'odd'
+
+		else
+		'wtf'
+
+let result
+	map (li 1 2 3 4) mapper
+
+assert-eq
+	result
+	li 'small' 'even' 'odd' 'wtf'

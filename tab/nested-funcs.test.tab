@@ -1,0 +1,23 @@
+require '~/assert.tab'
+
+let a
+	lambda (x)
+		+ x 42
+
+let b
+	lambda (y)
+		* (a y) 3
+
+let c
+	lambda (v w)
+		+
+			a v
+			b w
+
+let d
+	lambda ()
+		c 3 7
+
+assert-eq
+	(d)
+	192

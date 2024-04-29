@@ -1,0 +1,2 @@
+let js-require (js-raw '(path) => require(path)')
+let js-import (js-raw '(path) => import(path)')

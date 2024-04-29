@@ -1,0 +1,29 @@
+#!/usr/bin/env tab
+
+require '~/filter.tab' filter
+require '~/tabjs/time.tab' time-ms
+
+#
+	Get all files in current directory, that end with .test.tab, excluding this file
+#
+let tests
+	filter
+		read-dir .tabhome
+		f filename
+			and
+				str-ends-with filename '.test.tab'
+				not
+					= filename 'test-all.test.tab'
+
+#
+	Run all the files
+#
+let start0 (time-ms)
+each tests (f test
+	println 'TESTING: ' test
+	let file (str .tabhome '/' test)
+	let start (time-ms)
+	require file
+	println 'DURATION: ' (- (time-ms) start)
+)
+println 'TOTAL DURATION: ' (- (time-ms) start0)

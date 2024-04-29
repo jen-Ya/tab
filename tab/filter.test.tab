@@ -1,0 +1,9 @@
+require './filter.tab'
+require './assert.tab'
+
+assert-eq
+	filter
+		range 5
+		f x
+			> x 2
+	li 3 4

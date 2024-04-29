@@ -1,0 +1,24 @@
+require '~/assert.tab'
+
+# literals stay same
+assert-eq (qq 1) 1
+assert-eq (qq "asd") "asd"
+assert-eq (qq nil) nil
+
+# qq of a symbol is same as q of the symbol
+assert-eq (qq x) (q x)
+
+# unquote
+assert-eq 42
+	qq (unq 42)
+
+# unquote-splicing
+assert-eq (li 1 2 3)
+	qq (1 (..unq (li 2 3)))
+
+# nested quasiquote
+assert-eq 42
+	qq
+		unq
+			qq
+				unq 42

@@ -1,0 +1,7 @@
+fn product (list-a list-b)
+	flatten
+		map list-a (f a
+			map list-b (f b
+				li a b
+			)
+		)

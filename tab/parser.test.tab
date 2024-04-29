@@ -1,0 +1,14 @@
+require '~/assert.tab'
+require '~/tokenizer.tab'
+require '~/parser.tab'
+
+fn parse-example example
+	let sample
+		file-read example
+	let tokens
+		tokenize sample nil
+	let ast
+		parse tokens
+
+assert-no-throw
+	f _ (parse-example .filename)

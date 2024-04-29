@@ -1,0 +1,1 @@
+let js-new (js-raw '(func, ...args) => new func(...args)')

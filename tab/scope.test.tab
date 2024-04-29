@@ -1,0 +1,22 @@
+require '~/assert.tab'
+
+let a 43
+
+fn test ()
+	assert-eq a 43
+
+
+fn best ()
+	let a 42
+	assert-eq a 42
+	(test)
+
+fn closured ()
+	let a 41
+	f () a
+
+let closure (closured)
+
+(best)
+
+assert-eq (closure) 41

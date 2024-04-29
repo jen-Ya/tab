@@ -1,0 +1,7 @@
+require '~/assert.tab'
+require './iter%.tab'
+
+assert-eq
+	map% (range 5)
+		* % 2
+	li 0 2 4 6 8

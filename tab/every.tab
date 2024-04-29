@@ -1,0 +1,10 @@
+fn every (values function)
+	cond
+		is-empty values
+		true
+
+		function (first values)
+		every (rest values) function
+
+		q else
+		false

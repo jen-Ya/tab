@@ -1,0 +1,12 @@
+require './find-index.tab' find-index
+require './assert.tab' assert-eq
+
+let values (li 0 1 2 3 4 5 6 7)
+fn gt4 x (> x 4)
+assert-eq 5
+	find-index values gt4
+
+fn gt10 x (> x 10)
+
+assert-eq nil
+	find-index values gt10

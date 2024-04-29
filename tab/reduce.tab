@@ -1,0 +1,12 @@
+fn reduce (values func)
+	if (is-empty values)
+		throw "reduce requires at least one value"
+	if (= (count values) 1)
+		# if there is only one value, return it
+		first values
+		# else reduce first two values and recurse
+		reduce
+			cons
+				func (nth values 0) (nth values 1)
+				slice values 2
+			func

@@ -1,0 +1,8 @@
+fn enumerate array
+	fn -enumerate (array index)
+		if (is-empty array) ()
+			# else
+			cons
+				li index (first array)
+				-enumerate (rest array) (+ 1 index)
+	-enumerate array 0
