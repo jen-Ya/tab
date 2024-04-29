@@ -7,6 +7,21 @@ It is an indentation-based programming language characterized by minimal syntax 
 
 Implementations are currently available in Golang and JavaScript.
 
+## Install
+
+```sh
+git clone https://github.com/jen-Ya/tab
+cd tab
+export TABHOME=`pwd`/tab
+
+# Install Golang version (Golang must be already installed):
+./bin/tabgo-install
+# Run Golang tests
+tabgo ./tab/tabgo/test-all.tab
+
+# Run JavaScipt tests (NodeJS must be already installed):
+node ./bin/tab ./tab/test-all.tab
+```
 
 ## Examples
 
