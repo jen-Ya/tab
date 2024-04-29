@@ -23,6 +23,13 @@ tabgo ./tab/tabgo/test-all.tab
 node ./bin/tab ./tab/test-all.tab
 ```
 
+You can optionally add the following line to your shell startup script (such as .bash_profile or .zshrc). Remember to substitute /path/to/tab with the actual path, paying attention to the double /tab/tab in TABHOME.
+
+```sh
+export TABHOME="/path/to/tab/tab"
+export PATH="/path/to/tab/bin:${PATH}"
+```
+
 ## Examples
 
 ### Comments
