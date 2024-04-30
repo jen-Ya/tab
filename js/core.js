@@ -53,11 +53,11 @@ const eq = (a, b) => {
 		return true;
 	}
 	if(isTalMap(a)) {
-		let keys = Object.keys(a);
+		const keys = Object.keys(a);
 		if(keys.length !== Object.keys(b).length) {
 			return false;
 		}
-		for(let key of keys) {
+		for(const key of keys) {
 			if(!eq(a[key], b[key])) {
 				return false;
 			}
@@ -89,7 +89,13 @@ const mathFuncs = {
 	'>': (a, b) => a > b,
 	'>=': (a, b) => a >= b,
 	'is-number': isTalNumber,
-	'parse-number': (str) => +str,
+	'parse-number': (str) => {
+		const num = parseFloat(str);
+		if(!Number.isFinite(num)) {
+			throw new Error(`parse-number: Invalid number [str=${ str }]`);
+		}
+		return num;
+	},
 };
 
 const stringFuncs = {
@@ -122,7 +128,7 @@ const listFuncs = {
 	// TODO: is implemented in tab, but cannot be removed, since used in quasiquote
 	'concat': (...lists) => lists.reduce((agg, arg) => [...agg, ...arg], []),
 	'nth': (list, index) => {
-		if(!(isTalList(list))) {
+		if(!isTalList(list)) {
 			throw new Error(`nth argument list: Type error [expected=list|vector, got=${ list }]`);
 		}
 		if(index.constructor !== Number) {
@@ -176,7 +182,7 @@ const varFuncs = {
 	'deref': (_var) => _var.value,
 	'reset': (_var, mal) => {
 		_var.value = mal;
-		return _var
+		return _var;
 	},
 };
 
@@ -185,8 +191,8 @@ const funcFuncs = {
 		if(args.length < 2) {
 			throw new Error(`Argument count error, [expected=2, got=${ args.length }`);
 		}
-		let func = args[0];
-		let concats = args.slice(1, args.length - 1);
+		const func = args[0];
+		const concats = args.slice(1, args.length - 1);
 		let tail = args[args.length - 1];
 		if(!(tail instanceof Array)) {
 			tail = [tail];
@@ -207,7 +213,7 @@ const boolFuncs = {
 
 const dictFuncs = {
 	'dict': (...args) => {
-		let result = {};
+		const result = {};
 		for(let i = 0; i < args.length; i += 2) {
 			result[args[i]] = args[i + 1];
 		}
@@ -215,8 +221,8 @@ const dictFuncs = {
 	},
 	'Map': TalMap,
 	'assoc': (hashmap, ...args) => {
-		let result = {};
-		for(let key in hashmap) {
+		const result = {};
+		for(const key in hashmap) {
 			result[key] = hashmap[key];
 		}
 		for(let i = 0; i < args.length; i += 2) {
@@ -225,9 +231,9 @@ const dictFuncs = {
 		return new TalMap(result);
 	},
 	'dissoc': (hashmap, ...keys) => {
-		let result = {};
-		let delset = new Set(keys);
-		for(let key in hashmap) {
+		const result = {};
+		const delset = new Set(keys);
+		for(const key in hashmap) {
 			if(!delset.has(key)) {
 				result[key] = hashmap[key];
 			}
@@ -235,7 +241,7 @@ const dictFuncs = {
 		return new TalMap(result);
 	},
 	'has': (hashmap, key) => {
-		return (key in hashmap);
+		return key in hashmap;
 	},
 	'get': (hashmap, key) => {
 		if(hashmap instanceof TalNil) {
@@ -299,7 +305,7 @@ const eqFuncs = {
 
 const errorFuncs = {
 	'throw': (mal) => {
-		let error = new Error(mal.constructor === String ? mal : 'Error');
+		const error = new Error(mal.constructor === String ? mal : 'Error');
 		error.mal = mal;
 		throw error;
 	},

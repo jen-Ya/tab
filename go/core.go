@@ -732,6 +732,7 @@ func AddCore(env Tab) Tab {
 	EnvSet(env, SymbolToTab("ceil"), NativeFuncToTab(Ceil))
 	EnvSet(env, SymbolToTab("floor"), NativeFuncToTab(Floor))
 	EnvSet(env, SymbolToTab("is-number"), NativeFuncToTab(TIsNumber))
+	EnvSet(env, SymbolToTab("parse-number"), NativeFuncToTab(ParseNumber))
 
 	// Strings
 	EnvSet(env, SymbolToTab("char-at"), NativeFuncToTab(CharAt))
