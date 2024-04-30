@@ -1,0 +1,38 @@
+require './collection.tab'
+require '~/assert.tab'
+
+assert
+	collection-has (li 1 2 3) 1
+
+assert-not
+	collection-has (li 1 2 3) 4
+
+assert-eq
+	collection-dedupe (li 1 1 2 2 2 3 1)
+	li 1 2 3
+
+
+# test collection-add:
+assert-eq
+	collection-add (li 1 2 3) 4
+	li 1 2 3 4
+
+# test collection-remove:
+assert-eq
+	collection-remove (li 1 2 3) 2
+	li 1 3
+
+# test collection-merge:
+assert-eq
+	collection-merge (li 1 2 3) (li 3 4 5)
+	li 1 2 3 4 5
+
+# test collection-intersect:
+assert-eq
+	collection-intersect (li 1 2 3 4) (li 2 3 4 5) (li 3 5 6 2)
+	li 2 3
+
+# test collection-difference:
+assert-eq
+	collection-difference (li 1 2 3 4) (li 3 4 5)
+	li 1 2

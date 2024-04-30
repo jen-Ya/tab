@@ -37,12 +37,12 @@ let tests (map (li
 	'iter%.test.tab'
 	'let-all.test.tab'
 	'pairwise.test.tab'
-	# 'parse-argv.test.tab' # moved to drafts
 	# something inbetween
 	'quicksort.test.tab'
 	'reduce.test.tab'
 	'reverse.test.tab'
 	'scope.test.tab'
+	'collection.test.tab'
 	# 'strings.test.tab' # implementation uses list functions on strings
 	'switch.test.tab' # uses tabjs/math
 	# 'syntax.test.tab' # fails

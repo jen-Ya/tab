@@ -1,0 +1,54 @@
+require '~/reduce.tab'
+require '~/filter.tab'
+
+fn collection-has (collection item)
+	cond
+		is-empty collection
+		false
+
+		= (first collection) item
+		true
+
+		else
+		collection-has
+			rest collection
+			item
+
+fn collection-dedupe (values)
+	reduce (cons () values) (f (uniques value)
+		if
+			collection-has uniques value
+			uniques
+
+			# else current value is unique
+			append
+				uniques
+				value
+	)
+
+fn collection (values)
+	if (is-nil values) ()
+		# else
+		collection-dedupe values
+
+fn collection-add (values value)
+	collection (append values value)
+
+fn collection-remove (values value)
+	filter values (f v (!= v value))
+
+fn collection-merge (values1 values2)
+	collection (concat values1 values2)
+
+fn collection-intersect (.. collections)
+	reduce collections (f (commons collection)
+		filter commons (f common
+			collection-has collection common
+		)
+	)
+
+fn collection-difference (values1 values2)
+	filter values1 (f value
+		not
+			collection-has values2 value
+	)
