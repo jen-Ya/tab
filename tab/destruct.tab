@@ -1,5 +1,9 @@
 require './pairwise.tab'
 
+# TODO: the problem with dlet is, that when used to destruct results of a function call, it will evaluate the function call twice or more
+# we should probably store the values in a temporary variable and then use that variable to destructure
+# probably we need to implement unique variables first like gensym in lisp
+
 fn dlet-dict (keys values)
 	# Skip first symbol { and group key value pairs
 	let pairs
