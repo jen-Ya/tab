@@ -57,12 +57,12 @@ macro pipe$ (value .. funcs)
 				let args (rest func)
 				let func (first func)
 				qq
-					pipe-$
+					pipe$
 						(unq func) (..unq (replace$ args))
 						..unq (rest funcs)
 			) (do #else
 				qq
-					pipe-$
+					pipe$
 						(unq func) (unq value)
 						..unq (rest funcs)
 			)
