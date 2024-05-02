@@ -7,7 +7,7 @@ let find
 			for(const e of a) {
 				if(await fn(e)) return e
 			}
-			return new TalNil();
+			return new TabNil();
 		}
 	"
 
@@ -22,6 +22,6 @@ let find-index
 				if(await fn(e)) return i
 				i++
 			}
-			return new TalNil();
+			return new TabNil();
 		}
 	"

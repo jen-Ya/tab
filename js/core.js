@@ -2,14 +2,14 @@ import { printString } from './printer.js';
 import { readString } from './reader.js';
 import { readFile, writeFile, readdir } from 'fs/promises';
 import {
-	TalSymbol,
-	TalVar,
-	TalMap,
-	TalNil,
-	isTalNil,
+	TabSymbol,
+	TabVar,
+	TabMap,
+	TabNil,
+	isTabNil,
 	isTalList,
-	isTalMap,
-	isTalSymbol,
+	isTabMap,
+	isTabSymbol,
 	isTalNumber,
 } from './mal-types.js';
 import { output } from './output.js';
@@ -38,7 +38,7 @@ const eq = (a, b) => {
 	) {
 		return false;
 	}
-	if(isTalNil(a)) {
+	if(isTabNil(a)) {
 		return true;
 	}
 	if(isTalList(a)) {
@@ -52,7 +52,7 @@ const eq = (a, b) => {
 		}
 		return true;
 	}
-	if(isTalMap(a)) {
+	if(isTabMap(a)) {
 		const keys = Object.keys(a);
 		if(keys.length !== Object.keys(b).length) {
 			return false;
@@ -64,13 +64,13 @@ const eq = (a, b) => {
 		}
 		return true;
 	}
-	if(isTalSymbol(a)) {
+	if(isTabSymbol(a)) {
 		return a.valueOf() === b.valueOf();
 	}
 	return a === b;
 };
 
-const falsy = mal => isTalNil(mal) || mal === false;
+const falsy = mal => isTabNil(mal) || mal === false;
 const truthy = mal => !falsy(mal);
 
 const _plus = (a, b) => a + b;
@@ -123,7 +123,7 @@ const printFuncs = {
 const listFuncs = {
 	'List': Array,
 	'list': (...args) => args,
-	'count': (list) => isTalNil(list) ? 0 : list.length,
+	'count': (list) => isTabNil(list) ? 0 : list.length,
 	'cons': (head, list) => [head, ...list],
 	// TODO: is implemented in tab, but cannot be removed, since used in quasiquote
 	'concat': (...lists) => lists.reduce((agg, arg) => [...agg, ...arg], []),
@@ -140,11 +140,11 @@ const listFuncs = {
 		return list[index];
 	},
 	'first': (list) => {
-		if(list instanceof TalNil) {
-			return new TalNil;
+		if(list instanceof TabNil) {
+			return new TabNil;
 		}
 		if(list.length === 0) {
-			return new TalNil;
+			return new TabNil;
 		}
 		return list[0];
 	},
@@ -172,13 +172,13 @@ const fileFuncs = {
 	// TODO: remove
 	'file-write': async(filename, string) => {
 		await writeFile(filename, string, 'utf-8');
-		return new TalNil;
+		return new TabNil;
 	},
 };
 
 const varFuncs = {
-	'var': (mal) => new TalVar(mal),
-	'Var': TalVar,
+	'var': (mal) => new TabVar(mal),
+	'Var': TabVar,
 	'deref': (_var) => _var.value,
 	'reset': (_var, mal) => {
 		_var.value = mal;
@@ -217,9 +217,9 @@ const dictFuncs = {
 		for(let i = 0; i < args.length; i += 2) {
 			result[args[i]] = args[i + 1];
 		}
-		return new TalMap(result);
+		return new TabMap(result);
 	},
-	'Map': TalMap,
+	'Map': TabMap,
 	'assoc': (hashmap, ...args) => {
 		const result = {};
 		for(const key in hashmap) {
@@ -228,7 +228,7 @@ const dictFuncs = {
 		for(let i = 0; i < args.length; i += 2) {
 			result[args[i]] = args[i + 1];
 		}
-		return new TalMap(result);
+		return new TabMap(result);
 	},
 	'dissoc': (hashmap, ...keys) => {
 		const result = {};
@@ -238,20 +238,20 @@ const dictFuncs = {
 				result[key] = hashmap[key];
 			}
 		}
-		return new TalMap(result);
+		return new TabMap(result);
 	},
 	'has': (hashmap, key) => {
 		return key in hashmap;
 	},
 	'get': (hashmap, key) => {
-		if(hashmap instanceof TalNil) {
-			return new TalNil;
+		if(hashmap instanceof TabNil) {
+			return new TabNil;
 		}
-		return hashmap[key] ?? new TalNil;
+		return hashmap[key] ?? new TabNil;
 	},
 	// TODO: Should dicts be mutable?
 	'set': (hashmap, key, value) => {
-		return new TalMap({
+		return new TabMap({
 			...hashmap,
 			[key]: value,
 		});
@@ -262,8 +262,8 @@ const dictFuncs = {
 };
 
 const symbolFuncs = {
-	'Symbol': TalSymbol,
-	'symbol': (arg) => new TalSymbol(arg),
+	'Symbol': TabSymbol,
+	'symbol': (arg) => new TabSymbol(arg),
 	'symbol-value': (arg) => arg.valueOf(),
 };
 
@@ -285,7 +285,7 @@ const envFuncs = {
 	},
 	'env-find': (env, key) => env.find(key),
 	'env-get': (env, key) => env.get(key),
-	'env-outer': (env) => env.outer || new TalNil,
+	'env-outer': (env) => env.outer || new TabNil,
 };
 
 const metaFuncs = {
@@ -312,7 +312,7 @@ const errorFuncs = {
 };
 
 const nilFuncs = {
-	'Nil': TalNil,
+	'Nil': TabNil,
 };
 
 const processFuncs = {

@@ -1,13 +1,13 @@
-import { TalNil, TalMap } from './mal-types.js';
+import { TabNil, TabMap } from './mal-types.js';
 
 export const toJs = (mal) => {
-	if(mal instanceof TalNil) {
+	if(mal instanceof TabNil) {
 		return null;
 	}
 	if(mal instanceof Array) {
 		return mal.map(element => toJs(element));
 	}
-	if(mal instanceof TalMap) {
+	if(mal instanceof TabMap) {
 		const result = {};
 		for(const key in mal) {
 			result[key] = toJs(mal[key]);
@@ -25,7 +25,7 @@ const simpleConstructors = new Set([
 
 export const fromJs = (js) => {
 	if(js === null || js === undefined) {
-		return new TalNil;
+		return new TabNil;
 	}
 	if(js instanceof Array) {
 		return js.map(x => fromJs(x));
@@ -38,7 +38,7 @@ export const fromJs = (js) => {
 		for(const key in js) {
 			result[key] = fromJs(js[key]);
 		}
-		return new TalMap(result);
+		return new TabMap(result);
 	}
 	return js;
 };

@@ -2,9 +2,9 @@ export class TalList extends Array {}
 
 export const isTalList = (a) => a instanceof Array;
 
-export class TalSymbol extends String {}
+export class TabSymbol extends String {}
 
-export const isTalSymbol = (a) => a instanceof TalSymbol;
+export const isTabSymbol = (a) => a instanceof TabSymbol;
 
 export class TalFunc extends Function {
 	constructor(f, ast, params, env) {
@@ -17,23 +17,23 @@ export class TalFunc extends Function {
 
 export class TalMacro extends TalFunc {}
 
-export class TalVar {
+export class TabVar {
 	constructor(value) {
 		this.value = value;
 	}
 }
 
-export class TalMap {
+export class TabMap {
 	constructor(f) {
 		return Object.setPrototypeOf(f, new.target.prototype);
 	}
 }
 
-export const isTalMap = (a) => a instanceof TalMap;
+export const isTabMap = (a) => a instanceof TabMap;
 
-export class TalNil {}
+export class TabNil {}
 
-export const isTalNil = (a) => a instanceof TalNil;
+export const isTabNil = (a) => a instanceof TabNil;
 
 export const isTalFunc = (func) => TalFunc.prototype.isPrototypeOf(func);
 

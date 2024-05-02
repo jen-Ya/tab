@@ -1,6 +1,6 @@
 import { tokenize } from './tokenizer.js';
 import { parse } from './parser.js';
-import { TalSymbol, TalNil } from './mal-types.js';
+import { TabSymbol, TabNil } from './mal-types.js';
 
 const unpack = (parsed) => {
 	let unpacked;
@@ -9,14 +9,14 @@ const unpack = (parsed) => {
 		unpacked.position = parsed.position;
 	}
 	else if(parsed.type === 'symbol') {
-		unpacked = new TalSymbol(parsed.value);
+		unpacked = new TabSymbol(parsed.value);
 		unpacked.position = parsed.position;
 	}
 	else if(parsed.type === 'string' || parsed.type === 'number' || parsed.type === 'boolean') {
 		unpacked = parsed.value;
 	}
 	else if(parsed.type === 'nil') {
-		unpacked = new TalNil;
+		unpacked = new TabNil;
 		unpacked.position = parsed.position;
 	}
 	else {

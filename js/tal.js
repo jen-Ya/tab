@@ -1,7 +1,7 @@
 import { quasiquote } from './quasiquote.js';
 import { Env } from './env.js';
 import path from 'path';
-import { TalNil, TalSymbol, TalMacro, TalMap, TalFunc, isJsFunc, isTalFunc } from './mal-types.js';
+import { TabNil, TabSymbol, TalMacro, TabMap, TalFunc, isJsFunc, isTalFunc } from './mal-types.js';
 import { Debugger } from './debugger.js';
 import { inspect } from 'util';
 
@@ -9,7 +9,7 @@ const isMacroCall = (ast, env) => {
 	return (
 		ast instanceof Array &&
 		ast.length > 0 &&
-		ast[0] instanceof TalSymbol &&
+		ast[0] instanceof TabSymbol &&
 		env.find(ast[0]) instanceof TalMacro
 	);
 };
@@ -28,7 +28,7 @@ const macroexpand = async(ast, env) => {
 
 const evalAst = async(ast, env, callstack) => {
 	switch(ast.constructor) {
-		case TalSymbol:
+		case TabSymbol:
 			switch(ast.valueOf()) {
 				case '.filename':
 					return ast.position?.filename;
@@ -55,12 +55,12 @@ const evalAst = async(ast, env, callstack) => {
 			}
 			return result;
 		}
-		case TalMap: {
+		case TabMap: {
 			const result = {};
 			for(const key in ast) {
 				result[key] = await EVAL(ast[key], env, callstack);
 			}
-			return new TalMap(result);
+			return new TabMap(result);
 		}
 		default:
 			return ast;
@@ -108,7 +108,7 @@ const doForm = async(ast, env, callstack) => {
 const ifForm = async(ast, env, callstack) => {
 	// if (> x "1000") "gross" "klein"
 	const evaledCond = await EVAL(ast[1], env, callstack);
-	const cond = evaledCond !== false && !(evaledCond instanceof TalNil);
+	const cond = evaledCond !== false && !(evaledCond instanceof TabNil);
 	if(cond) {
 		ast = ast[2];
 		return { final: false, ast, env };
@@ -117,7 +117,7 @@ const ifForm = async(ast, env, callstack) => {
 		ast = ast[3];
 		return { final: false, ast, env };
 	} else {
-		ast = new TalNil;
+		ast = new TabNil;
 		return { final: true, ast, env };
 	}
 };

@@ -1,4 +1,4 @@
-import { TalSymbol, TalMap } from './mal-types.js';
+import { TabSymbol, TabMap } from './mal-types.js';
 
 const quasiquoteList = (ast) => {
 	let result = [];
@@ -7,17 +7,17 @@ const quasiquoteList = (ast) => {
 		if(
 			elt instanceof Array &&
 			elt.length > 0 &&
-			elt[0] instanceof TalSymbol &&
+			elt[0] instanceof TabSymbol &&
 			elt[0].valueOf() === '..unq'
 		) {
 			result = [
-				new TalSymbol('concat'),
+				new TabSymbol('concat'),
 				elt[1],
 				result,
 			];
 		} else {
 			result = [
-				new TalSymbol('cons'),
+				new TabSymbol('cons'),
 				quasiquote(elt),
 				result,
 			];
@@ -30,7 +30,7 @@ export const quasiquote = (ast) => {
 	if(
 		ast instanceof Array &&
 		ast.length > 0 &&
-		ast[0] instanceof TalSymbol &&
+		ast[0] instanceof TabSymbol &&
 		ast[0].valueOf() === 'unq'
 	) {
 		return ast[1];
@@ -38,9 +38,9 @@ export const quasiquote = (ast) => {
 	if(ast instanceof Array) {
 		return quasiquoteList(ast);
 	}
-	if(ast instanceof TalMap || ast instanceof TalSymbol) {
+	if(ast instanceof TabMap || ast instanceof TabSymbol) {
 		return [
-			new TalSymbol('quote'),
+			new TabSymbol('quote'),
 			ast,
 		];
 	}

@@ -1,11 +1,11 @@
-import { TalNil } from './mal-types.js';
+import { TabNil } from './mal-types.js';
 
 export const Env = (outer = null, binds = [], exprs = []) => {
 	const data = {};
 	const set = (symbol, value) => {
 		data[symbol.valueOf()] = value;
 	};
-	if(!(binds instanceof TalNil)) {
+	if(!(binds instanceof TabNil)) {
 		if(!(binds instanceof Array)) {
 			binds = [binds];
 		}
@@ -38,7 +38,7 @@ export const Env = (outer = null, binds = [], exprs = []) => {
 			throw new Error(`Cannot find symbol: ${ symbol }`);
 		}
 		if(v === undefined) {
-			return new TalNil;
+			return new TabNil;
 		}
 		return v;
 	};

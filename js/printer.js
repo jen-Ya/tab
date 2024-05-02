@@ -1,5 +1,5 @@
 import { inspect } from 'util';
-import { TalFunc, TalMap, TalVar, TalSymbol, TalNil } from './mal-types.js';
+import { TalFunc, TabMap, TabVar, TabSymbol, TabNil } from './mal-types.js';
 
 const printList = (mal, start, stop, readable = true) => {
 	return start + mal.map((val) => printString(val, readable)).join(' ') + stop;
@@ -15,7 +15,7 @@ const printHashmap = (mal, readable = true) => {
 };
 
 export const printString = (mal, readable = true) => {
-	if(mal instanceof TalNil) {
+	if(mal instanceof TabNil) {
 		return 'nil';
 	}
 	if(mal === undefined) {
@@ -43,7 +43,7 @@ export const printString = (mal, readable = true) => {
 	if(mal instanceof Array) {
 		return printList(mal, '(', ')', readable);
 	}
-	if(mal instanceof TalMap) {
+	if(mal instanceof TabMap) {
 		return printHashmap(mal, readable);
 	}
 	if(mal instanceof TalFunc) {
@@ -52,10 +52,10 @@ export const printString = (mal, readable = true) => {
 	if(mal instanceof Function) {
 		return '#<function>';
 	}
-	if(mal instanceof TalVar) {
+	if(mal instanceof TabVar) {
 		return `(var ${ printString(mal.value) })`;
 	}
-	if(mal instanceof TalSymbol) {
+	if(mal instanceof TabSymbol) {
 		return mal.valueOf();
 	}
 	return `#js<${ inspect(mal) }>`;
