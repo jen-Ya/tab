@@ -1,6 +1,6 @@
 require '~/assert.tab'
 require './iter.tab'
-require './pipe-macro.tab' |>
+require './pipe-macro.tab' pipe-apply
 
 # println
 # 	iter-each test-iter println
@@ -8,7 +8,7 @@ require './pipe-macro.tab' |>
 fn is-large x (> x 2)
 fn times-10 x (* 10 x)
 
-|>
+pipe-apply
 	li 1 2 3 4
 	iter-new # create iter from list
 	iter-filter is-large # filter out small numbers

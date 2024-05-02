@@ -33,9 +33,6 @@ macro pipe-apply (value .. funcs)
 						..unq (rest funcs)
 			)
 
-# short alias for pipe-apply
-let |> pipe-apply
-
 macro pipe$ (value .. funcs)
 	# replace all $ with parameter
 	fn replace$ (args)
