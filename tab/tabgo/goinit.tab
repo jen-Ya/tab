@@ -311,3 +311,7 @@ fn != (a b) (not (= a b))
 # for compatibility with tabjs
 fn env-outer env
 	get env 'outer'
+
+fn swap (var func .. args)
+	reset var
+		apply func (deref var) args

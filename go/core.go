@@ -727,6 +727,33 @@ func Exec(arguments Tab) Tab {
 	return StringToTab(string(out))
 }
 
+// Vars
+
+func Var(arguments Tab) Tab {
+	arg := ToList(arguments)[0]
+	return VarToTab(TabVar{
+		Pointer: &arg,
+	})
+}
+
+func TIsVar(arguments Tab) Tab {
+	return IsVar(ToList(arguments)[0])
+}
+
+func VarGet(arguments Tab) Tab {
+	args := ToList(arguments)
+	tvar := args[0]
+	return *ToVar(tvar).Pointer
+}
+
+func VarSet(arguments Tab) Tab {
+	args := ToList(arguments)
+	tvar := args[0]
+	value := args[1]
+	*ToVar(tvar).Pointer = value
+	return value
+}
+
 func AddCore(env Tab) Tab {
 	// Math
 	EnvSet(env, SymbolToTab("+"), NativeFuncToTab(Plus))
@@ -819,6 +846,12 @@ func AddCore(env Tab) Tab {
 	EnvSet(env, SymbolToTab("exit"), NativeFuncToTab(Exit))
 	EnvSet(env, SymbolToTab("exec"), NativeFuncToTab(Exec))
 	EnvSet(env, SymbolToTab("is-nil"), NativeFuncToTab(TIsNil))
+
+	// Vars
+	EnvSet(env, SymbolToTab("var"), NativeFuncToTab(Var))
+	EnvSet(env, SymbolToTab("is-var"), NativeFuncToTab(TIsVar))
+	EnvSet(env, SymbolToTab("deref"), NativeFuncToTab(VarGet))
+	EnvSet(env, SymbolToTab("reset"), NativeFuncToTab(VarSet))
 
 	return env
 }

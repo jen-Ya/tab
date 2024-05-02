@@ -9,6 +9,10 @@ type TabFunc struct {
 }
 type TabNativeFunc func(Tab) Tab
 
+type TabVar struct {
+	Pointer *Tab
+}
+
 type TabType int
 
 const (
@@ -24,6 +28,7 @@ const (
 	TabNativeFuncType TabType = iota
 	TabMacroType      TabType = iota
 	TabOtherType      TabType = iota
+	TAbVarType        TabType = iota
 )
 
 type Tab struct {
@@ -84,6 +89,10 @@ func IsOther(T Tab) Tab {
 	return BoolToTab(T.Type == TabOtherType)
 }
 
+func IsVar(T Tab) Tab {
+	return BoolToTab(T.Type == TAbVarType)
+}
+
 func IsNil(T Tab) Tab {
 	return BoolToTab(T.Type == TabNilType)
 }
@@ -132,6 +141,10 @@ func OtherToTab(o interface{}) Tab {
 	return Tab{Type: TabOtherType, Value: o}
 }
 
+func VarToTab(o TabVar) Tab {
+	return Tab{Type: TAbVarType, Value: o}
+}
+
 func ToString(T Tab) string {
 	return *T.Value.(*string)
 }
@@ -174,6 +187,10 @@ func ToMacro(T Tab) TabFunc {
 
 func ToOther(T Tab) interface{} {
 	return T.Value
+}
+
+func ToVar(T Tab) TabVar {
+	return T.Value.(TabVar)
 }
 
 func ArgsToTab(args ...Tab) Tab {

@@ -68,6 +68,8 @@ func Print(ast Tab, readable bool) string {
 		return "#<other>"
 	case TabNilType:
 		return "nil"
+	case TAbVarType:
+		return "(var " + Print(*ToVar(ast).Pointer, readable) + ")"
 	}
 	return "#<unknown>"
 }

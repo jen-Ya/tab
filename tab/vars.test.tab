@@ -1,0 +1,19 @@
+require '~/assert.tab'
+
+let a (var 42)
+
+assert-eq
+	deref a
+	42
+
+reset a 43
+
+assert-eq
+	deref a
+	43
+
+swap a + 1
+
+assert-eq
+	deref a
+	44

@@ -51,6 +51,7 @@ let tests (map (li
 	'while.test.tab'
 	'zip.test.tab'
 	'group.test.tab'
+	'vars.test.tab'
 ) (f filename
 	path-join .tabhome filename
 ))
