@@ -4,8 +4,14 @@
 
 It is an indentation-based programming language characterized by minimal syntax and maximum flexibility.
 
+The language is heavily influenced by Lisp and uses t-expressions (aka sweet-expressions). The first implementations were based on [mal - Make a Lisp](https://github.com/kanaka/mal).
 
 Implementations are currently available in Golang and JavaScript.
+
+I am also working on implementing the language in itself.
+
+Much of the language features are already written in tab and evaluated on runtime [init.tab](tab/init.tab)
+
 
 ## Install
 
