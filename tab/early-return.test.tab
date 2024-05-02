@@ -4,21 +4,21 @@ require './early-return.tab'
 # should early return 10
 assert-eq
 	early-do
-		let i 0
-		while (< i 100)
-			increment i
-			if (>= i 10)
-				return i
+		let i (var 0)
+		while (varply i < 100)
+			swap i + 1
+			if (varply i >= 10)
+				return (deref i)
 		42
 	10
 
 # should early return nil
 assert-eq
 	early-do
-		let i 0
-		while (< i 100)
-			increment i
-			if (>= i 10)
+		let i (var 0)
+		while (varply i < 100)
+			swap i + 1
+			if (varply i >= 10)
 				return
 		42
 	nil
@@ -26,11 +26,11 @@ assert-eq
 # should normal return 42
 assert-eq
 	early-do
-		let i 0
-		while (< i 10)
+		let i (var 0)
+		while (varply i < 10)
 			increment i
-			if (>= i 20)
-				return i
+			if (varply i >= 20)
+				return (deref i)
 		42
 	42
 
