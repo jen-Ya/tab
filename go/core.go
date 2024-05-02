@@ -675,7 +675,8 @@ func TIsSymbol(arguments Tab) Tab {
 // Funcs
 
 func TIsFunc(arguments Tab) Tab {
-	return BoolToTab(ToBool(IsFunc(ToList(arguments)[0])) || ToBool(IsNativeFunc(ToList(arguments)[0])))
+	arg := ToList(arguments)[0]
+	return BoolToTab(ToBool(IsFunc(arg)) || ToBool(IsNativeFunc(arg)))
 }
 
 // Bools
