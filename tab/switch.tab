@@ -1,11 +1,12 @@
-# TODO: remove %
-require '~/pairwise.tab'
+require '~/gensym.tab' gensym
+require '~/pairwise.tab' pairwise
 
 macro switch (value .. cases)
+	let tmp (gensym)
 	fn mapper pair
 		let compare (nth pair 0)
 		let result (nth pair 1)
-		if (= compare (symbol 'else'))
+		if (= compare (q else))
 			li
 				true
 				result
@@ -16,5 +17,10 @@ macro switch (value .. cases)
 		flatten
 			map (pairwise cases) mapper
 	qq
-		cond
-			..unq conds
+		do
+			# we need to store the value in a temporary variable
+			# because we need to compare it multiple times
+			# and we don't want to evaluate the value multiple times
+			let (unq tmp) (unq value)
+			cond
+				..unq conds

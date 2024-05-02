@@ -1,56 +1,80 @@
-require './pairwise.tab'
+require '~/gensym.tab'
 
-# TODO: the problem with dlet is, that when used to destruct results of a function call, it will evaluate the function call twice or more
-# we should probably store the values in a temporary variable and then use that variable to destructure
-# probably we need to implement unique variables first like gensym in lisp
+# Wrapped in a anonymous function call to avoid polluting the environment
+let dlet ((f _
+	# Helper function for destructuring dictionaries
+	# e. g. let ({ 'a' a ) (dict 'a' 42)
+	fn .dlet-dict (keys value)
+		if (is-empty keys) ()
+			do # else
+				let first-key (first keys)
+				cond
+					= first-key (symbol '..')
+					# if spread operator, assign all remaining values to next key
+					li
+						qq
+							let (unq (nth keys 1)) (unq value)
+					# shorthand desctructing, e. g. let ({ a ) (dict 'a' 42)
+					is-symbol first-key
+					cons
+						qq
+							let (unq first-key) (get (unq value) (unq (str first-key)))
+						.dlet-dict (slice keys 1) (qq (dissoc (unq value) (unq (str first-key))))
+					# else assign first value to first key
+					# and recurse with rest of keys and value
+					else
+					concat
+						.dlet (nth keys 1) (qq (get (unq value) (unq first-key)))
+						.dlet-dict (slice keys 2) (qq (dissoc (unq value) (unq first-key)))
 
-fn dlet-dict (keys values)
-	# Skip first symbol { and group key value pairs
-	let pairs
-		pairwise (rest keys)
-	if (is-empty pairs) nil
-		do # else
-			let first-pair (first pairs)
-			let first-key (nth first-pair 0)
-			let first-sym (nth first-pair 1)
-			if
-				= first-key (symbol '..')
-				# if spread operator, assign all remaining values to next key
+	# Helper function for destructuring lists
+	fn .dlet-list (keys value)
+		cond
+			# all keys and value assigned
+			is-empty keys
+			()
+
+			# if spread operator, assign all remaining value to next key
+			= (first keys) (symbol '..')
+			li
 				qq
-					dlet (unq first-sym) (unq values)
-				# else assign first value to first key
-				# and recurse with rest of keys and values
-				qq
-					do
-						dlet (unq first-sym) (get (unq values) (unq first-key))
-						dlet ({ (..unq (slice keys 3)) ) (dissoc (unq values) (unq first-key))
+					let (unq (nth keys 1)) (unq value)
 
-fn dlet-list (keys values)
-	cond
-		# all keys and values assigned
-		is-empty keys
-		nil
+			# else assign first value to first key
+			# and recurse with rest of keys and value
+			else
+			concat
+				.dlet (first keys) (qq
+					first (unq value)
+				)
+				.dlet (rest keys) (qq (rest (unq value)))
+	fn .dlet (key value)
+		cond
+			is-symbol key
+			li
+				qq (let (unq key) (unq value))
 
-		# if spread operator, assign all remaining values to next key
-		= (first keys) (symbol '..')
-		qq
-			dlet (unq (nth keys 1)) (unq values)
+			is-nil key
+			()
 
-		# else assign first value to first key
-		# and recurse with rest of keys and values
-		q else
-		qq
-			do
-				dlet (unq (first keys)) (first (unq values))
-				dlet (unq (rest keys)) (rest (unq values))
+			and
+				is-list key
+				= (first key) (symbol '{')
+			.dlet-dict (rest key) value
 
-macro dlet (key value)
-	if (is-list key)
-		if (= (first key) (symbol '{'))
-			# key is a dict, e.g. dlet ({ 'a' b) ...
-			dlet-dict key value
-			# else key is a list, e.g. dlet (a b) ...
-			dlet-list key value
-		# else key is a single symbol, e.g. dlet a ...
-		qq
-			let (unq key) (unq value)
+			is-list key
+			.dlet-list key value
+
+			else
+			throw 'unexpeced key type'
+	# top level macro
+	# store evalation of value in a temporary variable
+	macrof (key value) (do
+		let tmp (gensym)
+		let lets (.dlet key tmp)
+		qq (do
+			let (unq tmp) (unq value)
+			..unq lets
+		)
+	)
+))

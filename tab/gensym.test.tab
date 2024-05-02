@@ -1,0 +1,55 @@
+require './gensym.tab'
+require '~/assert.tab'
+
+# We create a macro that counts the list twice
+# The problem is that the list is evaluated twice
+# This is especially problematic if the list is a function call
+macro cnt (what)
+	qq (do
+		+
+			count (unq what)
+			count (unq what)
+	)
+
+# Here we store the evaluation of the list in a variable
+# This way we can evaluate the list only once
+# We use the gensym function to create a unique variable name
+macro cnt2 (what)
+	let tmp (gensym)
+	qq (do
+		let (unq tmp) (unq what)
+		+
+			count (unq tmp)
+			count (unq tmp)
+	)
+
+# This hackery is needed, because the go implementation does not have mutable variables
+# Therefore we use a temporary environment to store a counter that gets incremented whenever the list is evaluated
+let env (env-new nil)
+
+fn .set-counter (n)
+	env-set env (q .counter) n
+
+fn .get-counter ()
+	env-get env (q .counter)
+
+fn .inc-counter ()
+	.set-counter (+ 1 (.get-counter))
+
+.set-counter 0
+
+# This function returns a list and increments the counter
+fn get-list ()
+	(.inc-counter)
+	li 1 2 3
+
+# Before we test the macros, the counter should be 0
+assert-eq 0 (.get-counter)
+
+# The first macro should evaluate the list twice
+cnt (get-list)
+assert-eq 2 (.get-counter)
+
+# The second macro should evaluate the list only once
+cnt2 (get-list)
+assert-eq 3 (.get-counter)

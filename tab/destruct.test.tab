@@ -1,50 +1,56 @@
 require '~/assert.tab'
-require '~/destruct.tab'
+require './destruct.tab'
 
 # simple destructing from variable
-# unmatched sumbol (e) is nil
-let mylist (li 1 2 3 4)
-dlet (a b c d e) mylist
-assert-eq d 4
-assert-eq e nil
+# unmatched sumbol (e) is nil # todo: maybe it should be an error instead
+dlet (a1 b1 c1 d1 e1) (li 1 2 3)
+assert-eq c1 3
+assert-eq e1 nil
 
 # simple destructing from literal list
-dlet (aa bb) (li 11 22)
-assert-eq aa 11
-assert-eq bb 22
+dlet (a2 b2) (li 11 22)
+assert-eq a2 11
+assert-eq b2 22
 
 # destructing spread operator
-dlet (a4 b4 .. c4) (li 1 2 3 4 5)
-assert-eq a4 1
-assert-eq b4 2
-assert-eq c4 (li 3 4 5)
+dlet (a3 b3 .. c3) (li 1 2 3 4 5)
+assert-eq a3 1
+assert-eq b3 2
+assert-eq c3 (li 3 4 5)
 
 # destructing of variable dict
-let my-dict (dict 'a3' 111 'b3' 222)
-dlet ({ 'a3' a3 'c3' c3 ) my-dict
-assert-eq a3 111
-assert-eq c3 nil
+let my-dict (dict 'a4' 111 'b4' 222)
+dlet ({ 'a4' a4 'c4' c4 ) my-dict
+assert-eq a4 111
+assert-eq c4 nil
 
 # destructing of literal dict with spread operator
-dlet ({ 'a4' a4 'b4' b4 .. c4) (dict 'a4' 444 'c4' 666 'd4' 777)
-assert-eq a4 444
-assert-eq b4 nil
-assert-eq c4 (dict 'c4' 666 'd4' 777)
+dlet ({ 'a5' a5 'b5' b5 .. c5) (dict 'a5' 555 'c5' 666 'd5' 777)
+assert-eq a5 555
+assert-eq b5 nil
+assert-eq c5 (dict 'c5' 666 'd5' 777)
 
 # nested destructing
 dlet
-	a5 (b5 c5) ({ 'd5' d5 'e5' (.. e5) )
-	li 1 (li 2 3) (dict 'd5' 4 'e5' (li 5 6 7))
-assert-eq a5 1
-assert-eq b5 2
-assert-eq c5 3
-assert-eq d5 4
-assert-eq e5 (li 5 6 7)
+	a6 (b6 c6) ({ 'd6' d6 'e6' (.. e6) )
+	li 1 (li 2 3) (dict 'd6' 4 'e6' (li 5 6 7))
+assert-eq a6 1
+assert-eq b6 2
+assert-eq c6 3
+assert-eq d6 4
+assert-eq e6 (li 5 6 7)
 
-let values6 (dict 'a' 42 'b' (dict 'c' 43 'd' 44))
+let values7 (dict 'a' 42 'b' (dict 'c' 43 'd' 44))
 
-dlet ({ 'a' a6 'b' ({ 'c' c6 'd' d6)) values6
+dlet ({ 'a' a7 'b' ({ 'c' c7 'd' d7)) values7
 
-assert-eq a6 42
-assert-eq c6 43
-assert-eq d6 44
+assert-eq a7 42
+assert-eq c7 43
+assert-eq d7 44
+
+# # shorthand dict destructing
+dlet ({ a8 b8 'c8' cc8 .. d8) (dict 'a8' 1 'b8' 2 'c8' 3 'd8' 4 'e8' 5)
+assert-eq a8 1
+assert-eq b8 2
+assert-eq cc8 3
+assert-eq d8 (dict 'd8' 4 'e8' 5)

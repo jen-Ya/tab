@@ -1,0 +1,20 @@
+# Wrap in a function to avoid polluting the environment with helper functions
+let gensym ((f _
+	# The go implementation does not have mutable variables
+	# Therefore we use a temporary environment to store a counter that gets incremented whenever the gensym function is called
+	let env (env-new nil)
+	fn .set-gensym (n)
+		env-set env (q .gensym) n
+
+	fn .get-gensym ()
+		env-get env (q .gensym)
+
+	fn .inc-gensym ()
+		.set-gensym (+ 1 (.get-gensym))
+
+	.set-gensym 0
+	# The actual gensym function
+	# It increments the counter and returns a unique symbol
+	f ()
+		symbol (str '.gensym' (.inc-gensym))
+))
