@@ -7,8 +7,8 @@ require '~/find.tab' find
 #
 	makes macros that allow you to write
 
-	map% (range 10)
-		println %
+	map$ (range 10)
+		println $
 
 	instead of
 
@@ -17,15 +17,15 @@ require '~/find.tab' find
 	)
 #
 
-fn wrap% func
+fn wrap$ func
 	amacro (array .. body)
 		qq
 			(unq func)
 				unq array
-				f % (..unq body)
+				f $ (..unq body)
 
-let each% (wrap% each)
-let map% (wrap% map)
-let filter% (wrap% filter)
-let every% (wrap% every)
-let find% (wrap% find)
+let each$ (wrap$ each)
+let map$ (wrap$ map)
+let filter$ (wrap$ filter)
+let every$ (wrap$ every)
+let find$ (wrap$ find)

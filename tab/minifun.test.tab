@@ -2,11 +2,11 @@ require './assert.tab' assert-eq
 require './minifun.tab'
 
 assert-eq
-	map (range 4) (f% * % %)
+	map (range 4) (f$ * $ $)
 	li 0 1 4 9
 
 let test
-	f% str %2 % %3
+	f$ str $2 $ $3
 
 assert-eq
 	test "a" "b" "c"

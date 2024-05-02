@@ -1,15 +1,15 @@
-# e.g. f% print %1 %2 -> f (a b) (print a b)
-macro f% (.. ffargs)
+# e.g. f$ print $1 $2 -> f (a b) (print a b)
+macro f$ (.. ffargs)
 	let fargs
 		map ffargs (f arg
-			# unless arg starts with '%', return it as is
-			unless (= '%' (char-at arg 0))
+			# unless arg starts with '$', return it as is
+			unless (= '$' (char-at arg 0))
 				arg
 				# otherwise, replace it with nth arg
 				do
 					# get arg number as string
 					let arg-number-string (slice arg 1)
-					# get arg number, e.g. '%' -> 0, '%1' -> 0, '%42' -> 41
+					# get arg number, e.g. '$' -> 0, '$1' -> 0, '$42' -> 41
 					let arg-number
 						if (= arg-number-string '')
 							0
