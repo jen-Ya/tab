@@ -1,5 +1,5 @@
 import { inspect } from 'util';
-import { TalFunc, TabMap, TabVar, TabSymbol, TabNil } from './mal-types.js';
+import { TabFunc, TabMap, TabVar, TabSymbol, TabNil } from './mal-types.js';
 
 const printList = (mal, start, stop, readable = true) => {
 	return start + mal.map((val) => printString(val, readable)).join(' ') + stop;
@@ -46,7 +46,7 @@ export const printString = (mal, readable = true) => {
 	if(mal instanceof TabMap) {
 		return printHashmap(mal, readable);
 	}
-	if(mal instanceof TalFunc) {
+	if(mal instanceof TabFunc) {
 		return '#<lambda>';
 	}
 	if(mal instanceof Function) {

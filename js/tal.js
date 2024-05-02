@@ -1,7 +1,7 @@
 import { quasiquote } from './quasiquote.js';
 import { Env } from './env.js';
 import path from 'path';
-import { TabNil, TabSymbol, TalMacro, TabMap, TalFunc, isJsFunc, isTalFunc } from './mal-types.js';
+import { TabNil, TabSymbol, TabMacro, TabMap, TabFunc, isJsFunc, isTabFunc } from './mal-types.js';
 import { Debugger } from './debugger.js';
 import { inspect } from 'util';
 
@@ -10,7 +10,7 @@ const isMacroCall = (ast, env) => {
 		ast instanceof Array &&
 		ast.length > 0 &&
 		ast[0] instanceof TabSymbol &&
-		env.find(ast[0]) instanceof TalMacro
+		env.find(ast[0]) instanceof TabMacro
 	);
 };
 
@@ -138,7 +138,7 @@ const qqForm = async(ast, env) => {
 
 const lambdaForm = async(ast, env) => {
 	const [, params, fnAst] = ast;
-	ast = new TalFunc(
+	ast = new TabFunc(
 		async(...args) => {
 			const newEnv = Env(env, params, args);
 			return await EVAL(fnAst, newEnv);
@@ -152,7 +152,7 @@ const lambdaForm = async(ast, env) => {
 
 const macroForm = async(ast, env) => {
 	const [, params, fnAst] = ast;
-	ast = new TalMacro(
+	ast = new TabMacro(
 		async(...args) => {
 			const newEnv = Env(env, params, args);
 			return await EVAL(fnAst, newEnv);
@@ -206,7 +206,7 @@ const specialForms = {
 
 const callFuncForm = async(ast, env, callstack) => {
 	const [func, ...args] = await evalAst(ast, env, callstack);
-	if(isTalFunc(func)) {
+	if(isTabFunc(func)) {
 		callstack = [
 			...callstack,
 			ast[0],

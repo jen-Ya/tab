@@ -6,7 +6,7 @@ export class TabSymbol extends String {}
 
 export const isTabSymbol = (a) => a instanceof TabSymbol;
 
-export class TalFunc extends Function {
+export class TabFunc extends Function {
 	constructor(f, ast, params, env) {
 		f.ast = ast;
 		f.params = params;
@@ -15,7 +15,7 @@ export class TalFunc extends Function {
 	}
 }
 
-export class TalMacro extends TalFunc {}
+export class TabMacro extends TabFunc {}
 
 export class TabVar {
 	constructor(value) {
@@ -35,7 +35,7 @@ export class TabNil {}
 
 export const isTabNil = (a) => a instanceof TabNil;
 
-export const isTalFunc = (func) => TalFunc.prototype.isPrototypeOf(func);
+export const isTabFunc = (func) => TabFunc.prototype.isPrototypeOf(func);
 
 export const isJsFunc = (func) => Function.prototype.isPrototypeOf(func);
 
