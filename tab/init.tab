@@ -291,6 +291,9 @@ macro require (.caller filename .. require-keys)
 					env-set env let-key (get data let-key)
 		) .env (unq filename)
 
+fn varply (var func .. args)
+	apply func (deref var) args
+
 fn swap (var func .. args)
 	reset var
 		apply func (deref var) args
