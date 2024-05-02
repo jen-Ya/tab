@@ -1,0 +1,6 @@
+require './dictmap.tab' dictmap
+require '~/assert.tab'
+
+assert-eq
+	dictmap (dict 'a' 1 'b' 2) (f x (* x 2))
+	dict 'a' 2 'b' 4

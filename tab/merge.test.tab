@@ -1,0 +1,9 @@
+require './merge.tab' merge
+require '~/assert.tab'
+
+assert-eq
+	merge
+		dict 'a' 1 'b' 2
+		dict 'b' 3 'c' 4
+		dict 'c' 5 'd' 6
+	dict 'a' 1 'b' 3 'c' 5 'd' 6

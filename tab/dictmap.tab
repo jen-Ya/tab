@@ -1,0 +1,8 @@
+# maps a function over a dictionary
+# (dictmap (dict 'a' 1 'b' 2) (f x (* x 2))) => (dict 'a' 2 'b' 4)
+fn dictmap (dct fnc)
+	apply dict (flatten
+		map (entries dct) (f kv
+			li (first kv) (fnc (nth kv 1))
+		)
+	)

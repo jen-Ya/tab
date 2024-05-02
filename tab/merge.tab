@@ -1,0 +1,8 @@
+require '~/reduce.tab' reduce
+
+# merges multiple dictionaries
+# merge (dict 'a' 1 'b' 2) (dict 'b' 3 'c' 4) (dict 'c' 5 'd' 6) # => (dict 'a' 1 'b' 3 'c' 5 'd' 6)
+fn merge (.. dicts)
+	reduce dicts (f (d1 d2)
+		apply assoc d1 (flatten (entries d2))
+	)
