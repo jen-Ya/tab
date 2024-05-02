@@ -23,33 +23,20 @@ macro cnt2 (what)
 			count (unq tmp)
 	)
 
-# This hackery is needed, because the go implementation does not have mutable variables
-# Therefore we use a temporary environment to store a counter that gets incremented whenever the list is evaluated
-let env (env-new nil)
-
-fn .set-counter (n)
-	env-set env (q .counter) n
-
-fn .get-counter ()
-	env-get env (q .counter)
-
-fn .inc-counter ()
-	.set-counter (+ 1 (.get-counter))
-
-.set-counter 0
+let counter (var 0)
 
 # This function returns a list and increments the counter
 fn get-list ()
-	(.inc-counter)
+	swap counter + 1
 	li 1 2 3
 
 # Before we test the macros, the counter should be 0
-assert-eq 0 (.get-counter)
+assert-eq 0 (deref counter)
 
 # The first macro should evaluate the list twice
 cnt (get-list)
-assert-eq 2 (.get-counter)
+assert-eq 2 (deref counter)
 
 # The second macro should evaluate the list only once
 cnt2 (get-list)
-assert-eq 3 (.get-counter)
+assert-eq 3 (deref counter)
