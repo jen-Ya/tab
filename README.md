@@ -12,6 +12,17 @@ I am also working on implementing the language in itself.
 
 Much of the language features are already written in tab and evaluated on runtime [init.tab](tab/init.tab)
 
+**Concepts I already started exploring**
+
+- Macros
+- Debugger
+- Visual Studio Code Plugin
+- Compiler, Transpiler
+- Self hosting
+
+**Concepts I would like to explore in future**
+
+- Linter
 
 ## Install
 
