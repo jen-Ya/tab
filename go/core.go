@@ -270,9 +270,12 @@ func Nth(arguments Tab) Tab {
 }
 
 func First(arguments Tab) Tab {
-	// TODO: this is not safe if list is empty, but maybe it shouldn't be?
-	// return ToList(ToList(arguments)[0])[0]
+	// TODO: this is safe if list is empty or nil, but maybe it shouldn't be?
+	// e, g.: return ToList(ToList(arguments)[0])[0]
 	args := ToList(arguments)
+	if args[0].Type == TabNilType {
+		return Tab{}
+	}
 	list := ToList(args[0])
 	if len(list) == 0 {
 		return Tab{}
@@ -286,8 +289,16 @@ func Last(arguments Tab) Tab {
 }
 
 func Rest(arguments Tab) Tab {
+	// TODO: this is safe if list is empty or nil, but maybe it shouldn't be?
 	args := ToList(arguments)
-	return ListToTab(ToList(args[0])[1:])
+	if args[0].Type == TabNilType {
+		return Tab{}
+	}
+	list := ToList(args[0])
+	if len(list) == 0 {
+		return Tab{}
+	}
+	return ListToTab(list[1:])
 }
 
 func Slice(arguments Tab) Tab {
