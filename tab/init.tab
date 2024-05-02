@@ -178,6 +178,7 @@ macro increment var
 		let (unq var) (+ (unq var) 1)
 
 
+# TODO: this is not how macros should be used
 macro while (condition .. body)
 	if (< (count body) 1)
 		throw 'Empty while body'
