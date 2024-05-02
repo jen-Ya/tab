@@ -735,9 +735,7 @@ func Exec(arguments Tab) Tab {
 
 func Var(arguments Tab) Tab {
 	arg := ToList(arguments)[0]
-	return VarToTab(TabVar{
-		Pointer: &arg,
-	})
+	return VarToTab(&arg)
 }
 
 func TIsVar(arguments Tab) Tab {
@@ -747,14 +745,14 @@ func TIsVar(arguments Tab) Tab {
 func VarGet(arguments Tab) Tab {
 	args := ToList(arguments)
 	tvar := args[0]
-	return *ToVar(tvar).Pointer
+	return *ToVar(tvar)
 }
 
 func VarSet(arguments Tab) Tab {
 	args := ToList(arguments)
 	tvar := args[0]
 	value := args[1]
-	*ToVar(tvar).Pointer = value
+	*ToVar(tvar) = value
 	return value
 }
 

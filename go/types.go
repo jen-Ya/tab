@@ -9,9 +9,7 @@ type TabFunc struct {
 }
 type TabNativeFunc func(Tab) Tab
 
-type TabVar struct {
-	Pointer *Tab
-}
+type TabVar *Tab
 
 type TabType int
 
