@@ -12,7 +12,7 @@ export * from './tab.js';
 
 export * from './tokenizer.js';
 
-export * from './mal-types.js';
+export * from './types.js';
 
 export * from './quasiquote.js';
 

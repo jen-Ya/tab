@@ -1,6 +1,6 @@
 import { tokenize } from './tokenizer.js';
 import { parse } from './parser.js';
-import { TabSymbol, TabNil } from './mal-types.js';
+import { TabSymbol, TabNil } from './types.js';
 
 const unpack = (parsed) => {
 	let unpacked;

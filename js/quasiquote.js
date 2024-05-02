@@ -1,4 +1,4 @@
-import { TabSymbol, TabMap } from './mal-types.js';
+import { TabSymbol, TabMap } from './types.js';
 
 const quasiquoteList = (ast) => {
 	let result = [];

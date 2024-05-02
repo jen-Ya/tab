@@ -1,4 +1,4 @@
-import { TabNil } from './mal-types.js';
+import { TabNil } from './types.js';
 
 export const Env = (outer = null, binds = [], exprs = []) => {
 	const data = {};

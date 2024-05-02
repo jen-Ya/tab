@@ -1,8 +1,7 @@
 import { ns } from './core.js';
 import { Env } from './env.js';
-import { TabSymbol } from './mal-types.js';
+import { TabSymbol } from './types.js';
 import { rep } from './rep.js';
-import path from 'path';
 
 const initScript = `eval
 	read-string

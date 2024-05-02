@@ -1,7 +1,7 @@
 import { quasiquote } from './quasiquote.js';
 import { Env } from './env.js';
 import path from 'path';
-import { TabNil, TabSymbol, TabMacro, TabMap, TabFunc, isJsFunc, isTabFunc } from './mal-types.js';
+import { TabNil, TabSymbol, TabMacro, TabMap, TabFunc, isJsFunc, isTabFunc } from './types.js';
 import { Debugger } from './debugger.js';
 import { inspect } from 'util';
 

@@ -1,4 +1,4 @@
-import { TabNil, TabMap } from './mal-types.js';
+import { TabNil, TabMap } from './types.js';
 
 export const toJs = (mal) => {
 	if(mal instanceof TabNil) {

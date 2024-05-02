@@ -1,5 +1,5 @@
 import { inspect } from 'util';
-import { TabFunc, TabMap, TabVar, TabSymbol, TabNil } from './mal-types.js';
+import { TabFunc, TabMap, TabVar, TabSymbol, TabNil } from './types.js';
 
 const printList = (mal, start, stop, readable = true) => {
 	return start + mal.map((val) => printString(val, readable)).join(' ') + stop;

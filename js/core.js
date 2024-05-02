@@ -11,7 +11,7 @@ import {
 	isTabMap,
 	isTabSymbol,
 	isTabNumber,
-} from './mal-types.js';
+} from './types.js';
 import { output } from './output.js';
 import { join as pathJoin, dirname, basename, resolve as pathResolve } from 'path';
 import {
