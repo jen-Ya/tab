@@ -329,6 +329,10 @@ func Dict(arguments Tab) Tab {
 	return DictToTab(result)
 }
 
+func TIsDict(arguments Tab) Tab {
+	return IsDict(ToList(arguments)[0])
+}
+
 func Get(arguments Tab) Tab {
 	args := ToList(arguments)
 	dict := ToDict(args[0])
@@ -756,6 +760,7 @@ func VarSet(arguments Tab) Tab {
 
 func AddCore(env Tab) Tab {
 	// Math
+	EnvSet(env, SymbolToTab("is-number"), NativeFuncToTab(TIsNumber))
 	EnvSet(env, SymbolToTab("+"), NativeFuncToTab(Plus))
 	EnvSet(env, SymbolToTab("-"), NativeFuncToTab(Minus))
 	EnvSet(env, SymbolToTab("*"), NativeFuncToTab(Multiply))
@@ -769,16 +774,15 @@ func AddCore(env Tab) Tab {
 	EnvSet(env, SymbolToTab("round"), NativeFuncToTab(Round))
 	EnvSet(env, SymbolToTab("ceil"), NativeFuncToTab(Ceil))
 	EnvSet(env, SymbolToTab("floor"), NativeFuncToTab(Floor))
-	EnvSet(env, SymbolToTab("is-number"), NativeFuncToTab(TIsNumber))
 	EnvSet(env, SymbolToTab("parse-number"), NativeFuncToTab(ParseNumber))
 
 	// Strings
+	EnvSet(env, SymbolToTab("str"), NativeFuncToTab(Str))
+	EnvSet(env, SymbolToTab("is-string"), NativeFuncToTab(TIsString))
 	EnvSet(env, SymbolToTab("char-at"), NativeFuncToTab(CharAt))
 	EnvSet(env, SymbolToTab("char-code"), NativeFuncToTab(CharCode))
-	EnvSet(env, SymbolToTab("is-string"), NativeFuncToTab(TIsString))
 	EnvSet(env, SymbolToTab("sub-str"), NativeFuncToTab(SubStr))
 	EnvSet(env, SymbolToTab("str-join"), NativeFuncToTab(StrJoin))
-	EnvSet(env, SymbolToTab("str"), NativeFuncToTab(Str))
 	EnvSet(env, SymbolToTab("str-starts-with"), NativeFuncToTab(StrStartsWith))
 	EnvSet(env, SymbolToTab("str-ends-with"), NativeFuncToTab(StrEndsWith))
 	EnvSet(env, SymbolToTab("str-len"), NativeFuncToTab(StrLen))
@@ -787,6 +791,7 @@ func AddCore(env Tab) Tab {
 
 	// Lists
 	EnvSet(env, SymbolToTab("list"), NativeFuncToTab(List))
+	EnvSet(env, SymbolToTab("is-list"), NativeFuncToTab(TIsList))
 	EnvSet(env, SymbolToTab("count"), NativeFuncToTab(Count))
 	EnvSet(env, SymbolToTab("cons"), NativeFuncToTab(Cons))
 	EnvSet(env, SymbolToTab("concat"), NativeFuncToTab(Concat))
@@ -795,10 +800,10 @@ func AddCore(env Tab) Tab {
 	EnvSet(env, SymbolToTab("last"), NativeFuncToTab(Last))
 	EnvSet(env, SymbolToTab("slice"), NativeFuncToTab(Slice))
 	EnvSet(env, SymbolToTab("rest"), NativeFuncToTab(Rest))
-	EnvSet(env, SymbolToTab("is-list"), NativeFuncToTab(TIsList))
 
 	// Dicts
 	EnvSet(env, SymbolToTab("dict"), NativeFuncToTab(Dict))
+	EnvSet(env, SymbolToTab("is-dict"), NativeFuncToTab(TIsDict))
 	EnvSet(env, SymbolToTab("get"), NativeFuncToTab(Get))
 	EnvSet(env, SymbolToTab("has"), NativeFuncToTab(Has))
 	EnvSet(env, SymbolToTab("set"), NativeFuncToTab(Set))
