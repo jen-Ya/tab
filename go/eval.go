@@ -6,7 +6,8 @@ import (
 
 func EvalAst(ast Tab, env Tab) Tab {
 	// fmt.Println("EvalAst:", Print(ast))
-	if ToBool(IsSymbol(ast)) {
+	switch ast.Type {
+	case TabSymbolType:
 		// todo: special symbols
 		switch ToSymbol(ast) {
 		case ".env":
@@ -15,15 +16,13 @@ func EvalAst(ast Tab, env Tab) Tab {
 			return ToDict(CallTab(GetAstPosition, ast))["filename"]
 		}
 		return EnvGet(env, ast)
-	}
-	if ToBool(IsList(ast)) {
+	case TabListType:
 		results := TabList{}
 		for _, item := range ToList(ast) {
 			results = append(results, Eval(item, env))
 		}
 		return ListToTab(results)
-	}
-	if ToBool(IsDict(ast)) {
+	case TabDictType:
 		results := TabDict{}
 		for key, item := range ToDict(ast) {
 			results[key] = Eval(item, env)
