@@ -82,7 +82,7 @@ export const Debugger = {
 		Debugger.env = env;
 		Debugger.callstack = callstack;
 		Debugger.events.emit('did-stop', ast, reason);
-		let [pauseType] = await once(Debugger.events, 'do-continue');
+		const [pauseType] = await once(Debugger.events, 'do-continue');
 		Debugger.shouldPause = pauseType;
 		if(pauseType === 'step-in') {
 			Debugger.pauseCallstack = callstack;
@@ -127,7 +127,7 @@ export const Debugger = {
 		return null;
 	},
 	pauseIfNeeded: async(ast, env, callstack) => {
-		let pauseReason = Debugger.checkPause(ast, callstack);
+		const pauseReason = Debugger.checkPause(ast, callstack);
 		if(pauseReason) {
 			await Debugger.didStop(pauseReason, ast, env, callstack);
 		}

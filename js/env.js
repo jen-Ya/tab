@@ -20,7 +20,7 @@ export const Env = (outer = null, binds = [], exprs = []) => {
 	const find = (symbol) => {
 		let _data = data;
 		let _outer = outer;
-		let key = symbol.valueOf();
+		const key = symbol.valueOf();
 		for(;;) {
 			if(key in _data) {
 				return _data[key];
@@ -33,7 +33,7 @@ export const Env = (outer = null, binds = [], exprs = []) => {
 		}
 	};
 	const get = (symbol) => {
-		let v = find(symbol);
+		const v = find(symbol);
 		if(v === null) {
 			throw new Error(`Cannot find symbol: ${ symbol }`);
 		}

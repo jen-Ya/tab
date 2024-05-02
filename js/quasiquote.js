@@ -3,7 +3,7 @@ import { TalSymbol, TalMap } from './mal-types.js';
 const quasiquoteList = (ast) => {
 	let result = [];
 	for(let i = ast.length - 1; i >= 0; i--) {
-		let elt = ast[i];
+		const elt = ast[i];
 		if(
 			elt instanceof Array &&
 			elt.length > 0 &&

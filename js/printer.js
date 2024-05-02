@@ -6,7 +6,7 @@ const printList = (mal, start, stop, readable = true) => {
 };
 
 const printHashmap = (mal, readable = true) => {
-	let keys = Object.keys(mal);
+	const keys = Object.keys(mal);
 	const printKey = key => '"' + key + '"' + ' ' + printString(mal[key], readable);
 	return '(' + [
 		'dict',

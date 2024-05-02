@@ -24,7 +24,7 @@ const tokensToString = tokens => tokens.map(({ type, value }) => `${ value || ''
 const tokensToStringFormatted = tokens => {
 	let indent = 0;
 	let output = '';
-	for(let token of tokens) {
+	for(const token of tokens) {
 		switch(token.type) {
 			case 'eol':
 				output += '\n';

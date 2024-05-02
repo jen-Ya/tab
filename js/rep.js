@@ -5,17 +5,15 @@ import { outputError } from './output.js';
 
 export const rep = async(str, env) => {
 	try {
-		return PRINT(
-			await EVAL(
-				READ(
-					str,
-					{
-						filename: 'repl',
-					},
-				),
-				env,
+		return PRINT(await EVAL(
+			READ(
+				str,
+				{
+					filename: 'repl',
+				},
 			),
-		);
+			env,
+		));
 	} catch (error) {
 		outputError(error);
 		return error.message;

@@ -14,12 +14,12 @@ export const tokenize = (text, {
 	let linecount = 0;
 	let charcount = 0;
 	let indentation = 0;
-	let tokens = [];
+	const tokens = [];
 	let tokenstart = [0, 0];
 
 	const tokenizeError = (message) => {
-		return new Error(`TokenizerError at ${filename}:${ linecount + 1}:${ charcount + 1 }\n` +
-			`Token Started at ${filename}:${ tokenstart[0] + 1}:${ tokenstart[1] + 1 }\n` +
+		return new Error(`TokenizerError at ${ filename }:${ linecount + 1 }:${ charcount + 1 }\n` +
+			`Token Started at ${ filename }:${ tokenstart[0] + 1 }:${ tokenstart[1] + 1 }\n` +
 			message);
 	};
 
@@ -50,7 +50,7 @@ export const tokenize = (text, {
 	};
 
 	const consume = (chars) => {
-		for(let char of chars) {
+		for(const char of chars) {
 			if(text[cursor] !== char) {
 				throw tokenizeError(`TokenizeError: unexpected ${ text[cursor] }, expected ${ char }`);
 			}
@@ -95,7 +95,7 @@ export const tokenize = (text, {
 		while(text[cursor] === '\n') {
 			consume('\n');
 		}
-		let indent = getIndent();
+		const indent = getIndent();
 		if(indent === indentation) {
 			consumeIndent(indent);
 			addtoken('eol');
@@ -134,7 +134,7 @@ export const tokenize = (text, {
 				consume('\n');
 				value += '\n';
 			}
-			let indent = getIndent();
+			const indent = getIndent();
 			if(indent === indentation) {
 				consumeIndent(indentation);
 				consume(separator);
@@ -156,7 +156,7 @@ export const tokenize = (text, {
 
 	const comment = () => {
 		if(text[cursor + 1] === '\n') {
-			let value = consumeMultiline('#');
+			const value = consumeMultiline('#');
 			if(keepComments) {
 				addtoken('comment', value);
 			}
@@ -165,7 +165,7 @@ export const tokenize = (text, {
 			if(text[cursor] === ' ') {
 				consume(' ');
 			}
-			let value = consumeToEol();
+			const value = consumeToEol();
 			if(keepComments) {
 				addtoken('comment', value);
 			}
@@ -251,7 +251,7 @@ export const tokenize = (text, {
 		}
 		else if(
 			isDigit(text[cursor]) ||
-			(isPeek('-') && isDigit(text[cursor + 1]))
+			isPeek('-') && isDigit(text[cursor + 1])
 		) {
 			number();
 		}

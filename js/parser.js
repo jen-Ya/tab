@@ -2,13 +2,13 @@ export const parse = (tokens) => {
 	let next = tokens[0];
 	let rest = tokens;
 	const parseError = (message) => {
-		let position = next.position;
+		const position = next.position;
 		if(!position) {
 			return new Error(`ParseError at unkown location\n${ message }`);
 		}
 		return new Error(`ParserError at ${ position.filename }:${ position.start[0] + 1 }:${ position.start[1] + 1 }\n${ message }`);
 	};
-	let peek = (...expected) => {
+	const peek = (...expected) => {
 		for(let i = 0; i < expected.length; i++) {
 			if(rest[i].type !== expected[i]) {
 				return false;
@@ -16,13 +16,13 @@ export const parse = (tokens) => {
 		}
 		return true;
 	};
-	let consume = (expected) => {
+	const consume = (expected) => {
 		if(!peek(expected)) {
 			console.error('rest:', JSON.stringify(rest, null, '\t'));
 			throw parseError(`unexpected token ${ next.type } ${ next.value }, expected ${ expected }`);
 		}
 		// console.log('consumed', expected, next.value)
-		let consumed = next;
+		const consumed = next;
 		rest = rest.slice(1);
 		next = rest[0];
 		return consumed;
@@ -57,9 +57,9 @@ export const parse = (tokens) => {
 	};
 	const arg = () => {
 		if(peek('(')) {
-			let o = open();
+			const o = open();
 			if(peek(')')) {
-				let c = close();
+				const c = close();
 				return {
 					type: 'list',
 					value: [],
@@ -78,7 +78,7 @@ export const parse = (tokens) => {
 			} else {
 				exp = expression();
 			}
-			let c = close();
+			const c = close();
 			// TODO: Ugly noargs
 			if(exp.type !== 'list' || exp.noargs) {
 				return {
@@ -93,21 +93,21 @@ export const parse = (tokens) => {
 			}
 			return exp;
 		}
-		let _atom = atom();
+		const _atom = atom();
 		return _atom;
 	};
 
 	const inlineArgs = () => {
-		let args = [];
+		const args = [];
 		while(!peek('eol') && !peek(')') && !peek('eof') && !peek('dedent') && !peek('indent')) {
-			let _arg = arg();
+			const _arg = arg();
 			args.push(_arg);
 		}
 		return args;
 	};
 
 	const indentArgs = () => {
-		let args = [];
+		const args = [];
 		if(peek('indent')) {
 			consume('indent');
 			for(;;) {
@@ -122,7 +122,7 @@ export const parse = (tokens) => {
 				if(peek('eof')) {
 					break;
 				}
-				let _arg = expression();
+				const _arg = expression();
 				args.push(_arg);
 			}
 		}
@@ -130,8 +130,8 @@ export const parse = (tokens) => {
 	};
 
 	const expression = () => {
-		let first = arg();
-		let args = [
+		const first = arg();
+		const args = [
 			...inlineArgs(),
 			...indentArgs(),
 		];
@@ -155,7 +155,7 @@ export const parse = (tokens) => {
 	};
 
 	const lines = () => {
-		let exps = [];
+		const exps = [];
 		while(!peek('eof')) {
 			if(peek('eol')) {
 				consume('eol');
@@ -165,7 +165,7 @@ export const parse = (tokens) => {
 				consume('comment');
 				continue;
 			}
-			let exp = expression();
+			const exp = expression();
 			exps.push(exp);
 			while(peek('eol')) {
 				consume('eol');

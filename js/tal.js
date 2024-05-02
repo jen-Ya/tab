@@ -16,9 +16,9 @@ const isMacroCall = (ast, env) => {
 
 const macroexpand = async(ast, env) => {
 	while(isMacroCall(ast, env)) {
-		let macro = env.get(ast[0]);
+		const macro = env.get(ast[0]);
 		// if first param is '.caller', provide caller function also
-		let params = macro.params[0]?.valueOf() === '.caller' ?
+		const params = macro.params[0]?.valueOf() === '.caller' ?
 			ast :
 			ast.slice(1);
 		ast = await macro(...params);
@@ -49,15 +49,15 @@ const evalAst = async(ast, env, callstack) => {
 			}
 			return env.get(ast);
 		case Array: {
-			let result = [];
+			const result = [];
 			for(let i = 0; i < ast.length; i++) {
 				result[i] = await EVAL(ast[i], env, callstack);
 			}
 			return result;
 		}
 		case TalMap: {
-			let result = {};
-			for(let key in ast) {
+			const result = {};
+			for(const key in ast) {
 				result[key] = await EVAL(ast[key], env, callstack);
 			}
 			return new TalMap(result);
@@ -69,14 +69,14 @@ const evalAst = async(ast, env, callstack) => {
 
 const letForm = async(ast, env, callstack) => {
 	// let a "hallo"
-	let v = await EVAL(ast[2], env, callstack);
+	const v = await EVAL(ast[2], env, callstack);
 	env.set(ast[1], v);
 	ast = v;
 	return { final: true, ast, env };
 };
 
 const evalForm = async(ast, env, callstack) => {
-	let [_ast, _env = env] = await evalAst(ast.slice(1), env, callstack);
+	const [_ast, _env = env] = await evalAst(ast.slice(1), env, callstack);
 	ast = await EVAL(_ast, _env, [...callstack, ast[0]]);
 	return { final: true, ast, env };
 };
@@ -107,8 +107,8 @@ const doForm = async(ast, env, callstack) => {
 
 const ifForm = async(ast, env, callstack) => {
 	// if (> x "1000") "gross" "klein"
-	let evaledCond = await EVAL(ast[1], env, callstack);
-	let cond = evaledCond !== false && !(evaledCond instanceof TalNil);
+	const evaledCond = await EVAL(ast[1], env, callstack);
+	const cond = evaledCond !== false && !(evaledCond instanceof TalNil);
 	if(cond) {
 		ast = ast[2];
 		return { final: false, ast, env };
@@ -137,7 +137,7 @@ const qqForm = async(ast, env) => {
 };
 
 const lambdaForm = async(ast, env) => {
-	let [, params, fnAst] = ast;
+	const [, params, fnAst] = ast;
 	ast = new TalFunc(
 		async(...args) => {
 			const newEnv = Env(env, params, args);
@@ -151,7 +151,7 @@ const lambdaForm = async(ast, env) => {
 };
 
 const macroForm = async(ast, env) => {
-	let [, params, fnAst] = ast;
+	const [, params, fnAst] = ast;
 	ast = new TalMacro(
 		async(...args) => {
 			const newEnv = Env(env, params, args);
@@ -179,7 +179,7 @@ const tryForm = async(ast, env, callstack) => {
 		};
 	} catch (error) {
 		const newEnv = Env(env);
-		let malerror = error?.mal || error.message;
+		const malerror = error?.mal || error.message;
 		newEnv.set(ast[2][1], malerror);
 		return {
 			final: false,
@@ -224,18 +224,18 @@ const callFuncForm = async(ast, env, callstack) => {
 
 const evalError = (message, callstack) => {
 	let prefix = '';
-	for(let frame of callstack) {
+	for(const frame of callstack) {
 		if(!frame.position) {
 			prefix += `CallStack unknown position (${ frame })\n`;
 			continue;
 		}
-		let {
+		const {
 			filename,
 			start: [line, char],
 		} = frame.position;
 		prefix += `CallStack ${ filename }:${ line + 1 }:${ char + 1 }\n`;
 	}
-	let error = new Error(message);
+	const error = new Error(message);
 	error.callstack = callstack;
 	error.toString = () => prefix + message;
 	return error;

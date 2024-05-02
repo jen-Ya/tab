@@ -14,7 +14,7 @@ const initScript = `eval
 
 export const makeReplEnv = async() => {
 	const env = Env(null);
-	for(let key in ns) {
+	for(const key in ns) {
 		env.set(new TalSymbol(key), ns[key]);
 	}
 	env.set(

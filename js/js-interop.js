@@ -1,4 +1,4 @@
-import { TalNil, TalMap } from './mal-types.js'
+import { TalNil, TalMap } from './mal-types.js';
 
 export const toJs = (mal) => {
 	if(mal instanceof TalNil) {
@@ -8,8 +8,8 @@ export const toJs = (mal) => {
 		return mal.map(element => toJs(element));
 	}
 	if(mal instanceof TalMap) {
-		let result = {};
-		for(let key in mal) {
+		const result = {};
+		for(const key in mal) {
 			result[key] = toJs(mal[key]);
 		}
 		return result;
@@ -34,8 +34,8 @@ export const fromJs = (js) => {
 		return js;
 	}
 	if(typeof js === 'object') {
-		let result = {};
-		for(let key in js) {
+		const result = {};
+		for(const key in js) {
 			result[key] = fromJs(js[key]);
 		}
 		return new TalMap(result);
