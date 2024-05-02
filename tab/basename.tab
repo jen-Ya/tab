@@ -2,37 +2,35 @@ fn basename path
 	unless (is-string path)
 		throw
 			str 'basename parameter must be a string, received: ' (type path)
-	if (= path '')
-		''
-		# else
-		do
-			fn remove-last-char value
-				slice value 0 (- (count value) 1)
-			fn remove-slashes-at-end value
-				if (and
-					str-ends-with value '/'
-					!= value ''
-				)
-					# then
-					remove-slashes-at-end (remove-last-char value)
-					# else
-					value
-			fn keep-non-slashes-at-end (value acc)
-				unless (or
-					str-ends-with value '/'
-					= value ''
-				)
-					# then
-					keep-non-slashes-at-end (remove-last-char value) (str (last value) acc)
-					# else
-					acc
-			let has-root
-				= (first path) '/'
-			let name
-				keep-non-slashes-at-end
-					remove-slashes-at-end
-						path
-					''
-			if (= name '')
-				if has-root '/' ''
-				name
+	if (= path '') '' (do # else
+		fn remove-last-char value
+			slice value 0 (- (count value) 1)
+		fn remove-slashes-at-end value
+			if (and
+				str-ends-with value '/'
+				!= value ''
+			)
+				# then
+				remove-slashes-at-end (remove-last-char value)
+				# else
+				value
+		fn keep-non-slashes-at-end (value acc)
+			unless (or
+				str-ends-with value '/'
+				= value ''
+			)
+				# then
+				keep-non-slashes-at-end (remove-last-char value) (str (last value) acc)
+				# else
+				acc
+		let has-root
+			= (first path) '/'
+		let name
+			keep-non-slashes-at-end
+				remove-slashes-at-end
+					path
+				''
+		if (= name '')
+			if has-root '/' ''
+			name
+	)
