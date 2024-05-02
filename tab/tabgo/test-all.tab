@@ -34,7 +34,7 @@ let tests (map (li
 	'gcd-lcm.test.tab'
 	'hashmap.test.tab'
 	'iter.test.tab'
-	'iter%.test.tab'
+	'iter$.test.tab'
 	'let-all.test.tab'
 	'pairwise.test.tab'
 	# something inbetween
