@@ -1,6 +1,6 @@
+require '~/reduce.tab' reduce
+
 fn reverse values
-	if (is-empty values)
-		values
-		append
-			reverse (rest values)
-			first values
+	reduce (cons () values) (f (reversed value)
+		cons value reversed
+	)

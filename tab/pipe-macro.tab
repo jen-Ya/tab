@@ -1,22 +1,16 @@
-macro pipe (value .. funcs)
-	if (is-empty funcs)
-		# then
-		value
-		# else
-		qq
-			pipe
-				unq (first funcs)
-					unq value
-				..unq (rest funcs)
+require '~/reduce.tab' reduce
+require '~/reverse.tab' reverse
+# if we want to use macros in a pipe, we need to use a pipe-macro
+# otherwise a pipe function is enough
+macro pipem (.. value-and-funcs)
+	reduce value-and-funcs (f (value next-func)
+		li next-func value
+	)
 
-macro pipe-reversed (value .. funcs)
-	if (is-empty funcs)
-		# then
-		value
-		# else
-		qq
-			(unq value)
-				pipe-reversed (..unq funcs)
+macro pipem-reversed (.. funcs-and-value)
+	reduce (reverse funcs-and-value) (f (value next-func)
+		li next-func value
+	)
 
 macro pipe-apply (value .. funcs)
 	if (is-empty funcs)
@@ -39,15 +33,19 @@ macro pipe-apply (value .. funcs)
 						..unq (rest funcs)
 			)
 
-macro pipe-$ (value .. funcs)
-	fn replace-$ (args)
+# short alias for pipe-apply
+let |> pipe-apply
+
+macro pipe$ (value .. funcs)
+	# replace all $ with parameter
+	fn replace$ (args)
 		map args (f arg
 			cond
 				= arg (symbol '$')
 				value
 
 				is-list arg
-				replace-$ arg
+				replace$ arg
 
 				true # else
 				arg
@@ -63,7 +61,7 @@ macro pipe-$ (value .. funcs)
 				let func (first func)
 				qq
 					pipe-$
-						(unq func) (..unq (replace-$ args))
+						(unq func) (..unq (replace$ args))
 						..unq (rest funcs)
 			) (do #else
 				qq
@@ -71,15 +69,3 @@ macro pipe-$ (value .. funcs)
 						(unq func) (unq value)
 						..unq (rest funcs)
 			)
-
-
-# pipe-reversed
-# 	println
-# 	macroexpand
-# 	pipe-apply
-# 		42
-# 		* 10
-# 		+ 20
-# 		println '<- cool'
-
-# 	println (+ (* (42) 10) 20) '<- cool'

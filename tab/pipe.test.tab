@@ -1,0 +1,19 @@
+require './pipe.tab'
+require '~/assert.tab'
+
+# top to bottom
+assert-eq
+	-> 4
+		f x (* x 2) # 4 * 2 = 8
+		f x (+ x 2) # 8 + 2 = 10
+		f x (/ x 2) # 10 / 2 = 5
+	5
+
+# bottom to top
+assert-eq
+	14
+	<-
+		f x (* x 2) # 7 * 2 = 14
+		f x (+ x 2) # 5 + 2 = 7
+		f x (/ x 2) # 10 / 2 = 5
+		10

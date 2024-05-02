@@ -1,9 +1,10 @@
-fn pipe (value .. funcs)
-	let result (var value)
-	map funcs
-		f func
-			swap result func
-	deref result
+require '~/reduce.tab' reduce
+require '~/reverse.tab' reverse
+
+fn pipe (.. value-and-funcs)
+	reduce value-and-funcs (f (value next-func)
+		next-func value
+	)
 
 let -> pipe
 
@@ -15,17 +16,8 @@ let -> pipe
 # 	f x (* x 8)
 # 	println
 
-fn reverse input-list
-	let reversed (var ())
-	map input-list
-		f input
-			swap reversed
-				f reversed
-					apply li input reversed
-	deref reversed
-
-fn pipe-reversed (.. steps)
-	apply pipe (reverse steps)
+fn pipe-reversed (.. funcs-and-value)
+	apply pipe (reverse funcs-and-value)
 
 let <- pipe-reversed
 

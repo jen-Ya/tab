@@ -1,0 +1,9 @@
+require './pipe-macro.tab'
+require '~/assert.tab'
+
+assert-eq
+	|> 4
+		* 2 # 4 * 2 = 8
+		+ 2 # 8 + 2 = 10
+		/ 2 # 10 / 2 = 5
+	5
