@@ -7,10 +7,10 @@ import {
 	TabMap,
 	TabNil,
 	isTabNil,
-	isTalList,
+	isTabList,
 	isTabMap,
 	isTabSymbol,
-	isTalNumber,
+	isTabNumber,
 } from './mal-types.js';
 import { output } from './output.js';
 import { join as pathJoin, dirname, basename, resolve as pathResolve } from 'path';
@@ -20,7 +20,7 @@ import {
 	callJs,
 } from './js-interop.js';
 import { inspect } from 'util';
-import { EVAL } from './tal.js';
+import { EVAL } from './tab.js';
 import { Env } from './env.js';
 import { tokenize } from './tokenizer.js';
 import { parse } from './parser.js';
@@ -41,7 +41,7 @@ const eq = (a, b) => {
 	if(isTabNil(a)) {
 		return true;
 	}
-	if(isTalList(a)) {
+	if(isTabList(a)) {
 		if(b.length !== a.length) {
 			return false;
 		}
@@ -88,7 +88,7 @@ const mathFuncs = {
 	'<=': (a, b) => a <= b,
 	'>': (a, b) => a > b,
 	'>=': (a, b) => a >= b,
-	'is-number': isTalNumber,
+	'is-number': isTabNumber,
 	'parse-number': (str) => {
 		const num = parseFloat(str);
 		if(!Number.isFinite(num)) {
@@ -128,7 +128,7 @@ const listFuncs = {
 	// TODO: is implemented in tab, but cannot be removed, since used in quasiquote
 	'concat': (...lists) => lists.reduce((agg, arg) => [...agg, ...arg], []),
 	'nth': (list, index) => {
-		if(!isTalList(list)) {
+		if(!isTabList(list)) {
 			throw new Error(`nth argument list: Type error [expected=list|vector, got=${ list }]`);
 		}
 		if(index.constructor !== Number) {

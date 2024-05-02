@@ -8,7 +8,7 @@ export * from './printer.js';
 
 export * from './reader.js';
 
-export * from './tal.js';
+export * from './tab.js';
 
 export * from './tokenizer.js';
 

@@ -1,6 +1,6 @@
-export class TalList extends Array {}
+export class TabList extends Array {}
 
-export const isTalList = (a) => a instanceof Array;
+export const isTabList = (a) => a instanceof Array;
 
 export class TabSymbol extends String {}
 
@@ -39,4 +39,4 @@ export const isTabFunc = (func) => TabFunc.prototype.isPrototypeOf(func);
 
 export const isJsFunc = (func) => Function.prototype.isPrototypeOf(func);
 
-export const isTalNumber = (a) => a.constructor === Number;
+export const isTabNumber = (a) => a.constructor === Number;
