@@ -121,7 +121,8 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 					env = ToList(result)[1]
 				}
 				continue
-
+			// Allow multiple expressions to be evaluated in sequence
+			// Also maybe it would be enough to implement as an immediatly invoked anonymous function
 			case "with":
 				env = Env(env)
 				// key value key value ... expression
