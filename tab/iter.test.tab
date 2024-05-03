@@ -15,3 +15,8 @@ pipe-apply
 	iter-map times-10 # multiply each by 10
 	iter-collect # collect iter into list
 	assert-eq (li 30 40) # check result
+
+# sum of 0 to 9 iteratively
+assert-eq
+	iter-reduce (iter-range 10) +
+	45

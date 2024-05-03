@@ -1,3 +1,7 @@
+#
+	Iterators are functions that return a pair of value and next iterator.
+	When the iterator is done it returns a pair of nil and nil.
+#
 fn iter-new values
 	f ()
 		if
@@ -8,6 +12,19 @@ fn iter-new values
 			li
 				first values
 				iter-new (rest values)
+
+fn iter-range (start end)
+	if (is-nil end) (do
+		let end start
+		let start 0
+	)
+	fn .iter-range (start end)
+		if (>= start end)
+			li nil nil
+			li start
+				f _ (.iter-range (+ start 1) end)
+	f ()
+		.iter-range start end
 
 fn iter-each (iter func)
 	let step (iter)
@@ -51,3 +68,20 @@ fn iter-collect (iter)
 			values
 			collect next-iter (append values value)
 	collect iter ()
+
+fn iter-reduce (iter reducer)
+	let step (iter)
+	let acc (nth step 0)
+	let next-iter (nth step 1)
+	# guard against empty iterator
+	# maybe this should be an error instead
+	unless next-iter acc (do
+		fn collect (acc next-iter)
+			let step (next-iter)
+			let value (nth step 0)
+			let next-iter (nth step 1)
+			unless next-iter
+				acc
+				collect (reducer acc value) next-iter
+		collect acc next-iter
+	)
