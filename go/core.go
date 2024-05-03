@@ -680,6 +680,11 @@ func TIsFunc(arguments Tab) Tab {
 	return FromBool(IsFunc(arg) || IsNativeFunc(arg))
 }
 
+func TIsMacro(arguments Tab) Tab {
+	arg := ToList(arguments)[0]
+	return FromBool(IsMacro(arg))
+}
+
 // Bools
 
 func TIsBool(arguments Tab) Tab {
@@ -832,6 +837,7 @@ func AddCore(env Tab) Tab {
 
 	// Funcs
 	EnvSet(env, FromSymbol("is-func"), FromNativeFunc(TIsFunc))
+	EnvSet(env, FromSymbol("is-macro"), FromNativeFunc(TIsMacro))
 
 	// Bools
 	EnvSet(env, FromSymbol("is-boolean"), FromNativeFunc(TIsBool))
