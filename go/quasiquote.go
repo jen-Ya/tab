@@ -5,9 +5,9 @@ func QuasiquoteList(ast Tab) Tab {
 	astList := ToList(ast)
 	for i := len(astList) - 1; i >= 0; i-- {
 		elt := astList[i]
-		if ToBool(IsList(elt)) &&
+		if IsList(elt) &&
 			len(ToList(elt)) > 0 &&
-			ToBool(IsSymbol(ToList(elt)[0])) &&
+			IsSymbol(ToList(elt)[0]) &&
 			ToSymbol(ToList(elt)[0]) == "..unq" {
 			result = ListToTab(TabList{
 				SymbolToTab("concat"),
@@ -26,16 +26,16 @@ func QuasiquoteList(ast Tab) Tab {
 }
 
 func Quasiquote(ast Tab) Tab {
-	if ToBool(IsList(ast)) &&
+	if IsList(ast) &&
 		len(ToList(ast)) > 0 &&
-		ToBool(IsSymbol(ToList(ast)[0])) &&
+		IsSymbol(ToList(ast)[0]) &&
 		ToSymbol(ToList(ast)[0]) == "unq" {
 		return ToList(ast)[1]
 	}
-	if ToBool(IsList(ast)) {
+	if IsList(ast) {
 		return QuasiquoteList(ast)
 	}
-	if ToBool(IsDict(ast)) || ToBool(IsSymbol(ast)) {
+	if IsDict(ast) || IsSymbol(ast) {
 		return ListToTab(TabList{
 			SymbolToTab("q"),
 			ast,

@@ -33,10 +33,10 @@ func EvalAst(ast Tab, env Tab) Tab {
 }
 
 func Macroexpand(ast Tab, env Tab) Tab {
-	for ToBool(IsList(ast)) &&
+	for IsList(ast) &&
 		len(ToList(ast)) > 0 &&
-		ToBool(IsSymbol(ToList(ast)[0])) &&
-		ToBool(IsMacro(EnvGet(env, ToList(ast)[0]))) {
+		IsSymbol(ToList(ast)[0]) &&
+		IsMacro(EnvGet(env, ToList(ast)[0])) {
 		astList := ToList(ast)
 		macro := ToMacro(EnvGet(env, astList[0]))
 		// if first param is '.caller', provide caller function also
@@ -87,19 +87,19 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 	// }()
 	for {
 		// fmt.Println("Eval:", Print(ast))
-		if !ToBool(IsList(ast)) {
+		if !IsList(ast) {
 			return EvalAst(ast, env)
 		}
 		if len(ToList(ast)) == 0 {
 			return ast
 		}
 		ast = Macroexpand(ast, env)
-		if !ToBool(IsList(ast)) {
+		if !IsList(ast) {
 			// todo: evalast
 			return EvalAst(ast, env)
 		}
 		// if first element is symbol
-		if ToBool(IsSymbol(ToList(ast)[0])) {
+		if IsSymbol(ToList(ast)[0]) {
 			// fmt.Println("Symbol:", ToList(ast)[0].ToSymbol())
 			// swich on symbol
 			switch ToSymbol(ToList(ast)[0]) {
@@ -147,7 +147,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 				list := ToList(ast)
 				cond := Eval(list[1], env)
 				// condition is not nil and not boolean false
-				truthy := !ToBool(IsNil(cond)) && (!ToBool(IsBool(cond)) || ToBool(cond))
+				truthy := !IsNil(cond) && (!IsBool(cond) || ToBool(cond))
 				if truthy {
 					// fmt.Println("TRUTHY")
 					ast = list[2]
@@ -183,11 +183,11 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 				last := ToList(applyArgs[len(applyArgs)-1])
 				funcArgs := append(concats, last...)
 				var f TabFunc
-				if ToBool(IsNativeFunc(first)) {
+				if IsNativeFunc(first) {
 					return ToNativeFunc(first)(ListToTab(funcArgs))
-				} else if ToBool(IsFunc(first)) {
+				} else if IsFunc(first) {
 					f = ToFunc(first)
-				} else if ToBool(IsMacro(first)) {
+				} else if IsMacro(first) {
 					f = ToMacro(first)
 				} else {
 					panic(fmt.Sprintf("Cannot call non-function: %s", Print(ast, true)))
@@ -209,7 +209,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 
 			case "lambda":
 				params := ToList(ast)[1]
-				if !ToBool(IsList(params)) {
+				if !IsList(params) {
 					params = ListToTab(TabList{params})
 				}
 				return FuncToTab(TabFunc{
@@ -220,7 +220,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 
 			case "macrof":
 				params := ToList(ast)[1]
-				if !ToBool(IsList(params)) {
+				if !IsList(params) {
 					params = ListToTab(TabList{params})
 				}
 				return MacroToTab(TabFunc{
@@ -263,7 +263,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 			args := ToList(EvalAst(ListToTab(ulist[1:]), env))
 			env = Env(fun.Env)
 			for i, param := range ToList(fun.Params) {
-				if ToBool(IsNil(param)) {
+				if IsNil(param) {
 					continue
 				}
 				if ToSymbol(param) == ".." {

@@ -126,7 +126,7 @@ func Floor(arguments Tab) Tab {
 }
 
 func TIsNumber(arguments Tab) Tab {
-	return IsNumber(ToList(arguments)[0])
+	return BoolToTab(IsNumber(ToList(arguments)[0]))
 }
 
 // Strings
@@ -145,7 +145,7 @@ func CharCode(arguments Tab) Tab {
 }
 
 func TIsString(arguments Tab) Tab {
-	return IsString(ToList(arguments)[0])
+	return BoolToTab(IsString(ToList(arguments)[0]))
 }
 
 func SubStr(arguments Tab) Tab {
@@ -238,7 +238,7 @@ func List(arguments Tab) Tab {
 
 func Count(arguments Tab) Tab {
 	arg := ToList(arguments)[0]
-	if ToBool(IsString(arg)) {
+	if IsString(arg) {
 		return NumberToTab(float64(len(ToString(arg))))
 	}
 	return NumberToTab(float64(len(ToList(arg))))
@@ -331,7 +331,7 @@ func Dict(arguments Tab) Tab {
 }
 
 func TIsDict(arguments Tab) Tab {
-	return IsDict(ToList(arguments)[0])
+	return BoolToTab(IsDict(ToList(arguments)[0]))
 }
 
 func Get(arguments Tab) Tab {
@@ -505,7 +505,7 @@ func Exit(arguments Tab) Tab {
 }
 
 func TIsNil(arguments Tab) Tab {
-	return IsNil(ToList(arguments)[0])
+	return BoolToTab(IsNil(ToList(arguments)[0]))
 }
 
 func TTokenize(arguments Tab) Tab {
@@ -670,20 +670,20 @@ func Symbol(arguments Tab) Tab {
 }
 
 func TIsSymbol(arguments Tab) Tab {
-	return IsSymbol(ToList(arguments)[0])
+	return BoolToTab(IsSymbol(ToList(arguments)[0]))
 }
 
 // Funcs
 
 func TIsFunc(arguments Tab) Tab {
 	arg := ToList(arguments)[0]
-	return BoolToTab(ToBool(IsFunc(arg)) || ToBool(IsNativeFunc(arg)))
+	return BoolToTab(IsFunc(arg) || IsNativeFunc(arg))
 }
 
 // Bools
 
 func TIsBool(arguments Tab) Tab {
-	return IsBool(ToList(arguments)[0])
+	return BoolToTab(IsBool(ToList(arguments)[0]))
 }
 
 // Plugins
@@ -741,7 +741,7 @@ func Var(arguments Tab) Tab {
 }
 
 func TIsVar(arguments Tab) Tab {
-	return IsVar(ToList(arguments)[0])
+	return BoolToTab(IsVar(ToList(arguments)[0]))
 }
 
 func VarGet(arguments Tab) Tab {

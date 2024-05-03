@@ -75,56 +75,56 @@ func GetType(T Tab) Tab {
 	return TypeToTab(T.Type)
 }
 
-func IsList(T Tab) Tab {
-	return BoolToTab(T.Type == TabListType)
+func IsList(T Tab) bool {
+	return T.Type == TabListType
 }
 
-func IsString(T Tab) Tab {
-	return BoolToTab(T.Type == TabStringType)
+func IsString(T Tab) bool {
+	return T.Type == TabStringType
 }
 
-func IsSymbol(T Tab) Tab {
-	return BoolToTab(T.Type == TabSymbolType)
+func IsSymbol(T Tab) bool {
+	return T.Type == TabSymbolType
 }
 
-func IsNumber(T Tab) Tab {
-	return BoolToTab(T.Type == TabNumberType)
+func IsNumber(T Tab) bool {
+	return T.Type == TabNumberType
 }
 
-func IsBool(T Tab) Tab {
-	return BoolToTab(T.Type == TabBoolType)
+func IsBool(T Tab) bool {
+	return T.Type == TabBoolType
 }
 
-func IsDict(T Tab) Tab {
-	return BoolToTab(T.Type == TabDictType)
+func IsDict(T Tab) bool {
+	return T.Type == TabDictType
 }
 
-func IsType(T Tab) Tab {
-	return BoolToTab(T.Type == TabTypeType)
+func IsType(T Tab) bool {
+	return T.Type == TabTypeType
 }
 
-func IsFunc(T Tab) Tab {
-	return BoolToTab(T.Type == TabFuncType)
+func IsFunc(T Tab) bool {
+	return T.Type == TabFuncType
 }
 
-func IsNativeFunc(T Tab) Tab {
-	return BoolToTab(T.Type == TabNativeFuncType)
+func IsNativeFunc(T Tab) bool {
+	return T.Type == TabNativeFuncType
 }
 
-func IsMacro(T Tab) Tab {
-	return BoolToTab(T.Type == TabMacroType)
+func IsMacro(T Tab) bool {
+	return T.Type == TabMacroType
 }
 
-func IsOther(T Tab) Tab {
-	return BoolToTab(T.Type == TabOtherType)
+func IsOther(T Tab) bool {
+	return T.Type == TabOtherType
 }
 
-func IsVar(T Tab) Tab {
-	return BoolToTab(T.Type == TAbVarType)
+func IsVar(T Tab) bool {
+	return T.Type == TAbVarType
 }
 
-func IsNil(T Tab) Tab {
-	return BoolToTab(T.Type == TabNilType)
+func IsNil(T Tab) bool {
+	return T.Type == TabNilType
 }
 
 func StringToTab(s string) Tab {
