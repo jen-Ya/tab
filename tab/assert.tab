@@ -32,11 +32,12 @@ fn assert-throw (func error)
 		coalesce error "Nothing thrown"
 
 fn assert-no-throw (func error)
-	assert
+	let result
 		try
 			do
 				(func)
-				true
+				nil
 			catch error
-				false
-		coalesce error "Error thrown"
+				error
+	if error
+		throw (str 'Unexpected error: ' error)
