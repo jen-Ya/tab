@@ -20,7 +20,7 @@ func SqliteOpen(arguments t.Tab) t.Tab {
 	list := t.ToList(arguments)
 	db, err := sql.Open("sqlite3", t.ToString(list[0]))
 	panicOnError(err)
-	return t.OtherToTab(db)
+	return t.FromOther(db)
 }
 
 func SqliteClose(arguments t.Tab) t.Tab {
@@ -50,18 +50,18 @@ func SqliteQuery(arguments t.Tab) t.Tab {
 		panicOnError(err)
 		tabRow := t.TabList{}
 		for _, val := range vals {
-			tabRow = append(tabRow, t.StringToTab(val))
+			tabRow = append(tabRow, t.FromString(val))
 		}
-		tabRows = append(tabRows, t.ListToTab(tabRow))
+		tabRows = append(tabRows, t.FromList(tabRow))
 	}
 
-	return t.ListToTab(tabRows)
+	return t.FromList(tabRows)
 }
 
 func init() {
-	Export = t.DictToTab(t.TabDict{
-		"sqlite-open":  t.NativeFuncToTab(SqliteOpen),
-		"sqlite-close": t.NativeFuncToTab(SqliteClose),
-		"sqlite-query": t.NativeFuncToTab(SqliteQuery),
+	Export = t.FromDict(t.TabDict{
+		"sqlite-open":  t.FromNativeFunc(SqliteOpen),
+		"sqlite-close": t.FromNativeFunc(SqliteClose),
+		"sqlite-query": t.FromNativeFunc(SqliteQuery),
 	})
 }

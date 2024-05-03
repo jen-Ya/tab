@@ -12,7 +12,7 @@ func doSomething(arguments t.Tab) t.Tab {
 }
 
 func init() {
-	Export = t.DictToTab(t.TabDict{
-		"do-something": t.NativeFuncToTab(doSomething),
+	Export = t.FromDict(t.TabDict{
+		"do-something": t.FromNativeFunc(doSomething),
 	})
 }

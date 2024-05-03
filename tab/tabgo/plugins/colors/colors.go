@@ -11,13 +11,13 @@ func WrapColor(attrs ...color.Attribute) t.TabNativeFunc {
 	return func(arguments t.Tab) t.Tab {
 		args := t.ToList(arguments)
 		arg := t.ToString(args[0])
-		return t.StringToTab(color.New(attrs...).SprintFunc()(arg))
+		return t.FromString(color.New(attrs...).SprintFunc()(arg))
 	}
 }
 
 func init() {
-	Export = t.DictToTab(t.TabDict{
-		"cyan": t.NativeFuncToTab(WrapColor(color.FgCyan)),
-		"red":  t.NativeFuncToTab(WrapColor(color.FgRed)),
+	Export = t.FromDict(t.TabDict{
+		"cyan": t.FromNativeFunc(WrapColor(color.FgCyan)),
+		"red":  t.FromNativeFunc(WrapColor(color.FgRed)),
 	})
 }
