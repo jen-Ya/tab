@@ -19,10 +19,13 @@ Much of the language features are already written in tab and evaluated on runtim
 - Visual Studio Code Plugin
 - Compiler, Transpiler
 - Self hosting
+- Logical Programming
+- Pattern matching
 
 **Concepts I would like to explore in future**
 
 - Linter
+- Memory management
 
 ## Install
 
