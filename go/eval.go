@@ -281,7 +281,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 			args := EvalAst(ListToTab(ulist[1:]), env)
 			return ToNativeFunc(first)(args)
 		default:
-			panic(fmt.Sprintf("Cannot call non-function of type %d at %s: %s", ToType(GetType(first)), AstPositionToString(ast), Print(ast, true)))
+			panic(fmt.Sprintf("Cannot call non-function of type %s at %s: %s", first.Type.String(), AstPositionToString(ast), Print(ast, true)))
 		}
 
 	}

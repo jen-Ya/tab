@@ -29,6 +29,38 @@ const (
 	TAbVarType        TabType = iota
 )
 
+func (TT TabType) String() string {
+	switch TT {
+	case TabNilType:
+		return "nil"
+	case TabListType:
+		return "list"
+	case TabStringType:
+		return "string"
+	case TabSymbolType:
+		return "symbol"
+	case TabNumberType:
+		return "number"
+	case TabBoolType:
+		return "bool"
+	case TabDictType:
+		return "dict"
+	case TabTypeType:
+		return "type"
+	case TabFuncType:
+		return "func"
+	case TabNativeFuncType:
+		return "native-func"
+	case TabMacroType:
+		return "macro"
+	case TabOtherType:
+		return "other"
+	case TAbVarType:
+		return "var"
+	}
+	return "unknown"
+}
+
 type Tab struct {
 	Type     TabType
 	Value    interface{}
