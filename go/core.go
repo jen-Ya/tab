@@ -315,7 +315,8 @@ func Slice(arguments Tab) Tab {
 }
 
 func TIsList(arguments Tab) Tab {
-	return IsList(ToList(arguments)[0])
+	arg := ToList(arguments)[0]
+	return BoolToTab(IsList(arg))
 }
 
 // Dicts
