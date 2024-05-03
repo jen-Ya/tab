@@ -73,7 +73,7 @@ func Parse(tokens Tab) (Tab, error) {
 				if err != nil {
 					return Tab{}, err
 				}
-				result := ListToTab(TabList{})
+				result := FromList(TabList{})
 				result.Position = &TabDict{
 					"filename":  (*o.Position)["filename"],
 					"startLine": (*o.Position)["startLine"],
@@ -205,7 +205,7 @@ func Parse(tokens Tab) (Tab, error) {
 			endLine = (*first.Position)["endLine"]
 			endChar = (*first.Position)["endChar"]
 		}
-		result := ListToTab(list)
+		result := FromList(list)
 		result.Position = &TabDict{
 			"filename":  (*first.Position)["filename"],
 			"startLine": (*first.Position)["startLine"],
@@ -252,8 +252,8 @@ func Parse(tokens Tab) (Tab, error) {
 			return expressions[0], nil
 		}
 		// wrap multiple lines in do
-		expressions = append(TabList{SymbolToTab("do")}, expressions...)
-		result := ListToTab(expressions)
+		expressions = append(TabList{FromSymbol("do")}, expressions...)
+		result := FromList(expressions)
 		result.Position = &TabDict{
 			"filename":  (*expressions[1].Position)["filename"],
 			"startLine": (*expressions[1].Position)["startLine"],

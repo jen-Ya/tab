@@ -72,7 +72,7 @@ func (T Tab) String() string {
 }
 
 func GetType(T Tab) Tab {
-	return TypeToTab(T.Type)
+	return FromType(T.Type)
 }
 
 func IsList(T Tab) bool {
@@ -127,51 +127,51 @@ func IsNil(T Tab) bool {
 	return T.Type == TabNilType
 }
 
-func StringToTab(s string) Tab {
+func FromString(s string) Tab {
 	return Tab{Type: TabStringType, Value: &s}
 }
 
-func SymbolToTab(s string) Tab {
+func FromSymbol(s string) Tab {
 	return Tab{Type: TabSymbolType, Value: &s}
 }
 
-func NumberToTab(n float64) Tab {
+func FromNumber(n float64) Tab {
 	return Tab{Type: TabNumberType, Value: &n}
 }
 
-func BoolToTab(b bool) Tab {
+func FromBool(b bool) Tab {
 	return Tab{Type: TabBoolType, Value: &b}
 }
 
-func ListToTab(l TabList) Tab {
+func FromList(l TabList) Tab {
 	return Tab{Type: TabListType, Value: &l}
 }
 
-func DictToTab(d TabDict) Tab {
+func FromDict(d TabDict) Tab {
 	return Tab{Type: TabDictType, Value: &d}
 }
 
-func FuncToTab(f TabFunc) Tab {
+func FromFunc(f TabFunc) Tab {
 	return Tab{Type: TabFuncType, Value: &f}
 }
 
-func MacroToTab(f TabFunc) Tab {
+func FromMacro(f TabFunc) Tab {
 	return Tab{Type: TabMacroType, Value: &f}
 }
 
-func NativeFuncToTab(f TabNativeFunc) Tab {
+func FromNativeFunc(f TabNativeFunc) Tab {
 	return Tab{Type: TabNativeFuncType, Value: f}
 }
 
-func TypeToTab(t TabType) Tab {
+func FromType(t TabType) Tab {
 	return Tab{Type: TabTypeType, Value: &t}
 }
 
-func OtherToTab(o interface{}) Tab {
+func FromOther(o interface{}) Tab {
 	return Tab{Type: TabOtherType, Value: o}
 }
 
-func VarToTab(o TabVar) Tab {
+func FromVar(o TabVar) Tab {
 	return Tab{Type: TAbVarType, Value: o}
 }
 
@@ -224,9 +224,9 @@ func ToVar(T Tab) TabVar {
 }
 
 func ArgsToTab(args ...Tab) Tab {
-	return ListToTab(args)
+	return FromList(args)
 }
 
 func CallTab(fun TabNativeFunc, args ...Tab) Tab {
-	return fun(ListToTab(args))
+	return fun(FromList(args))
 }

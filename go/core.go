@@ -20,7 +20,7 @@ func Plus(arguments Tab) Tab {
 	for _, item := range args {
 		result += ToNumber(item)
 	}
-	return NumberToTab(result)
+	return FromNumber(result)
 }
 
 func Minus(arguments Tab) Tab {
@@ -29,13 +29,13 @@ func Minus(arguments Tab) Tab {
 		return Tab{}
 	}
 	if len(args) == 1 {
-		return NumberToTab(-ToNumber(args[0]))
+		return FromNumber(-ToNumber(args[0]))
 	}
 	result := ToNumber(args[0])
 	for _, item := range args[1:] {
 		result -= ToNumber(item)
 	}
-	return NumberToTab(result)
+	return FromNumber(result)
 }
 
 func Multiply(arguments Tab) Tab {
@@ -44,7 +44,7 @@ func Multiply(arguments Tab) Tab {
 	for _, item := range args {
 		result *= ToNumber(item)
 	}
-	return NumberToTab(result)
+	return FromNumber(result)
 }
 
 func Divide(arguments Tab) Tab {
@@ -53,35 +53,35 @@ func Divide(arguments Tab) Tab {
 	for _, item := range args[1:] {
 		result /= ToNumber(item)
 	}
-	return NumberToTab(result)
+	return FromNumber(result)
 }
 
 func LessThan(arguments Tab) Tab {
 	args := ToList(arguments)
 	a := ToNumber(args[0])
 	b := ToNumber(args[1])
-	return BoolToTab(a < b)
+	return FromBool(a < b)
 }
 
 func LessThanEqual(arguments Tab) Tab {
 	args := ToList(arguments)
 	a := ToNumber(args[0])
 	b := ToNumber(args[1])
-	return BoolToTab(a <= b)
+	return FromBool(a <= b)
 }
 
 func GreaterThan(arguments Tab) Tab {
 	args := ToList(arguments)
 	a := ToNumber(args[0])
 	b := ToNumber(args[1])
-	return BoolToTab(a > b)
+	return FromBool(a > b)
 }
 
 func GreaterThanEqual(arguments Tab) Tab {
 	args := ToList(arguments)
 	a := ToNumber(args[0])
 	b := ToNumber(args[1])
-	return BoolToTab(a >= b)
+	return FromBool(a >= b)
 }
 
 func ParseNumber(arguments Tab) Tab {
@@ -90,43 +90,43 @@ func ParseNumber(arguments Tab) Tab {
 	if err != nil {
 		panic(err)
 	}
-	return NumberToTab(result)
+	return FromNumber(result)
 }
 
 func Modulo(arguments Tab) Tab {
 	args := ToList(arguments)
 	a := ToNumber(args[0])
 	b := ToNumber(args[1])
-	return NumberToTab(float64(int(a) % int(b)))
+	return FromNumber(float64(int(a) % int(b)))
 }
 
 func Pow(arguments Tab) Tab {
 	args := ToList(arguments)
 	a := ToNumber(args[0])
 	b := ToNumber(args[1])
-	return NumberToTab(math.Pow(a, b))
+	return FromNumber(math.Pow(a, b))
 }
 
 func Round(arguments Tab) Tab {
 	args := ToList(arguments)
 	a := ToNumber(args[0])
-	return NumberToTab(float64(int(a)))
+	return FromNumber(float64(int(a)))
 }
 
 func Ceil(arguments Tab) Tab {
 	args := ToList(arguments)
 	a := ToNumber(args[0])
-	return NumberToTab(float64(int(a) + 1))
+	return FromNumber(float64(int(a) + 1))
 }
 
 func Floor(arguments Tab) Tab {
 	args := ToList(arguments)
 	a := ToNumber(args[0])
-	return NumberToTab(float64(int(a)))
+	return FromNumber(float64(int(a)))
 }
 
 func TIsNumber(arguments Tab) Tab {
-	return BoolToTab(IsNumber(ToList(arguments)[0]))
+	return FromBool(IsNumber(ToList(arguments)[0]))
 }
 
 // Strings
@@ -135,17 +135,17 @@ func CharAt(arguments Tab) Tab {
 	args := ToList(arguments)
 	str := ToString(args[0])
 	index := int(ToNumber(args[1]))
-	return StringToTab(string(str[index]))
+	return FromString(string(str[index]))
 }
 
 func CharCode(arguments Tab) Tab {
 	args := ToList(arguments)
 	str := ToString(args[0])
-	return NumberToTab(float64(str[0]))
+	return FromNumber(float64(str[0]))
 }
 
 func TIsString(arguments Tab) Tab {
-	return BoolToTab(IsString(ToList(arguments)[0]))
+	return FromBool(IsString(ToList(arguments)[0]))
 }
 
 func SubStr(arguments Tab) Tab {
@@ -154,13 +154,13 @@ func SubStr(arguments Tab) Tab {
 	start := int(ToNumber(args[1]))
 	strlen := len(str)
 	if start > strlen {
-		return StringToTab("")
+		return FromString("")
 	}
 	var end int
 	if len(args) > 2 {
 		end = int(ToNumber(args[2]))
 		if end < start {
-			return StringToTab("")
+			return FromString("")
 		}
 		if end > strlen {
 			end = strlen
@@ -168,21 +168,21 @@ func SubStr(arguments Tab) Tab {
 	} else {
 		end = strlen
 	}
-	return StringToTab(str[start:end])
+	return FromString(str[start:end])
 }
 
 func StrJoin(arguments Tab) Tab {
 	args := ToList(arguments)
 	str := ToList(args[0])
 	if len(str) == 0 {
-		return StringToTab("")
+		return FromString("")
 	}
 	separator := ToString(args[1])
 	value := ToString(str[0])
 	for _, item := range str[1:] {
 		value += separator + ToString(item)
 	}
-	return StringToTab(value)
+	return FromString(value)
 }
 
 // Todo: should pretty print
@@ -192,25 +192,25 @@ func Str(arguments Tab) Tab {
 	for _, item := range args {
 		value += Print(item, false)
 	}
-	return StringToTab(value)
+	return FromString(value)
 }
 
 func StrStartsWith(arguments Tab) Tab {
 	args := ToList(arguments)
 	str := ToString(args[0])
 	prefix := ToString(args[1])
-	return BoolToTab(strings.HasPrefix(str, prefix))
+	return FromBool(strings.HasPrefix(str, prefix))
 }
 
 func StrEndsWith(arguments Tab) Tab {
 	args := ToList(arguments)
 	str := ToString(args[0])
 	prefix := ToString(args[1])
-	return BoolToTab(strings.HasSuffix(str, prefix))
+	return FromBool(strings.HasSuffix(str, prefix))
 }
 
 func StrLen(arguments Tab) Tab {
-	return NumberToTab(float64(len(ToString(ToList(arguments)[0]))))
+	return FromNumber(float64(len(ToString(ToList(arguments)[0]))))
 }
 
 func StrReplaceAll(arguments Tab) Tab {
@@ -218,7 +218,7 @@ func StrReplaceAll(arguments Tab) Tab {
 	str := ToString(args[0])
 	old := ToString(args[1])
 	new := ToString(args[2])
-	return StringToTab(strings.ReplaceAll(str, old, new))
+	return FromString(strings.ReplaceAll(str, old, new))
 }
 
 func StrConcat(arguments Tab) Tab {
@@ -227,27 +227,27 @@ func StrConcat(arguments Tab) Tab {
 	for _, item := range args {
 		result += ToString(item)
 	}
-	return StringToTab(result)
+	return FromString(result)
 }
 
 // Lists
 
 func List(arguments Tab) Tab {
-	return ListToTab(ToList(arguments))
+	return arguments
 }
 
 func Count(arguments Tab) Tab {
 	arg := ToList(arguments)[0]
 	if IsString(arg) {
-		return NumberToTab(float64(len(ToString(arg))))
+		return FromNumber(float64(len(ToString(arg))))
 	}
-	return NumberToTab(float64(len(ToList(arg))))
+	return FromNumber(float64(len(ToList(arg))))
 }
 
 func Cons(arguments Tab) Tab {
 	args := ToList(arguments)
 	result := append(TabList{args[0]}, ToList(args[1])...)
-	return ListToTab(result)
+	return FromList(result)
 }
 
 func Concat(arguments Tab) Tab {
@@ -256,7 +256,7 @@ func Concat(arguments Tab) Tab {
 	for _, item := range args {
 		result = append(result, ToList(item)...)
 	}
-	return ListToTab(result)
+	return FromList(result)
 }
 
 func Nth(arguments Tab) Tab {
@@ -264,7 +264,7 @@ func Nth(arguments Tab) Tab {
 	index := int(ToNumber(args[1]))
 	arg := args[0]
 	// if arg.IsString().ToBool() {
-	// 	return StringToTab(string(arg.ToString()[index]))
+	// 	return FromString(string(arg.ToString()[index]))
 	// }
 	return ToList(arg)[index]
 }
@@ -298,7 +298,7 @@ func Rest(arguments Tab) Tab {
 	if len(list) == 0 {
 		return Tab{}
 	}
-	return ListToTab(list[1:])
+	return FromList(list[1:])
 }
 
 func Slice(arguments Tab) Tab {
@@ -311,12 +311,12 @@ func Slice(arguments Tab) Tab {
 	} else {
 		end = len(values)
 	}
-	return ListToTab(values[start:end])
+	return FromList(values[start:end])
 }
 
 func TIsList(arguments Tab) Tab {
 	arg := ToList(arguments)[0]
-	return BoolToTab(IsList(arg))
+	return FromBool(IsList(arg))
 }
 
 // Dicts
@@ -327,11 +327,11 @@ func Dict(arguments Tab) Tab {
 	for i := 0; i < len(args); i += 2 {
 		result[ToString(args[i])] = args[i+1]
 	}
-	return DictToTab(result)
+	return FromDict(result)
 }
 
 func TIsDict(arguments Tab) Tab {
-	return BoolToTab(IsDict(ToList(arguments)[0]))
+	return FromBool(IsDict(ToList(arguments)[0]))
 }
 
 func Get(arguments Tab) Tab {
@@ -346,7 +346,7 @@ func Has(arguments Tab) Tab {
 	dict := ToDict(args[0])
 	key := ToString(args[1])
 	_, ok := dict[key]
-	return BoolToTab(ok)
+	return FromBool(ok)
 }
 
 func Set(arguments Tab) Tab {
@@ -358,16 +358,16 @@ func Set(arguments Tab) Tab {
 		dict[key] = value
 	}
 	dict[key] = value
-	return DictToTab(dict)
+	return FromDict(dict)
 }
 
 func Keys(arguments Tab) Tab {
 	dict := ToDict(ToList(arguments)[0])
 	var result TabList
 	for key := range dict {
-		result = append(result, StringToTab(key))
+		result = append(result, FromString(key))
 	}
-	return ListToTab(result)
+	return FromList(result)
 }
 
 func Vals(arguments Tab) Tab {
@@ -376,16 +376,16 @@ func Vals(arguments Tab) Tab {
 	for _, value := range dict {
 		result = append(result, value)
 	}
-	return ListToTab(result)
+	return FromList(result)
 }
 
 func Entries(arguments Tab) Tab {
 	dict := ToDict(ToList(arguments)[0])
 	var result TabList
 	for key, value := range dict {
-		result = append(result, ListToTab(TabList{StringToTab(key), value}))
+		result = append(result, FromList(TabList{FromString(key), value}))
 	}
-	return ListToTab(result)
+	return FromList(result)
 }
 
 func Assoc(arguments Tab) Tab {
@@ -401,7 +401,7 @@ func Assoc(arguments Tab) Tab {
 		value := kvs[i+1]
 		result[key] = value
 	}
-	return DictToTab(result)
+	return FromDict(result)
 }
 
 func Dissoc(arguments Tab) Tab {
@@ -418,7 +418,7 @@ func Dissoc(arguments Tab) Tab {
 		}
 		result[key] = value
 	}
-	return DictToTab(result)
+	return FromDict(result)
 }
 
 // Other
@@ -430,49 +430,49 @@ func Equals(arguments Tab) Tab {
 	aType := ToType(GetType(a))
 	bType := ToType(GetType(b))
 	if aType != bType {
-		return BoolToTab(false)
+		return FromBool(false)
 	}
 	switch aType {
 	case TabNumberType:
-		return BoolToTab(ToNumber(a) == ToNumber(b))
+		return FromBool(ToNumber(a) == ToNumber(b))
 	case TabStringType:
-		return BoolToTab(ToString(a) == ToString(b))
+		return FromBool(ToString(a) == ToString(b))
 	case TabSymbolType:
-		return BoolToTab(ToSymbol(a) == ToSymbol(b))
+		return FromBool(ToSymbol(a) == ToSymbol(b))
 	case TabListType:
 		aList := ToList(a)
 		bList := ToList(b)
 		if len(aList) != len(bList) {
-			return BoolToTab(false)
+			return FromBool(false)
 		}
 		for i := 0; i < len(aList); i++ {
-			if !ToBool(Equals(ListToTab(TabList{aList[i], bList[i]}))) {
-				return BoolToTab(false)
+			if !ToBool(Equals(FromList(TabList{aList[i], bList[i]}))) {
+				return FromBool(false)
 			}
 		}
-		return BoolToTab(true)
+		return FromBool(true)
 	case TabDictType:
 		aDict := ToDict(a)
 		bDict := ToDict(b)
 		if len(aDict) != len(bDict) {
-			return BoolToTab(false)
+			return FromBool(false)
 		}
 		for key, value := range aDict {
-			if !ToBool(Equals(ListToTab(TabList{value, bDict[key]}))) {
-				return BoolToTab(false)
+			if !ToBool(Equals(FromList(TabList{value, bDict[key]}))) {
+				return FromBool(false)
 			}
 		}
-		return BoolToTab(true)
+		return FromBool(true)
 	case TabFuncType:
-		return BoolToTab(&a == &b)
+		return FromBool(&a == &b)
 	case TabNativeFuncType:
 		// TODO: cannot compare funcs, what to do?
-		return BoolToTab(&a == &b)
+		return FromBool(&a == &b)
 	case TabMacroType:
-		return BoolToTab(&a == &b)
+		return FromBool(&a == &b)
 	case TabNilType:
 		// Nils are always equal
-		return BoolToTab(true)
+		return FromBool(true)
 	default:
 		panic(fmt.Sprint("Unknown type ", aType))
 	}
@@ -505,7 +505,7 @@ func Exit(arguments Tab) Tab {
 }
 
 func TIsNil(arguments Tab) Tab {
-	return BoolToTab(IsNil(ToList(arguments)[0]))
+	return FromBool(IsNil(ToList(arguments)[0]))
 }
 
 func TTokenize(arguments Tab) Tab {
@@ -558,13 +558,13 @@ func GetAstPosition(arguments Tab) Tab {
 	if ast.Position == nil {
 		return Tab{}
 	}
-	return DictToTab(*ast.Position)
+	return FromDict(*ast.Position)
 }
 
 func HasAstPosition(arguments Tab) Tab {
 	args := ToList(arguments)
 	ast := args[0]
-	return BoolToTab(ast.Position != nil)
+	return FromBool(ast.Position != nil)
 }
 
 func SetAstPosition(arguments Tab) Tab {
@@ -605,19 +605,19 @@ func FileRead(arguments Tab) Tab {
 	if err != nil {
 		panic(err)
 	}
-	return StringToTab(string(bytes))
+	return FromString(string(bytes))
 }
 
 func Dirname(arguments Tab) Tab {
 	args := ToList(arguments)
 	path := ToString(args[0])
-	return StringToTab(filepath.Dir(path))
+	return FromString(filepath.Dir(path))
 }
 
 func Basename(arguments Tab) Tab {
 	args := ToList(arguments)
 	path := ToString(args[0])
-	return StringToTab(filepath.Base(path))
+	return FromString(filepath.Base(path))
 }
 
 func PathJoin(arguments Tab) Tab {
@@ -627,7 +627,7 @@ func PathJoin(arguments Tab) Tab {
 		parts = append(parts, ToString(item))
 	}
 	path := filepath.Join(parts...)
-	return StringToTab(path)
+	return FromString(path)
 }
 
 func PathResolve(arguments Tab) Tab {
@@ -640,7 +640,7 @@ func PathResolve(arguments Tab) Tab {
 	if err != nil {
 		panic(err)
 	}
-	return StringToTab(path)
+	return FromString(path)
 }
 
 func ReadDir(arguments Tab) Tab {
@@ -652,38 +652,38 @@ func ReadDir(arguments Tab) Tab {
 	}
 	var result TabList
 	for _, file := range files {
-		result = append(result, StringToTab(file.Name()))
+		result = append(result, FromString(file.Name()))
 	}
-	return ListToTab(result)
+	return FromList(result)
 }
 
 // Time
 
 func TimeMs(arguments Tab) Tab {
-	return NumberToTab(float64(time.Now().UnixMilli()))
+	return FromNumber(float64(time.Now().UnixMilli()))
 }
 
 // Symbols
 
 func Symbol(arguments Tab) Tab {
-	return SymbolToTab(ToString(ToList(arguments)[0]))
+	return FromSymbol(ToString(ToList(arguments)[0]))
 }
 
 func TIsSymbol(arguments Tab) Tab {
-	return BoolToTab(IsSymbol(ToList(arguments)[0]))
+	return FromBool(IsSymbol(ToList(arguments)[0]))
 }
 
 // Funcs
 
 func TIsFunc(arguments Tab) Tab {
 	arg := ToList(arguments)[0]
-	return BoolToTab(IsFunc(arg) || IsNativeFunc(arg))
+	return FromBool(IsFunc(arg) || IsNativeFunc(arg))
 }
 
 // Bools
 
 func TIsBool(arguments Tab) Tab {
-	return BoolToTab(IsBool(ToList(arguments)[0]))
+	return FromBool(IsBool(ToList(arguments)[0]))
 }
 
 // Plugins
@@ -693,15 +693,15 @@ func LoadPlugin(arguments Tab) Tab {
 	filename := ToString(args[0])
 	p, err := plugin.Open(filename)
 	if err != nil {
-		panic(StringToTab("Failed to open plugin: " + err.Error()))
+		panic(FromString("Failed to open plugin: " + err.Error()))
 	}
 	value, err := p.Lookup("Export")
 	if err != nil {
-		panic(StringToTab("Failed to lookup Export"))
+		panic(FromString("Failed to lookup Export"))
 	}
 	tab, ok := value.(*Tab)
 	if !ok {
-		panic(StringToTab("Plugin Export is not a Tab"))
+		panic(FromString("Plugin Export is not a Tab"))
 	}
 	return *tab
 }
@@ -730,18 +730,18 @@ func Exec(arguments Tab) Tab {
 	if err != nil {
 		panic(err)
 	}
-	return StringToTab(string(out))
+	return FromString(string(out))
 }
 
 // Vars
 
 func Var(arguments Tab) Tab {
 	arg := ToList(arguments)[0]
-	return VarToTab(&arg)
+	return FromVar(&arg)
 }
 
 func TIsVar(arguments Tab) Tab {
-	return BoolToTab(IsVar(ToList(arguments)[0]))
+	return FromBool(IsVar(ToList(arguments)[0]))
 }
 
 func VarGet(arguments Tab) Tab {
@@ -760,103 +760,103 @@ func VarSet(arguments Tab) Tab {
 
 func AddCore(env Tab) Tab {
 	// Math
-	EnvSet(env, SymbolToTab("is-number"), NativeFuncToTab(TIsNumber))
-	EnvSet(env, SymbolToTab("+"), NativeFuncToTab(Plus))
-	EnvSet(env, SymbolToTab("-"), NativeFuncToTab(Minus))
-	EnvSet(env, SymbolToTab("*"), NativeFuncToTab(Multiply))
-	EnvSet(env, SymbolToTab("/"), NativeFuncToTab(Divide))
-	EnvSet(env, SymbolToTab(">"), NativeFuncToTab(GreaterThan))
-	EnvSet(env, SymbolToTab(">="), NativeFuncToTab(GreaterThanEqual))
-	EnvSet(env, SymbolToTab("<"), NativeFuncToTab(LessThan))
-	EnvSet(env, SymbolToTab("<="), NativeFuncToTab(LessThanEqual))
-	EnvSet(env, SymbolToTab("%"), NativeFuncToTab(Modulo))
-	EnvSet(env, SymbolToTab("pow"), NativeFuncToTab(Pow))
-	EnvSet(env, SymbolToTab("round"), NativeFuncToTab(Round))
-	EnvSet(env, SymbolToTab("ceil"), NativeFuncToTab(Ceil))
-	EnvSet(env, SymbolToTab("floor"), NativeFuncToTab(Floor))
-	EnvSet(env, SymbolToTab("parse-number"), NativeFuncToTab(ParseNumber))
+	EnvSet(env, FromSymbol("is-number"), FromNativeFunc(TIsNumber))
+	EnvSet(env, FromSymbol("+"), FromNativeFunc(Plus))
+	EnvSet(env, FromSymbol("-"), FromNativeFunc(Minus))
+	EnvSet(env, FromSymbol("*"), FromNativeFunc(Multiply))
+	EnvSet(env, FromSymbol("/"), FromNativeFunc(Divide))
+	EnvSet(env, FromSymbol(">"), FromNativeFunc(GreaterThan))
+	EnvSet(env, FromSymbol(">="), FromNativeFunc(GreaterThanEqual))
+	EnvSet(env, FromSymbol("<"), FromNativeFunc(LessThan))
+	EnvSet(env, FromSymbol("<="), FromNativeFunc(LessThanEqual))
+	EnvSet(env, FromSymbol("%"), FromNativeFunc(Modulo))
+	EnvSet(env, FromSymbol("pow"), FromNativeFunc(Pow))
+	EnvSet(env, FromSymbol("round"), FromNativeFunc(Round))
+	EnvSet(env, FromSymbol("ceil"), FromNativeFunc(Ceil))
+	EnvSet(env, FromSymbol("floor"), FromNativeFunc(Floor))
+	EnvSet(env, FromSymbol("parse-number"), FromNativeFunc(ParseNumber))
 
 	// Strings
-	EnvSet(env, SymbolToTab("str"), NativeFuncToTab(Str))
-	EnvSet(env, SymbolToTab("is-string"), NativeFuncToTab(TIsString))
-	EnvSet(env, SymbolToTab("char-at"), NativeFuncToTab(CharAt))
-	EnvSet(env, SymbolToTab("char-code"), NativeFuncToTab(CharCode))
-	EnvSet(env, SymbolToTab("sub-str"), NativeFuncToTab(SubStr))
-	EnvSet(env, SymbolToTab("str-join"), NativeFuncToTab(StrJoin))
-	EnvSet(env, SymbolToTab("str-starts-with"), NativeFuncToTab(StrStartsWith))
-	EnvSet(env, SymbolToTab("str-ends-with"), NativeFuncToTab(StrEndsWith))
-	EnvSet(env, SymbolToTab("str-len"), NativeFuncToTab(StrLen))
-	EnvSet(env, SymbolToTab("str-replace-all"), NativeFuncToTab(StrReplaceAll))
-	EnvSet(env, SymbolToTab("str-concat"), NativeFuncToTab(StrConcat))
+	EnvSet(env, FromSymbol("str"), FromNativeFunc(Str))
+	EnvSet(env, FromSymbol("is-string"), FromNativeFunc(TIsString))
+	EnvSet(env, FromSymbol("char-at"), FromNativeFunc(CharAt))
+	EnvSet(env, FromSymbol("char-code"), FromNativeFunc(CharCode))
+	EnvSet(env, FromSymbol("sub-str"), FromNativeFunc(SubStr))
+	EnvSet(env, FromSymbol("str-join"), FromNativeFunc(StrJoin))
+	EnvSet(env, FromSymbol("str-starts-with"), FromNativeFunc(StrStartsWith))
+	EnvSet(env, FromSymbol("str-ends-with"), FromNativeFunc(StrEndsWith))
+	EnvSet(env, FromSymbol("str-len"), FromNativeFunc(StrLen))
+	EnvSet(env, FromSymbol("str-replace-all"), FromNativeFunc(StrReplaceAll))
+	EnvSet(env, FromSymbol("str-concat"), FromNativeFunc(StrConcat))
 
 	// Lists
-	EnvSet(env, SymbolToTab("list"), NativeFuncToTab(List))
-	EnvSet(env, SymbolToTab("is-list"), NativeFuncToTab(TIsList))
-	EnvSet(env, SymbolToTab("count"), NativeFuncToTab(Count))
-	EnvSet(env, SymbolToTab("cons"), NativeFuncToTab(Cons))
-	EnvSet(env, SymbolToTab("concat"), NativeFuncToTab(Concat))
-	EnvSet(env, SymbolToTab("nth"), NativeFuncToTab(Nth))
-	EnvSet(env, SymbolToTab("first"), NativeFuncToTab(First))
-	EnvSet(env, SymbolToTab("last"), NativeFuncToTab(Last))
-	EnvSet(env, SymbolToTab("slice"), NativeFuncToTab(Slice))
-	EnvSet(env, SymbolToTab("rest"), NativeFuncToTab(Rest))
+	EnvSet(env, FromSymbol("list"), FromNativeFunc(List))
+	EnvSet(env, FromSymbol("is-list"), FromNativeFunc(TIsList))
+	EnvSet(env, FromSymbol("count"), FromNativeFunc(Count))
+	EnvSet(env, FromSymbol("cons"), FromNativeFunc(Cons))
+	EnvSet(env, FromSymbol("concat"), FromNativeFunc(Concat))
+	EnvSet(env, FromSymbol("nth"), FromNativeFunc(Nth))
+	EnvSet(env, FromSymbol("first"), FromNativeFunc(First))
+	EnvSet(env, FromSymbol("last"), FromNativeFunc(Last))
+	EnvSet(env, FromSymbol("slice"), FromNativeFunc(Slice))
+	EnvSet(env, FromSymbol("rest"), FromNativeFunc(Rest))
 
 	// Dicts
-	EnvSet(env, SymbolToTab("dict"), NativeFuncToTab(Dict))
-	EnvSet(env, SymbolToTab("is-dict"), NativeFuncToTab(TIsDict))
-	EnvSet(env, SymbolToTab("get"), NativeFuncToTab(Get))
-	EnvSet(env, SymbolToTab("has"), NativeFuncToTab(Has))
-	EnvSet(env, SymbolToTab("set"), NativeFuncToTab(Set))
-	EnvSet(env, SymbolToTab("keys"), NativeFuncToTab(Keys))
-	EnvSet(env, SymbolToTab("vals"), NativeFuncToTab(Vals))
-	EnvSet(env, SymbolToTab("entries"), NativeFuncToTab(Entries))
-	EnvSet(env, SymbolToTab("assoc"), NativeFuncToTab(Assoc))
-	EnvSet(env, SymbolToTab("dissoc"), NativeFuncToTab(Dissoc))
+	EnvSet(env, FromSymbol("dict"), FromNativeFunc(Dict))
+	EnvSet(env, FromSymbol("is-dict"), FromNativeFunc(TIsDict))
+	EnvSet(env, FromSymbol("get"), FromNativeFunc(Get))
+	EnvSet(env, FromSymbol("has"), FromNativeFunc(Has))
+	EnvSet(env, FromSymbol("set"), FromNativeFunc(Set))
+	EnvSet(env, FromSymbol("keys"), FromNativeFunc(Keys))
+	EnvSet(env, FromSymbol("vals"), FromNativeFunc(Vals))
+	EnvSet(env, FromSymbol("entries"), FromNativeFunc(Entries))
+	EnvSet(env, FromSymbol("assoc"), FromNativeFunc(Assoc))
+	EnvSet(env, FromSymbol("dissoc"), FromNativeFunc(Dissoc))
 
 	// Meta
-	EnvSet(env, SymbolToTab("tokenize"), NativeFuncToTab(TTokenize))
-	EnvSet(env, SymbolToTab("parse"), NativeFuncToTab(TParse))
-	EnvSet(env, SymbolToTab("read-string"), NativeFuncToTab(ReadString))
-	EnvSet(env, SymbolToTab("get-ast-position"), NativeFuncToTab(GetAstPosition))
-	EnvSet(env, SymbolToTab("env-get"), NativeFuncToTab(TEnvGet))
-	EnvSet(env, SymbolToTab("env-set"), NativeFuncToTab(TEnvSet))
-	EnvSet(env, SymbolToTab("env-new"), NativeFuncToTab(EnvNew))
-	EnvSet(env, SymbolToTab("load-plugin"), NativeFuncToTab(LoadPlugin))
+	EnvSet(env, FromSymbol("tokenize"), FromNativeFunc(TTokenize))
+	EnvSet(env, FromSymbol("parse"), FromNativeFunc(TParse))
+	EnvSet(env, FromSymbol("read-string"), FromNativeFunc(ReadString))
+	EnvSet(env, FromSymbol("get-ast-position"), FromNativeFunc(GetAstPosition))
+	EnvSet(env, FromSymbol("env-get"), FromNativeFunc(TEnvGet))
+	EnvSet(env, FromSymbol("env-set"), FromNativeFunc(TEnvSet))
+	EnvSet(env, FromSymbol("env-new"), FromNativeFunc(EnvNew))
+	EnvSet(env, FromSymbol("load-plugin"), FromNativeFunc(LoadPlugin))
 
 	// Time
-	EnvSet(env, SymbolToTab("time-ms"), NativeFuncToTab(TimeMs))
+	EnvSet(env, FromSymbol("time-ms"), FromNativeFunc(TimeMs))
 
 	// Symbol
-	EnvSet(env, SymbolToTab("symbol"), NativeFuncToTab(Symbol))
-	EnvSet(env, SymbolToTab("is-symbol"), NativeFuncToTab(TIsSymbol))
+	EnvSet(env, FromSymbol("symbol"), FromNativeFunc(Symbol))
+	EnvSet(env, FromSymbol("is-symbol"), FromNativeFunc(TIsSymbol))
 
 	// Funcs
-	EnvSet(env, SymbolToTab("is-func"), NativeFuncToTab(TIsFunc))
+	EnvSet(env, FromSymbol("is-func"), FromNativeFunc(TIsFunc))
 
 	// Bools
-	EnvSet(env, SymbolToTab("is-boolean"), NativeFuncToTab(TIsBool))
+	EnvSet(env, FromSymbol("is-boolean"), FromNativeFunc(TIsBool))
 
 	// Files
-	EnvSet(env, SymbolToTab("file-read"), NativeFuncToTab(FileRead))
-	EnvSet(env, SymbolToTab("dirname"), NativeFuncToTab(Dirname))
-	EnvSet(env, SymbolToTab("basename"), NativeFuncToTab(Basename))
-	EnvSet(env, SymbolToTab("path-join"), NativeFuncToTab(PathJoin))
-	EnvSet(env, SymbolToTab("path-resolve"), NativeFuncToTab(PathResolve))
-	EnvSet(env, SymbolToTab("read-dir"), NativeFuncToTab(ReadDir))
+	EnvSet(env, FromSymbol("file-read"), FromNativeFunc(FileRead))
+	EnvSet(env, FromSymbol("dirname"), FromNativeFunc(Dirname))
+	EnvSet(env, FromSymbol("basename"), FromNativeFunc(Basename))
+	EnvSet(env, FromSymbol("path-join"), FromNativeFunc(PathJoin))
+	EnvSet(env, FromSymbol("path-resolve"), FromNativeFunc(PathResolve))
+	EnvSet(env, FromSymbol("read-dir"), FromNativeFunc(ReadDir))
 
 	// Other
-	EnvSet(env, SymbolToTab("="), NativeFuncToTab(Equals))
-	EnvSet(env, SymbolToTab("print"), NativeFuncToTab(TPrint))
-	EnvSet(env, SymbolToTab("println"), NativeFuncToTab(Println))
-	EnvSet(env, SymbolToTab("exit"), NativeFuncToTab(Exit))
-	EnvSet(env, SymbolToTab("exec"), NativeFuncToTab(Exec))
-	EnvSet(env, SymbolToTab("is-nil"), NativeFuncToTab(TIsNil))
+	EnvSet(env, FromSymbol("="), FromNativeFunc(Equals))
+	EnvSet(env, FromSymbol("print"), FromNativeFunc(TPrint))
+	EnvSet(env, FromSymbol("println"), FromNativeFunc(Println))
+	EnvSet(env, FromSymbol("exit"), FromNativeFunc(Exit))
+	EnvSet(env, FromSymbol("exec"), FromNativeFunc(Exec))
+	EnvSet(env, FromSymbol("is-nil"), FromNativeFunc(TIsNil))
 
 	// Vars
-	EnvSet(env, SymbolToTab("var"), NativeFuncToTab(Var))
-	EnvSet(env, SymbolToTab("is-var"), NativeFuncToTab(TIsVar))
-	EnvSet(env, SymbolToTab("deref"), NativeFuncToTab(VarGet))
-	EnvSet(env, SymbolToTab("reset"), NativeFuncToTab(VarSet))
+	EnvSet(env, FromSymbol("var"), FromNativeFunc(Var))
+	EnvSet(env, FromSymbol("is-var"), FromNativeFunc(TIsVar))
+	EnvSet(env, FromSymbol("deref"), FromNativeFunc(VarGet))
+	EnvSet(env, FromSymbol("reset"), FromNativeFunc(VarSet))
 
 	return env
 }

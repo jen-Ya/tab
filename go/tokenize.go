@@ -70,16 +70,16 @@ func Unescape(str string) string {
 }
 
 func MakeToken(kind TabToken, value Tab, filename string, startLine int, startChar int, endLine int, endChar int) Tab {
-	result := DictToTab(TabDict{
-		"kind":  NumberToTab(float64(kind)),
+	result := FromDict(TabDict{
+		"kind":  FromNumber(float64(kind)),
 		"value": value,
 	})
 	result.Position = &TabDict{
-		"filename":  StringToTab(filename),
-		"startLine": NumberToTab(float64(startLine)),
-		"startChar": NumberToTab(float64(startChar)),
-		"endLine":   NumberToTab(float64(endLine)),
-		"endChar":   NumberToTab(float64(endChar)),
+		"filename":  FromString(filename),
+		"startLine": FromNumber(float64(startLine)),
+		"startChar": FromNumber(float64(startChar)),
+		"endLine":   FromNumber(float64(endLine)),
+		"endChar":   FromNumber(float64(endChar)),
 	}
 	return result
 }
@@ -263,7 +263,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 				return err
 			}
 			if keepKomments {
-				AddToken(TabCommentToken, StringToTab(value))
+				AddToken(TabCommentToken, FromString(value))
 			}
 		} else {
 			if err := Consume("#"); err != nil {
@@ -279,7 +279,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 				return err
 			}
 			if keepKomments {
-				AddToken(TabCommentToken, StringToTab(value))
+				AddToken(TabCommentToken, FromString(value))
 			}
 		}
 		return nil
@@ -292,7 +292,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 			if err != nil {
 				return err
 			}
-			AddToken(TabStringToken, StringToTab(value))
+			AddToken(TabStringToken, FromString(value))
 		} else {
 			if err := Consume(quote); err != nil {
 				return err
@@ -313,7 +313,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 			// Should we unescape escaped quotes in single line strings?
 			// e.g. "foo\"bar" -> foo"bar?
 			value = Unescape(value)
-			AddToken(TabStringToken, StringToTab(value))
+			AddToken(TabStringToken, FromString(value))
 		}
 		return nil
 	}
@@ -349,7 +349,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 		if err != nil {
 			return TokenizeError(fmt.Sprintf("Could not parse number %s", value))
 		}
-		AddToken(TabNumberToken, NumberToTab(num))
+		AddToken(TabNumberToken, FromNumber(num))
 		return nil
 	}
 
@@ -370,7 +370,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 		if value == "" {
 			return TokenizeError("Symbol has no value")
 		}
-		AddToken(TabSymbolToken, SymbolToTab(value))
+		AddToken(TabSymbolToken, FromSymbol(value))
 		return nil
 	}
 
@@ -395,7 +395,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 	for {
 		if cursor >= textLength-1 {
 			ConsumeEof()
-			return ListToTab(tokens), nil
+			return FromList(tokens), nil
 		} else if IsPeek(" ") {
 			if err = Consume(" "); err != nil {
 				return
@@ -439,12 +439,12 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 			if err = Consume("true"); err != nil {
 				return
 			}
-			AddToken(TabBooleanToken, BoolToTab(true))
+			AddToken(TabBooleanToken, FromBool(true))
 		} else if IsPeekWord("false") {
 			if err = Consume("false"); err != nil {
 				return
 			}
-			AddToken(TabBooleanToken, BoolToTab(false))
+			AddToken(TabBooleanToken, FromBool(false))
 		} else {
 			if err = ConsumeSymbol(); err != nil {
 				return

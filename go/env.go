@@ -1,8 +1,8 @@
 package tabgo
 
 func Env(outer Tab) Tab {
-	return DictToTab(TabDict{
-		"data":  DictToTab(TabDict{}),
+	return FromDict(TabDict{
+		"data":  FromDict(TabDict{}),
 		"outer": outer,
 	})
 }

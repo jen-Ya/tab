@@ -19,10 +19,10 @@ const initScript = `eval
 
 func EnvDefault() t.Tab {
 	env := t.Env(t.Tab{})
-	tru := t.SymbolToTab("tru")
+	tru := t.FromSymbol("tru")
 	t.EnvSet(env, tru, tru)
-	t.EnvSet(env, t.SymbolToTab(".env-root"), env)
-	t.EnvSet(env, t.SymbolToTab(".tabhome"), t.StringToTab(os.Getenv("TABHOME")))
+	t.EnvSet(env, t.FromSymbol(".env-root"), env)
+	t.EnvSet(env, t.FromSymbol(".tabhome"), t.FromString(os.Getenv("TABHOME")))
 	t.AddCore(env)
 	t.Eval(t.Read(initScript, false, "init"), env)
 	return env

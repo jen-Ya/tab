@@ -21,13 +21,13 @@ func EvalAst(ast Tab, env Tab) Tab {
 		for _, item := range ToList(ast) {
 			results = append(results, Eval(item, env))
 		}
-		return ListToTab(results)
+		return FromList(results)
 	case TabDictType:
 		results := TabDict{}
 		for key, item := range ToDict(ast) {
 			results[key] = Eval(item, env)
 		}
-		return DictToTab(results)
+		return FromDict(results)
 	}
 	return ast
 }
@@ -41,12 +41,12 @@ func Macroexpand(ast Tab, env Tab) Tab {
 		macro := ToMacro(EnvGet(env, astList[0]))
 		// if first param is '.caller', provide caller function also
 		_env := Env(macro.Env)
-		EnvSet(_env, SymbolToTab(".caller"), astList[0])
+		EnvSet(_env, FromSymbol(".caller"), astList[0])
 		args := astList[1:]
 		// TODO: .caller ?
 		for i, param := range ToList(macro.Params) {
 			if ToSymbol(param) == ".." {
-				EnvSet(_env, ToList(macro.Params)[i+1], ListToTab(args[i:]))
+				EnvSet(_env, ToList(macro.Params)[i+1], FromList(args[i:]))
 				break
 			}
 			if len(args) <= i {
@@ -113,7 +113,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 			case "eval":
 				list := ToList(ast)[1:]
 				result := EvalAst(
-					ListToTab(list),
+					FromList(list),
 					env,
 				)
 				ast = ToList(result)[0]
@@ -143,21 +143,20 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 				continue
 
 			case "if":
-				// fmt.Println("IF FORM DETECTED")
 				list := ToList(ast)
 				cond := Eval(list[1], env)
 				// condition is not nil and not boolean false
 				truthy := !IsNil(cond) && (!IsBool(cond) || ToBool(cond))
 				if truthy {
-					// fmt.Println("TRUTHY")
+					// truthy
 					ast = list[2]
 					continue
 				} else if len(list) > 3 {
-					// fmt.Println("FALSY ELSE")
+					// falsy -> else
 					ast = list[3]
 					continue
 				} else {
-					// fmt.Println("FALSY NO ELSE")
+					// falsy -> no else
 					return Tab{}
 				}
 
@@ -178,13 +177,13 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 				list := ToList(ast)
 				// eval first element as function to call
 				first := Eval(list[1], env)
-				applyArgs := ToList(EvalAst(ListToTab(list[2:]), env))
+				applyArgs := ToList(EvalAst(FromList(list[2:]), env))
 				concats := applyArgs[0 : len(applyArgs)-1]
 				last := ToList(applyArgs[len(applyArgs)-1])
 				funcArgs := append(concats, last...)
 				var f TabFunc
 				if IsNativeFunc(first) {
-					return ToNativeFunc(first)(ListToTab(funcArgs))
+					return ToNativeFunc(first)(FromList(funcArgs))
 				} else if IsFunc(first) {
 					f = ToFunc(first)
 				} else if IsMacro(first) {
@@ -196,7 +195,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 				env = Env(f.Env)
 				for i, param := range ToList(f.Params) {
 					if ToSymbol(param) == ".." {
-						EnvSet(env, ToList(f.Params)[i+1], ListToTab(funcArgs[i:]))
+						EnvSet(env, ToList(f.Params)[i+1], FromList(funcArgs[i:]))
 						break
 					}
 					if len(funcArgs) <= i {
@@ -210,9 +209,9 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 			case "lambda":
 				params := ToList(ast)[1]
 				if !IsList(params) {
-					params = ListToTab(TabList{params})
+					params = FromList(TabList{params})
 				}
-				return FuncToTab(TabFunc{
+				return FromFunc(TabFunc{
 					Ast:    ToList(ast)[2],
 					Params: params,
 					Env:    env,
@@ -221,9 +220,9 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 			case "macrof":
 				params := ToList(ast)[1]
 				if !IsList(params) {
-					params = ListToTab(TabList{params})
+					params = FromList(TabList{params})
 				}
-				return MacroToTab(TabFunc{
+				return FromMacro(TabFunc{
 					Ast:    ToList(ast)[2],
 					Params: params,
 					Env:    env,
@@ -243,7 +242,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 							EnvSet(_env, symbol, tab)
 						} else {
 							// otherwise, set .error to string
-							EnvSet(_env, symbol, StringToTab(fmt.Sprintf("%s", r)))
+							EnvSet(_env, symbol, FromString(fmt.Sprintf("%s", r)))
 						}
 						evaled = Eval(ToList(astList[2])[2], _env)
 					}
@@ -260,14 +259,14 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 		switch ToType(GetType(first)) {
 		case TabFuncType:
 			fun := ToFunc(first)
-			args := ToList(EvalAst(ListToTab(ulist[1:]), env))
+			args := ToList(EvalAst(FromList(ulist[1:]), env))
 			env = Env(fun.Env)
 			for i, param := range ToList(fun.Params) {
 				if IsNil(param) {
 					continue
 				}
 				if ToSymbol(param) == ".." {
-					EnvSet(env, ToList(fun.Params)[i+1], ListToTab(args[i:]))
+					EnvSet(env, ToList(fun.Params)[i+1], FromList(args[i:]))
 					break
 				}
 				if len(args) <= i {
@@ -278,7 +277,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 			ast = ToFunc(first).Ast
 			continue
 		case TabNativeFuncType:
-			args := EvalAst(ListToTab(ulist[1:]), env)
+			args := EvalAst(FromList(ulist[1:]), env)
 			return ToNativeFunc(first)(args)
 		default:
 			panic(fmt.Sprintf("Cannot call non-function of type %s at %s: %s", first.Type.String(), AstPositionToString(ast), Print(ast, true)))

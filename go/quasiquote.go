@@ -1,7 +1,7 @@
 package tabgo
 
 func QuasiquoteList(ast Tab) Tab {
-	result := ListToTab(TabList{})
+	result := FromList(TabList{})
 	astList := ToList(ast)
 	for i := len(astList) - 1; i >= 0; i-- {
 		elt := astList[i]
@@ -9,14 +9,14 @@ func QuasiquoteList(ast Tab) Tab {
 			len(ToList(elt)) > 0 &&
 			IsSymbol(ToList(elt)[0]) &&
 			ToSymbol(ToList(elt)[0]) == "..unq" {
-			result = ListToTab(TabList{
-				SymbolToTab("concat"),
+			result = FromList(TabList{
+				FromSymbol("concat"),
 				ToList(elt)[1],
 				result,
 			})
 		} else {
-			result = ListToTab(TabList{
-				SymbolToTab("cons"),
+			result = FromList(TabList{
+				FromSymbol("cons"),
 				Quasiquote(elt),
 				result,
 			})
@@ -36,8 +36,8 @@ func Quasiquote(ast Tab) Tab {
 		return QuasiquoteList(ast)
 	}
 	if IsDict(ast) || IsSymbol(ast) {
-		return ListToTab(TabList{
-			SymbolToTab("q"),
+		return FromList(TabList{
+			FromSymbol("q"),
 			ast,
 		})
 	}
