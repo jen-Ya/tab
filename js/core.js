@@ -113,6 +113,7 @@ const stringFuncs = {
 	'str-join': (array, separator) => array.join(separator || ''),
 	// TODO: remove
 	'str-replace-all': (str, from, to) => str.replaceAll(from, to),
+	'str-concat': (...args) => args.join(''),
 };
 
 const printFuncs = {
