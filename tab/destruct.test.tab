@@ -1,5 +1,5 @@
 require '~/assert.tab'
-require './destruct.tab'
+require './destruct.tab' dlet
 
 # simple destructing from variable
 # unmatched sumbol (e) is nil # todo: maybe it should be an error instead

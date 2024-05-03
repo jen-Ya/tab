@@ -1,6 +1,8 @@
 require './assert.tab'
 require './early-return.tab'
+require '~/while.tab' while
 
+println 'ok'
 # should early return 10
 assert-eq
 	early-do
@@ -19,7 +21,7 @@ assert-eq
 		while (varply i < 100)
 			swap i + 1
 			if (varply i >= 10)
-				return
+				(return)
 		42
 	nil
 
@@ -28,25 +30,25 @@ assert-eq
 	early-do
 		let i (var 0)
 		while (varply i < 10)
-			increment i
+			swap i + 1
 			if (varply i >= 20)
 				return (deref i)
 		42
 	42
 
-# should early return 10
-let i 0
-early-while (< i 100)
-	increment i
-	if(>= i 10)
-		break i
-assert-eq i 10
+# should early return 11
+let i (var 0)
+assert-eq 42
+	early-while (varply i < 100)
+		swap i + 1
+		if(varply i >= 11)
+			break 42
 
 # should normal return 10
-let i 0
-early-while (< i 10)
-	increment i
-	if(>= i 100)
-		break i
-	i
-assert-eq i 10
+let i (var 0)
+assert-eq 5
+	early-while (varply i < 10)
+		swap i + 1
+		if(varply i >= 100)
+			break (deref i)
+		varply i / 2

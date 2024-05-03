@@ -46,8 +46,8 @@ let tests (map (li
 	# 'strings.test.tab' # implementation uses list functions on strings
 	'switch.test.tab' # uses tabjs/math
 	# 'syntax.test.tab' # fails
-	# tokenizer.test.tab # check later
-	# parser.test.tab # check later
+	'tokenizer.test.tab' # check later
+	'parser.test.tab' # check later
 	'while.test.tab'
 	'zip.test.tab'
 	'group.test.tab'

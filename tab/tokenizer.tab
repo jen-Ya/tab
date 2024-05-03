@@ -1,3 +1,6 @@
+require '~/for-range.tab' for-range
+require '~/while.tab' while until
+
 let digits
 	li '1' '2' '3' '4' '5' '6' '7' '8' '9' '0'
 let noid
@@ -28,7 +31,7 @@ fn tokenize (text opts)
 		coalesce
 			optget opts 'keep-comments'
 			false
-	let text (+ text '\n')
+	let text (str-concat text '\n')
 	let cursor (var 0)
 	let linecount (var 0)
 	let charcount (var 0)
@@ -41,10 +44,10 @@ fn tokenize (text opts)
 			throw 'Cursor out of range'
 		if (is-char-at-cursor '\n')
 			do
-				reset linecount (+ (deref linecount) 1)
+				swap linecount + 1
 				reset charcount 0
-			reset charcount (+ (deref charcount) 1)
-		reset cursor (+ (deref cursor) 1)
+			swap charcount + 1
+		swap cursor + 1
 	let current-indent (var 0)
 	fn get-current-indent () (deref current-indent)
 	fn set-current-indent indent (reset current-indent indent)
@@ -57,31 +60,25 @@ fn tokenize (text opts)
 
 	let tokens (var (list))
 	fn add-token (type value)
-		reset tokens
-			append
-				deref tokens
+		swap tokens append
+			dict 'type' type 'value' value 'position'
 				dict
-					'type'
-					type
-					'value'
-					if (is-undefined value) nil value
-					'position'
-					dict
-						'start'
-						deref tokenstart
-						'end'
-						li
-							deref linecount
-							deref charcount
+					'start'
+					deref tokenstart
+					'end'
+					li
+						deref linecount
+						deref charcount
 		reset tokenstart
-			var (li (deref linecount) (deref charcount))
+			li (deref linecount) (deref charcount)
 
 	fn consume chars
-		map chars
-			f char
-				if (is-char-at-cursor char)
-					(inc-cursor)
-					throw (str 'Tokeinze Error: unexpected ' (char-at-cursor) ' expected ' char)
+		each (range (str-len chars)) (f i
+			let char (char-at chars i)
+			if (is-char-at-cursor char)
+				(inc-cursor)
+				throw (str 'Tokeinze Error: unexpected ' (char-at-cursor) ' expected ' char)
+		)
 
 	fn is-peek chars
 		=
@@ -101,7 +98,7 @@ fn tokenize (text opts)
 			apply is-peek-any (rest opts)
 
 	fn consume-indent indent
-		for-range x indent
+		for-range _ indent
 			consume '\t'
 
 	fn get-indent-rec indent
@@ -155,7 +152,7 @@ fn tokenize (text opts)
 		consume '\n'
 		let value (var '')
 		fn append-value chars
-			reset value (+ (deref value) chars)
+			swap value str-concat chars
 		fn recursion ()
 			until (is-char-at-cursor '\n')
 				append-value (char-at-cursor)
@@ -180,7 +177,7 @@ fn tokenize (text opts)
 	fn consume-to-eol ()
 		let value (var '')
 		fn append-value chars
-			reset value (+ (deref value) chars)
+			swap value str-concat chars
 		until (is-char-at-cursor '\n')
 			append-value (char-at-cursor)
 			(inc-cursor)
@@ -209,7 +206,7 @@ fn tokenize (text opts)
 				consume sep
 				let value (var '')
 				fn append-value chars
-					reset value (+ (deref value) chars)
+					swap value str-concat chars
 				until (is-char-at-cursor sep)
 					append-value (char-at-cursor)
 					(inc-cursor)
@@ -221,7 +218,7 @@ fn tokenize (text opts)
 	fn number ()
 		let value (var '')
 		fn append-value chars
-			reset value (+ (deref value) chars)
+			swap value str-concat chars
 		while (is-char-any (char-at-cursor) digits)
 			append-value (char-at-cursor)
 			(inc-cursor)
@@ -239,7 +236,7 @@ fn tokenize (text opts)
 	fn symbol ()
 		let value (var '')
 		fn append-value chars
-			reset value (+ (deref value) chars)
+			swap value str-concat chars
 		until (is-char-any (char-at-cursor) noid)
 			append-value (char-at-cursor)
 			(inc-cursor)
@@ -307,7 +304,8 @@ fn tokenize (text opts)
 			(symbol)
 		# /cond
 		if
-			< (get-cursor) (str-len text)
+			# TODO: not sure why it fails without -1, but should be okay, since the last character is always '\n'
+			< (get-cursor) (- (str-len text) 1)
 			(iterate)
 	# /fn iterate
 
@@ -315,22 +313,3 @@ fn tokenize (text opts)
 	(eof)
 	deref tokens # return tokens
 # /fn tokenize
-
-# fn tokenize-example example
-# 	let sample
-# 		file-read example
-# 	let tokens
-# 		tokenize sample nil
-# 	println example ':' tokens
-
-# let examples
-# 	li
-# 		# './tab/test.tab'
-# 		# './tab/hello.tab'
-# 		# './tab/comments.tab'
-# 		# './tab/functest.tab'
-# 		# './tab/init.tab'
-# 		# './tab/range.tab'
-# 		'./tab/tokenizer.tab'
-
-# # map tokenize-example examples

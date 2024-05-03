@@ -1,5 +1,39 @@
-require './assert.tab' assert assert-throw
+require './assert.tab' assert assert-throw assert-no-throw assert-eq
 require './tokenizer.tab' tokenize
+
+fn to-token-types (code)
+	map (tokenize code) (f token (get token 'type'))
+
+assert-eq
+	to-token-types '
+		hello
+			world
+	'
+	li 'symbol' 'indent' 'symbol' 'eof'
+
+assert-eq
+	to-token-types '
+		hello 'world' 123 nil
+	'
+	li 'symbol' 'string' 'number' 'nil' 'eof'
+
+
+assert-no-throw
+	tokenize 'hello world'
+
+assert-no-throw (f _
+	tokenize '
+		hello
+			world
+	'
+)
+
+assert
+	tokenize '
+		(test
+			best # what
+		)
+	'
 
 # Should throw error on unexpected tab
 assert-throw
@@ -10,9 +44,10 @@ assert
 	tokenize
 		file-read .filename
 
-assert
+assert-no-throw (f _
 	tokenize '
 		(test
 			best # what
 		)
 	'
+)

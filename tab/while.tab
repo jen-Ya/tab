@@ -1,0 +1,20 @@
+require '~/gensym.tab' gensym
+
+fn .while (condition body)
+	let tmpfn (gensym)
+	let tmpval (gensym)
+	qq ((fn (unq tmpfn) (unq tmpval) (
+		unless (unq condition) (unq tmpval) ((unq tmpfn)
+			do (..unq body)
+		)
+	)) nil)
+
+macro while (condition .. body)
+	if (is-empty body)
+		throw 'Empty while body'
+	.while condition body
+
+macro until (condition .. body)
+	if (< (count body) 1)
+		throw 'Empty until body'
+	.while (qq (not (unq condition))) body

@@ -1,0 +1,7 @@
+macro for-range (var end .. body)
+	if (< (count body) 1)
+		throw 'Empty for-range body'
+	qq
+		each (range (unq end)) (f (unq var)
+			..unq body
+		)

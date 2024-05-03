@@ -1,8 +1,19 @@
-require './assert.tab' assert-eq
+require './while.tab'
+require '~/assert.tab' assert-eq
 
 let a (var 0)
-
 while (varply a < 10)
 	swap a + 1
-
 assert-eq (deref a) 10
+
+let b (var 0)
+until (varply b > 10)
+	swap b + 1
+assert-eq (deref b) 11
+
+let c (var 0)
+# should return last evaluated expression
+assert-eq 1000
+	while (varply c < 10)
+		swap c + 1
+		varply c * 100

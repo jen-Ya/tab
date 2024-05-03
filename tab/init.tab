@@ -67,12 +67,12 @@ fn each (values func)
 		throw (str 'each argument list: Type error [expected=list|string, got=' values ']')
 	unless (is-func func)
 		throw (str 'each argument func: Type error [expected=function], got=' func ']' )
-	fn proc (values)
+	fn .each (values)
 		unless (is-empty values) (do
 			func (first values)
-			proc (rest values)
+			.each (rest values)
 		)
-	proc values
+	.each values
 
 fn is-empty arg
 	= (count arg) 0
@@ -176,36 +176,6 @@ fn coalesce (.. vals)
 macro increment var
 	qq
 		let (unq var) (+ (unq var) 1)
-
-
-# TODO: this is not how macros should be used
-macro while (condition .. body)
-	if (< (count body) 1)
-		throw 'Empty while body'
-	qq
-		if
-			unq condition
-			do
-				..unq body
-				while (unq condition) (..unq body)
-
-macro until (condition .. body)
-	if (< (count body) 1)
-		throw 'Empty until body'
-	qq
-		while (not (unq condition)) (..unq body)
-
-macro for-range (var end .. body)
-	if (< (count body) 1)
-		throw 'Empty for-range body'
-	qq
-		do
-			let (unq var) 0
-			while
-				< (unq var) (unq end)
-				do
-					..unq body
-					increment (unq var)
 
 macro unless (condition body alternative)
 	if (is-undefined alternative)
