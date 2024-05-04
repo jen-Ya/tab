@@ -5,10 +5,10 @@ import { rep } from './rep.js';
 
 const initScript = `eval
 	read-string
-		file-read (str-join (list .tabhome '/init.tab') '')
+		file-read (str-join (li .tabhome '/init.tab') '')
 		dict
 			'filename'
-			str-join (list .tabhome '/init.tab') ''
+			str-join (li .tabhome '/init.tab') ''
 `;
 
 export const makeReplEnv = async() => {

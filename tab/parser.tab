@@ -1,3 +1,5 @@
+require '~/while.tab' while until
+
 fn is-token-type (token type)
 	= type
 		get token 'type'
@@ -34,7 +36,7 @@ fn parse tokens
 				str 'unexpected token ' (get (deref next) 'type') ' of type ' (get (deref next) 'value') ', expected ' expected
 		# println 'consumed ' (deref next)
 		let consumed (deref next)
-		reset tail (rest (deref tail))
+		swap tail rest
 		reset next (first (deref tail))
 		consumed
 

@@ -1,27 +1,12 @@
 let not
-	lambda x (if x false true)
-
-let li list
-
-let .wrap-do
-	lambda exps
-		with (l (count exps))
-			if (= l 0) nil
-				if (= l 1) (first exps)
-					# else
-					cons (q do) exps
+	f x (if x false true)
 
 let macro
 	macrof (key args .. body)
-		do
-			if (not (is-list args))
-				let args (li args)
-			if (< (count body) 1)
-				print (str 'Empty macro body: ' key)
-			qq
-				let (unq key)
-					macrof (unq args)
-						unq (.wrap-do body)
+		qq
+			let (unq key)
+				macrof (unq args)
+					..unq body
 
 macro cond (.. args)
 	if (> (count args) 0)
@@ -40,42 +25,17 @@ macro cond (.. args)
 			# else it's an else clause, so just return the next expression
 			nth args 1
 
-macro amacro (params .. body)
-	qq
-		macrof (unq params)
-			unq (.wrap-do body)
-
-macro alias (key target)
-	qq
-		macro (unq key) (.. args)
-			cons
-				q (unq target)
-				args
-
-alias quote q
-
-macro f (params .. body)
-	qq
-		lambda (unq params)
-			unq (.wrap-do body)
-
 macro fn (name params .. body)
 	qq
 		let (unq name)
-			lambda (unq params)
-				unq (.wrap-do body)
+			f (unq params)
+				..unq body
 
-macro unless (condition body alternative)
-	if (is-nil alternative)
-		qq
-			if
-				not (unq condition)
-				unq body
-		qq
-			if
-				not (unq condition)
-				unq body
-				unq alternative
+macro unless (condition .. alternatives)
+	qq
+		if
+			not (unq condition)
+			..unq alternatives
 
 fn is-empty (values)
 	<= (count values) 0
@@ -237,7 +197,7 @@ macro require (filename .. require-keys)
 	qq
 		(f (env filename)
 			let position-filename (unq position-filename)
-			let require-keys (quote (unq require-keys))
+			let require-keys (q (unq require-keys))
 			let basedir
 				unless (= position-filename nil)
 					# then
@@ -279,7 +239,7 @@ macro require-plugin (filename .. require-keys)
 	qq
 		(f (env filename)
 			let position-filename (unq position-filename)
-			let require-keys (quote (unq require-keys))
+			let require-keys (q (unq require-keys))
 			let basedir
 				unless (= position-filename nil)
 					# then

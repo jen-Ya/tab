@@ -123,7 +123,7 @@ const printFuncs = {
 
 const listFuncs = {
 	'List': Array,
-	'list': (...args) => args,
+	'li': (...args) => args,
 	'count': (list) => isTabNil(list) ? 0 : list.length,
 	'cons': (head, list) => [head, ...list],
 	// TODO: is implemented in tab, but cannot be removed, since used in quasiquote

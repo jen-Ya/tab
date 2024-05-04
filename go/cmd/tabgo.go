@@ -11,10 +11,10 @@ import (
 
 const initScript = `eval
 	read-string
-		file-read (str-join (list .tabhome '/tabgo/goinit.tab') '')
+		file-read (str-join (li .tabhome '/tabgo/goinit.tab') '')
 		dict
 			'filename'
-			str-join (list .tabhome '/tabgo/goinit.tab') ''
+			str-join (li .tabhome '/tabgo/goinit.tab') ''
 `
 
 func EnvDefault() t.Tab {

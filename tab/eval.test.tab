@@ -3,7 +3,7 @@ require './assert.tab'
 let a 1
 
 let script
-	quote
+	q
 		let a 42
 
 fn test ()

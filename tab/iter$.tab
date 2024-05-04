@@ -18,7 +18,7 @@ require '~/find.tab' find
 #
 
 fn wrap$ func
-	amacro (array .. body)
+	macrof (array .. body)
 		qq
 			(unq func)
 				unq array

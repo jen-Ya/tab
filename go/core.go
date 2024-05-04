@@ -795,7 +795,7 @@ func AddCore(env Tab) Tab {
 	EnvSet(env, FromSymbol("str-concat"), FromNativeFunc(StrConcat))
 
 	// Lists
-	EnvSet(env, FromSymbol("list"), FromNativeFunc(List))
+	EnvSet(env, FromSymbol("li"), FromNativeFunc(List))
 	EnvSet(env, FromSymbol("is-list"), FromNativeFunc(TIsList))
 	EnvSet(env, FromSymbol("count"), FromNativeFunc(Count))
 	EnvSet(env, FromSymbol("cons"), FromNativeFunc(Cons))

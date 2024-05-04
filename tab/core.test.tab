@@ -17,8 +17,8 @@ assert-eq
 	4
 
 assert-eq
-	list 1 2 3
-	quote (1 2 3)
+	li 1 2 3
+	q (1 2 3)
 
 assert
 	is-list ()
@@ -30,10 +30,10 @@ assert
 	is-empty ()
 
 assert-not
-	is-empty (list 1 2 3)
+	is-empty (li 1 2 3)
 
 assert-eq
-	count (list 1 2 3)
+	count (li 1 2 3)
 	3
 
 assert
@@ -64,7 +64,7 @@ assert-eq
 
 assert-eq
 	read-string 'println "hello"'
-	quote (println 'hello')
+	q (println 'hello')
 
 assert-eq
 	file-read (path-join .dirname 'hello.tab')
@@ -291,7 +291,7 @@ assert-eq
 #
 
 assert-eq
-	quote li
+	q li
 	symbol 'li'
 
 assert

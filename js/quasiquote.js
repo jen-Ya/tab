@@ -40,7 +40,7 @@ export const quasiquote = (ast) => {
 	}
 	if(ast instanceof TabMap || ast instanceof TabSymbol) {
 		return [
-			new TabSymbol('quote'),
+			new TabSymbol('q'),
 			ast,
 		];
 	}

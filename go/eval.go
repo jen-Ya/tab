@@ -72,6 +72,13 @@ func AstPositionToString(ast Tab) string {
 	)
 }
 
+func wrapDo(astlist []Tab) Tab {
+	if len(astlist) > 1 {
+		return FromList(append([]Tab{FromSymbol("do")}, astlist...))
+	}
+	return astlist[0]
+}
+
 func Eval(ast Tab, env Tab) (evaled Tab) {
 	// Traces panic, useful for debugging
 	// Unfortunately, it also traces recovered panics
@@ -125,36 +132,41 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 			// Also maybe it would be enough to implement as an immediatly invoked anonymous function
 			case "with":
 				env = Env(env)
+				args := ToList(ast)[1:]
 				// key value key value ... expression
-				list := ToList(ToList(ast)[1])
-				for i := 0; i < len(list); i += 2 {
-					key := list[i]
-					value := Eval(list[i+1], env)
+				keyvals := ToList(args[0])
+				for i := 0; i < len(keyvals); i += 2 {
+					key := keyvals[i]
+					value := Eval(keyvals[i+1], env)
 					EnvSet(env, key, value)
 				}
-				ast = ToList(ast)[2]
+				exps := args[1:]
+				for i := 0; i < len(exps)-1; i++ {
+					Eval(exps[i], env)
+				}
+				ast = exps[len(exps)-1]
 				continue
 
 			case "do":
-				list := ToList(ast)
-				for i := 1; i < len(list)-1; i++ {
-					Eval(list[i], env)
+				args := ToList(ast)[1:]
+				for i := 0; i < len(args)-1; i++ {
+					Eval(args[i], env)
 				}
-				ast = list[len(list)-1]
+				ast = args[len(args)-1]
 				continue
 
 			case "if":
-				list := ToList(ast)
-				cond := Eval(list[1], env)
+				args := ToList(ast)[1:]
+				cond := Eval(args[0], env)
 				// condition is not nil and not boolean false
 				truthy := !IsNil(cond) && (!IsBool(cond) || ToBool(cond))
 				if truthy {
 					// truthy
-					ast = list[2]
+					ast = args[1]
 					continue
-				} else if len(list) > 3 {
+				} else if len(args) > 2 {
 					// falsy -> else
-					ast = list[3]
+					ast = args[2]
 					continue
 				} else {
 					// falsy -> no else
@@ -166,19 +178,17 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 
 			// TODO: quasiquoteexpand
 			case "qq":
-				// fmt.Println("QQ FORM DETECTED")
 				ast = Quasiquote(ToList(ast)[1])
-				// fmt.Println("QQ EXPANDED:", Print(ast))
 				continue
 
 			case "qqexpand":
 				return Quasiquote(ToList(ast)[1])
 
 			case "apply":
-				list := ToList(ast)
+				args := ToList(ast)[1:]
 				// eval first element as function to call
-				first := Eval(list[1], env)
-				applyArgs := ToList(EvalAst(FromList(list[2:]), env))
+				first := Eval(args[0], env)
+				applyArgs := ToList(EvalAst(FromList(args[1:]), env))
 				concats := applyArgs[0 : len(applyArgs)-1]
 				last := ToList(applyArgs[len(applyArgs)-1])
 				funcArgs := append(concats, last...)
@@ -207,24 +217,28 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 				ast = f.Ast
 				continue
 
-			case "lambda":
-				params := ToList(ast)[1]
+			case "f":
+				args := ToList(ast)[1:]
+				params := args[0]
 				if !IsList(params) {
 					params = FromList(TabList{params})
 				}
+				body := wrapDo(args[1:])
 				return FromFunc(TabFunc{
-					Ast:    ToList(ast)[2],
+					Ast:    body,
 					Params: params,
 					Env:    env,
 				})
 
 			case "macrof":
-				params := ToList(ast)[1]
+				args := ToList(ast)[1:]
+				params := args[0]
 				if !IsList(params) {
 					params = FromList(TabList{params})
 				}
+				body := wrapDo((args[1:]))
 				return FromMacro(TabFunc{
-					Ast:    ToList(ast)[2],
+					Ast:    body,
 					Params: params,
 					Env:    env,
 				})
@@ -232,10 +246,10 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 				ast = Macroexpand(ToList(ast)[1], env)
 				return ast
 			case "try":
-				astList := ToList(ast)
+				args := ToList(ast)[1:]
 				defer func() {
 					if r := recover(); r != nil {
-						symbol := ToList(astList[2])[1]
+						symbol := ToList(args[1])[1]
 						_env := Env(env)
 						// check if paniced with type Tab
 						if tab, ok := r.(Tab); ok {
@@ -245,10 +259,10 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 							// otherwise, set .error to string
 							EnvSet(_env, symbol, FromString(fmt.Sprintf("%s", r)))
 						}
-						evaled = Eval(ToList(astList[2])[2], _env)
+						evaled = Eval(ToList(args[1])[2], _env)
 					}
 				}()
-				return Eval(astList[1], env)
+				return Eval(args[0], env)
 			case "throw":
 				panic(Eval(ToList(ast)[1], env))
 			}

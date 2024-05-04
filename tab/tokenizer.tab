@@ -58,7 +58,7 @@ fn tokenize (text opts)
 	fn is-char-at-cursor char
 		is-char-at text (get-cursor) char
 
-	let tokens (var (list))
+	let tokens (var ())
 	fn add-token (type value)
 		swap tokens append
 			dict 'type' type 'value' value 'position'
@@ -286,12 +286,14 @@ fn tokenize (text opts)
 				add-token 'nil' nil
 
 			# TODO: should be is-peek-word
+			# TODO: maybe it should be a regular symbol?
 			is-peek 'true'
 			do
 				consume 'true'
 				add-token 'boolean' true
 
 			# TODO: should be is-peek-word
+			# TODO: maybe it should be a regular symbol?
 			is-peek 'false'
 			do
 				consume 'false'

@@ -28,7 +28,7 @@ macro early-while (condition .. body)
 	qq
 		((f _
 			fn break (value)
-				throw (li (quote break) value)
+				throw (li (q break) value)
 			try
 				while (unq condition)
 					..unq body

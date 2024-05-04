@@ -1,21 +1,21 @@
 require '~/assert.tab'
 
 let a
-	lambda (x)
+	f (x)
 		+ x 42
 
 let b
-	lambda (y)
+	f (y)
 		* (a y) 3
 
 let c
-	lambda (v w)
+	f (v w)
 		+
 			a v
 			b w
 
 let d
-	lambda ()
+	f ()
 		c 3 7
 
 assert-eq

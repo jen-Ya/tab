@@ -3,6 +3,6 @@ require './assert.tab'
 
 assert-eq
 	enumerate
-		list 'a' 'b' 'c' 'd'
-	quote
+		li 'a' 'b' 'c' 'd'
+	q
 		(0 'a') (1 'b') (2 'c') (3 'd')

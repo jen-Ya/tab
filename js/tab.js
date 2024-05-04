@@ -95,7 +95,7 @@ const withForm = async(ast, env, callstack) => {
 			),
 		);
 	}
-	ast = ast[2];
+	ast = wrapDo(ast.slice(2));
 	return { final: false, ast, env };
 };
 
@@ -138,14 +138,25 @@ const qqForm = async(ast, env) => {
 	return { final: false, ast, env };
 };
 
+const wrapDo = (astList) => {
+	if(astList.length === 0) {
+		return new TabNil;
+	}
+	if(astList.length === 1) {
+		return astList[0];
+	}
+	return [new TabSymbol('do'), ...astList];
+};
+
 const lambdaForm = async(ast, env) => {
-	const [, params, fnAst] = ast;
+	const [, params, ...fnAst] = ast;
+	const body = wrapDo(fnAst);
 	ast = new TabFunc(
 		async(...args) => {
 			const newEnv = Env(env, params, args);
-			return await EVAL(fnAst, newEnv);
+			return await EVAL(body, newEnv);
 		},
-		fnAst,
+		body,
 		params,
 		env,
 	);
@@ -153,13 +164,14 @@ const lambdaForm = async(ast, env) => {
 };
 
 const macroForm = async(ast, env) => {
-	const [, params, fnAst] = ast;
+	const [, params, ...fnAst] = ast;
+	const body = wrapDo(fnAst);
 	ast = new TabMacro(
 		async(...args) => {
 			const newEnv = Env(env, params, args);
-			return await EVAL(fnAst, newEnv);
+			return await EVAL(body, newEnv);
 		},
-		fnAst,
+		body,
 		params,
 		env,
 	);
@@ -197,10 +209,10 @@ const specialForms = {
 	'with': withForm,
 	'do': doForm,
 	'if': ifForm,
-	'quote': quoteForm,
-	'quasiquoteexpand': qqExpandForm,
-	'quasiquote': qqForm,
-	'lambda': lambdaForm,
+	'q': quoteForm,
+	'qqexpand': qqExpandForm,
+	'qq': qqForm,
+	'f': lambdaForm,
 	'macrof': macroForm,
 	'macroexpand': macroexpandForm,
 	'try': tryForm,
