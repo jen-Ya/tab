@@ -178,7 +178,7 @@ macro require (filename .. require-keys)
 	let position-filename
 		optget (get-ast-position .caller) 'filename'
 	qq
-		(f (env filename)
+		with (env .env filename (unq filename))
 			let position-filename (unq position-filename)
 			let require-keys (q (unq require-keys))
 			let basedir
@@ -210,7 +210,6 @@ macro require (filename .. require-keys)
 			map let-keys
 				f let-key
 					env-set env (symbol let-key) (get data (str let-key))
-		) .env (unq filename)
 
 macro require-plugin (filename .. require-keys)
 	if (str-starts-with filename '~')

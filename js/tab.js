@@ -83,9 +83,9 @@ const evalForm = async(ast, env, callstack) => {
 
 // Also maybe it would be enough to implement as an immediatly invoked anonymous function
 const withForm = async(ast, env, callstack) => {
-	env = Env(env);
+	const withEnv = Env(env);
 	for(let i = 0; i < ast[1].length; i += 2) {
-		env.set(
+		withEnv.set(
 			ast[1][i],
 			await EVAL(
 				ast[1][i + 1],
@@ -95,7 +95,7 @@ const withForm = async(ast, env, callstack) => {
 		);
 	}
 	ast = wrapDo(ast.slice(2));
-	return { final: false, ast, env };
+	return { final: false, ast, env: withEnv };
 };
 
 const doForm = async(ast, env, callstack) => {

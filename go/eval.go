@@ -130,24 +130,23 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 				continue
 			// maybe it would be enough to implement as an immediatly invoked anonymous function
 			case "with":
-				env = Env(env)
-				// The keyvals are evaluated in a new environment
-				// This leads to an unexpected behavior, for example: with (e .env) (print (keys (get e 'data')) will print only e
-				// This is different to an immediately invoked anonymous function, where the arguments are evaluated in the current environment
-				// TODO: check if this is how it should work
+				withEnv := Env(env)
+				// The keyvals are evaluated in the old environment
+				// and bound in the new environment
 				args := ToList(ast)[1:]
 				// key value key value ... expression
 				keyvals := ToList(args[0])
 				for i := 0; i < len(keyvals); i += 2 {
 					key := keyvals[i]
 					value := Eval(keyvals[i+1], env)
-					EnvSet(env, key, value)
+					EnvSet(withEnv, key, value)
 				}
 				exps := args[1:]
 				for i := 0; i < len(exps)-1; i++ {
-					Eval(exps[i], env)
+					Eval(exps[i], withEnv)
 				}
 				ast = exps[len(exps)-1]
+				env = withEnv
 				continue
 
 			case "do":

@@ -161,7 +161,7 @@ macro require (.caller filename .. require-keys)
 	let position-filename
 		optget .caller 'position' 'filename'
 	qq
-		(f (env filename)
+		with (env .env filename (unq filename))
 			let position-filename (unq position-filename)
 			let require-keys (q (unq require-keys))
 			let basedir
@@ -190,7 +190,6 @@ macro require (.caller filename .. require-keys)
 			map let-keys
 				f let-key
 					env-set env let-key (get data let-key)
-		) .env (unq filename)
 
 fn varply (var func .. args)
 	apply func (deref var) args
