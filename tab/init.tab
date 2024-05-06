@@ -16,19 +16,12 @@ macro fn (name params .. body)
 				..unq body
 
 fn each (values func)
-	unless (or
-		is-list values
-		is-string values
-	)
-		throw (str 'each argument list: Type error [expected=list|string, got=' values ']')
-	unless (is-func func)
-		throw (str 'each argument func: Type error [expected=function], got=' func ']' )
-	fn .each (values)
+	(fn .each (values)
 		unless (is-empty values) (do
 			func (first values)
 			.each (rest values)
 		)
-	.each values
+	) values
 
 fn is-empty arg
 	= (count arg) 0
@@ -57,31 +50,24 @@ fn append (values .. more)
 		more
 
 fn map (values func)
-	unless (or
-		is-list values
-		is-string values
-	)
-		throw (str 'map argument list: Type error [expected=list|string, got=' values ']')
-	unless (is-func func)
-		throw (str 'map argument func: Type error [expected=function], got=' func ']' )
-	fn agg (values)
+	(fn .map (values)
 		if (is-empty values) ()
 			# else
 			cons
 				func (first values)
-				agg (rest values)
-	agg values
+				.map (rest values)
+	) values
 
 
 fn range (start end)
-	if (is-nil end)
-		range 0 start
-		if
-			>= start end
-			()
-			cons
+	fn .range (start end)
+		if (>= start end) ()
+			cons # else
 				start
 				range (+ start 1) end
+	if (is-nil end)
+		.range 0 start
+		.range start end
 
 macro cond (.. args)
 	if (> (count args) 0)
@@ -127,11 +113,6 @@ fn coalesce (.. vals)
 		# else
 		apply coalesce
 			rest vals
-
-# TODO: is this really needed?
-macro increment var
-	qq
-		let (unq var) (+ (unq var) 1)
 
 macro unless (condition .. alternatives)
 	qq

@@ -63,12 +63,12 @@ macro and (.. args)
 			false
 
 fn each (values func)
-	fn -each (values)
+	(fn .each (values)
 		unless (is-empty values) (do
 			func (first values)
-			-each (rest values)
+			.each (rest values)
 		)
-	-each values
+	) values
 
 fn flatten (values)
 	if (is-empty values)
@@ -94,23 +94,23 @@ fn append (values .. more)
 		more
 
 fn map (values func)
-	fn -map (values)
+	(fn .map (values)
 		if (is-empty values) ()
 			# else
 			cons
 				func (first values)
-				-map (rest values)
-	-map values
+				.map (rest values)
+	) values
 
 fn range (start end)
-	if (is-nil end)
-		range 0 start
-		if
-			>= start end
-			()
-			cons
+	fn .range (start end)
+		if (>= start end) ()
+			cons # else
 				start
 				range (+ start 1) end
+	if (is-nil end)
+		.range 0 start
+		.range start end
 
 fn optget (obj .. keys)
 	if (is-nil obj) nil
@@ -129,11 +129,6 @@ fn coalesce (.. vals)
 		apply coalesce
 			rest vals
 
-# TODO: is this really needed?
-macro increment var
-	qq
-		let (unq var) (+ (unq var) 1)
-
 # TODO: turns out, this is not how macros work...
 macro while (condition .. body)
 	if (< (count body) 1)
@@ -150,18 +145,6 @@ macro until (condition .. body)
 		throw 'Empty until body'
 	qq
 		while (not (unq condition)) (..unq body)
-
-macro for-range (var end .. body)
-	if (< (count body) 1)
-		throw 'Empty for-range body'
-	qq
-		do
-			let (unq var) 0
-			while
-				< (unq var) (unq end)
-				do
-					..unq body
-					increment (unq var)
 
 macro unless (condition body alternative)
 	if (is-nil alternative)
