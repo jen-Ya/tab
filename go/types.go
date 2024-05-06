@@ -26,7 +26,7 @@ const (
 	TabNativeFuncType TabType = iota
 	TabMacroType      TabType = iota
 	TabOtherType      TabType = iota
-	TAbVarType        TabType = iota
+	TabVarType        TabType = iota
 )
 
 func (TT TabType) String() string {
@@ -55,7 +55,7 @@ func (TT TabType) String() string {
 		return "macro"
 	case TabOtherType:
 		return "other"
-	case TAbVarType:
+	case TabVarType:
 		return "var"
 	}
 	return "unknown"
@@ -120,7 +120,7 @@ func IsOther(T Tab) bool {
 }
 
 func IsVar(T Tab) bool {
-	return T.Type == TAbVarType
+	return T.Type == TabVarType
 }
 
 func IsNil(T Tab) bool {
@@ -172,7 +172,7 @@ func FromOther(o interface{}) Tab {
 }
 
 func FromVar(o TabVar) Tab {
-	return Tab{Type: TAbVarType, Value: o}
+	return Tab{Type: TabVarType, Value: o}
 }
 
 func ToString(T Tab) string {

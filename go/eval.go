@@ -128,10 +128,13 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 					env = ToList(result)[1]
 				}
 				continue
-			// Allow multiple expressions to be evaluated in sequence
-			// Also maybe it would be enough to implement as an immediatly invoked anonymous function
+			// maybe it would be enough to implement as an immediatly invoked anonymous function
 			case "with":
 				env = Env(env)
+				// The keyvals are evaluated in a new environment
+				// This leads to an unexpected behavior, for example: with (e .env) (print (keys (get e 'data')) will print only e
+				// This is different to an immediately invoked anonymous function, where the arguments are evaluated in the current environment
+				// TODO: check if this is how it should work
 				args := ToList(ast)[1:]
 				// key value key value ... expression
 				keyvals := ToList(args[0])
@@ -176,7 +179,6 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 			case "q":
 				return ToList(ast)[1]
 
-			// TODO: quasiquoteexpand
 			case "qq":
 				ast = Quasiquote(ToList(ast)[1])
 				continue
@@ -197,8 +199,6 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 					return ToNativeFunc(first)(FromList(funcArgs))
 				} else if IsFunc(first) {
 					f = ToFunc(first)
-				} else if IsMacro(first) {
-					f = ToMacro(first)
 				} else {
 					panic(fmt.Sprintf("Cannot call non-function: %s", Print(ast, true)))
 				}
@@ -271,7 +271,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 
 		ulist := ToList(ast)
 		first := Eval(ulist[0], env)
-		switch ToType(GetType(first)) {
+		switch first.Type {
 		case TabFuncType:
 			fun := ToFunc(first)
 			args := ToList(EvalAst(FromList(ulist[1:]), env))

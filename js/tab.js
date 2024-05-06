@@ -81,7 +81,6 @@ const evalForm = async(ast, env, callstack) => {
 	return { final: true, ast, env };
 };
 
-// Allow multiple expressions to be evaluated in sequence
 // Also maybe it would be enough to implement as an immediatly invoked anonymous function
 const withForm = async(ast, env, callstack) => {
 	env = Env(env);
