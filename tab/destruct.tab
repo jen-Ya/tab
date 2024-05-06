@@ -69,12 +69,11 @@ let dlet ((f _
 			throw 'unexpeced key type'
 	# top level macro
 	# store evalation of value in a temporary variable
-	macrof (key value) (do
+	macrof (key value)
 		let tmp (gensym)
 		let lets (.dlet key tmp)
 		qq (do
 			let (unq tmp) (unq value)
 			..unq lets
 		)
-	)
 ))
