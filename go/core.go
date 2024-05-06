@@ -421,63 +421,6 @@ func Dissoc(arguments Tab) Tab {
 	return FromDict(result)
 }
 
-// Other
-
-func Equals(arguments Tab) Tab {
-	args := ToList(arguments)
-	a := args[0]
-	b := args[1]
-	aType := ToType(GetType(a))
-	bType := ToType(GetType(b))
-	if aType != bType {
-		return FromBool(false)
-	}
-	switch aType {
-	case TabNumberType:
-		return FromBool(ToNumber(a) == ToNumber(b))
-	case TabStringType:
-		return FromBool(ToString(a) == ToString(b))
-	case TabSymbolType:
-		return FromBool(ToSymbol(a) == ToSymbol(b))
-	case TabListType:
-		aList := ToList(a)
-		bList := ToList(b)
-		if len(aList) != len(bList) {
-			return FromBool(false)
-		}
-		for i := 0; i < len(aList); i++ {
-			if !ToBool(Equals(FromList(TabList{aList[i], bList[i]}))) {
-				return FromBool(false)
-			}
-		}
-		return FromBool(true)
-	case TabDictType:
-		aDict := ToDict(a)
-		bDict := ToDict(b)
-		if len(aDict) != len(bDict) {
-			return FromBool(false)
-		}
-		for key, value := range aDict {
-			if !ToBool(Equals(FromList(TabList{value, bDict[key]}))) {
-				return FromBool(false)
-			}
-		}
-		return FromBool(true)
-	case TabFuncType:
-		return FromBool(&a == &b)
-	case TabNativeFuncType:
-		// TODO: cannot compare funcs, what to do?
-		return FromBool(&a == &b)
-	case TabMacroType:
-		return FromBool(&a == &b)
-	case TabNilType:
-		// Nils are always equal
-		return FromBool(true)
-	default:
-		panic(fmt.Sprint("Unknown type ", aType))
-	}
-}
-
 func TPrint(arguments Tab) Tab {
 	parts := []string{}
 	for _, item := range ToList(arguments) {
@@ -851,7 +794,7 @@ func AddCore(env Tab) Tab {
 	EnvSet(env, FromSymbol("read-dir"), FromNativeFunc(ReadDir))
 
 	// Other
-	EnvSet(env, FromSymbol("="), FromNativeFunc(Equals))
+	EnvSet(env, FromSymbol("="), FromNativeFunc(TEquals))
 	EnvSet(env, FromSymbol("print"), FromNativeFunc(TPrint))
 	EnvSet(env, FromSymbol("println"), FromNativeFunc(Println))
 	EnvSet(env, FromSymbol("exit"), FromNativeFunc(Exit))
