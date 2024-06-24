@@ -1,4 +1,4 @@
-require '~/vars.tab'
+require '~/var-utils.tab'
 require '~/reduce.tab'
 
 # takes a list of values and a dict of key to function

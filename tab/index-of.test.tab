@@ -1,0 +1,10 @@
+require './index-of.tab'
+require '~/assert.tab'
+
+assert-eq
+	index-of (li 1 2 3 4 5) 3
+	2
+
+assert-eq
+	index-of () 3
+	nil

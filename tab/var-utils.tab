@@ -1,0 +1,53 @@
+# VARIABLE HELPERS
+
+fn *clone x
+	var (deref x)
+
+# VARIABLE DICT HELEPRS
+
+fn *dict (.. args)
+	var
+		apply dict args
+
+fn *has (*d key)
+	has (deref *d) key
+
+fn *set (*d key value)
+	swap *d set key value
+
+fn *get (*d key)
+	get (deref *d) key
+
+fn *keys (*d)
+	keys (deref *d)
+
+# VARIABLE LIST HELPERS
+
+fn *list (.. args)
+	var args
+
+fn *append (*l .. values)
+	swap *l concat values
+
+fn *count (*l)
+	varply *l count
+
+fn *map (*l func)
+	varply *l map func
+
+fn *cons (value *l)
+	reset *l
+		cons value (deref *l)
+
+fn *nth (*l index)
+	varply *l nth index
+
+fn *slice (*l start end)
+	varply *l slice start end
+
+fn *change-at (*l index value)
+	reset *l
+		concat
+			slice (deref *l) 0 index
+			li value
+			slice (deref *l) (+ index 1)

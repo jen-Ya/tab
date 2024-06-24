@@ -1,0 +1,6 @@
+fn index-of (values element)
+	fn .index-of (values index)
+		if (is-empty values) nil
+			if (= element (first values)) index
+				.index-of (rest values) (+ index 1)
+	.index-of values 0

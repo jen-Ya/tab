@@ -1,0 +1,23 @@
+require './var-utils.tab'
+require '~/assert.tab'
+
+let *l (*list 1 2 3 4)
+
+assert-eq
+	*nth *l 0
+	1
+
+change-at *l 0 42
+assert-eq
+	*nth *l 0
+	42
+
+let *d (*dict 'a' 1 'b' 2)
+assert-eq
+	*get *d 'a'
+	1
+
+*set *d 'a' 42
+assert-eq
+	*get *d 'a'
+	42

@@ -1,19 +1,45 @@
 require '~/assert.tab'
 
+# create variable with value 42
 let a (var 42)
 
+# value should be 42
 assert-eq
 	deref a
 	42
 
+# reset value to 43
 reset a 43
 
+# value should now be 43
 assert-eq
 	deref a
 	43
 
+# increment value by 1
 swap a + 1
 
+# value should now be 44
 assert-eq
 	deref a
 	44
+
+# variable should be equal to itself
+assert-eq
+	a
+	a
+
+# two different variables should not be equal
+assert-neq
+	var 42
+	var 42
+
+# reset should return the variable
+assert-eq
+	reset a 1
+	a
+
+# swap should return the variable
+assert-eq
+	swap a + 1
+	a

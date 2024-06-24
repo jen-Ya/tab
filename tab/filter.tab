@@ -1,12 +1,12 @@
 fn filter (array filter-func)
-	fn -filter (array results)
+	fn .filter (array results)
 		cond
 			is-empty array
 			results
 
 			filter-func (first array)
-			-filter (rest array) (append results (first array))
+			.filter (rest array) (append results (first array))
 
 			true
-			-filter (rest array) results
-	-filter array ()
+			.filter (rest array) results
+	.filter array ()

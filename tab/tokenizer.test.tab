@@ -18,8 +18,9 @@ assert-eq
 	li 'symbol' 'string' 'number' 'nil' 'eof'
 
 
-assert-no-throw
+assert-no-throw (f _
 	tokenize 'hello world'
+)
 
 assert-no-throw (f _
 	tokenize '

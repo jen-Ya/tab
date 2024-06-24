@@ -3,7 +3,7 @@ let gensym ((f _
 	# The go implementation does not have mutable variables
 	# Therefore we use a temporary environment to store a counter that gets incremented whenever the gensym function is called
 	let counter (var 0)
-	
+
 	# The actual gensym function
 	# It increments the counter and returns a unique symbol
 	f ()
