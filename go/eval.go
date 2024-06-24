@@ -72,6 +72,7 @@ func AstPositionToString(ast Tab) string {
 	)
 }
 
+// Wrap a list of expressions in a do block, if there is more than one
 func wrapDo(astlist []Tab) Tab {
 	if len(astlist) > 1 {
 		return FromList(append([]Tab{FromSymbol("do")}, astlist...))
