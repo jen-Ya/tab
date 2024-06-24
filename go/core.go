@@ -703,7 +703,7 @@ func VarSet(arguments Tab) Tab {
 	tvar := args[0]
 	value := args[1]
 	*ToVar(tvar) = value
-	return value
+	return tvar
 }
 
 func AddCore(env Tab) Tab {
