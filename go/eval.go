@@ -113,20 +113,21 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 			switch ToSymbol(ToList(ast)[0]) {
 
 			case "let":
-				list := ToList(ast)
-				v := Eval(list[2], env)
-				EnvSet(env, list[1], v)
+				args := ToList(ast)[1:]
+				v := Eval(args[1], env)
+				EnvSet(env, args[0], v)
 				return v
 
 			case "eval":
-				list := ToList(ast)[1:]
-				result := EvalAst(
-					FromList(list),
+				args := ToList(ast)[1:]
+				evaluatedArgs := EvalAst(
+					FromList(args),
 					env,
 				)
-				ast = ToList(result)[0]
-				if len(ToList(result)) > 1 {
-					env = ToList(result)[1]
+				ast = ToList(evaluatedArgs)[0]
+				// if an environment is provided as second argument, switch to it
+				if len(ToList(evaluatedArgs)) > 1 {
+					env = ToList(evaluatedArgs)[1]
 				}
 				continue
 			// maybe it would be enough to implement as an immediatly invoked anonymous function
