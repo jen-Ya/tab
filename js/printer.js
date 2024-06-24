@@ -47,10 +47,10 @@ export const printString = (mal, readable = true) => {
 		return printHashmap(mal, readable);
 	}
 	if(mal instanceof TabFunc) {
-		return '#<lambda>';
+		return '#<function>';
 	}
 	if(mal instanceof Function) {
-		return '#<function>';
+		return '#<nativefunc>';
 	}
 	if(mal instanceof TabVar) {
 		return `(var ${ printString(mal.value) })`;
