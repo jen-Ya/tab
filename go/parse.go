@@ -24,7 +24,7 @@ func Parse(tokens Tab) (Tab, error) {
 	Consume := func(expected TabToken) (Tab, error) {
 		// fmt.Printf("Consuming %s\n", expected.String())
 		if !IsPeek(expected) {
-			return Tab{}, ParseError(fmt.Sprintf("unexpected token %s %s, expected %s", ToType(GetType(next)), Print(next, true), expected))
+			return Tab{}, ParseError(fmt.Sprintf("unexpected token %s %s, expected %s", next.Type, Print(next, true), expected))
 		}
 		// fmt.Println("consumed", expected, next.GetType().ToString())
 		consumed := ToDict(next)["value"]
