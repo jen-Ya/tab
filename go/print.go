@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+type TabPrinter func(Tab, bool) string
+
 func printEscape(str string) string {
 	// escape newlines, tabs, quotes, and backslashes
 	// TODO: can this be combined with Escape?
@@ -32,44 +34,63 @@ func PrintDict(ast Tab, readable bool) string {
 	return "(" + strings.Join(parts, " ") + ")"
 }
 
+var Printers map[TabType]TabPrinter
+
+func init() {
+	Printers = map[TabType]TabPrinter{
+		TabListType: PrintList,
+		TabSymbolType: func(ast Tab, readable bool) string {
+			return ToSymbol(ast)
+		},
+		TabStringType: func(ast Tab, readable bool) string {
+			if readable {
+				return "\"" + printEscape(ToString(ast)) + "\""
+			}
+			return ToString(ast)
+		},
+		TabNumberType: func(ast Tab, readable bool) string {
+			return fmt.Sprint(ToNumber(ast))
+		},
+		TabBoolType: func(ast Tab, readable bool) string {
+			if ToBool(ast) {
+				return "true"
+			}
+			return "false"
+		},
+		TabDictType: PrintDict,
+		TabTypeType: func(ast Tab, readable bool) string {
+			typestr := ToType(ast).String()
+			return fmt.Sprintf("#<type:%s>", typestr)
+		},
+		TabFuncType: func(ast Tab, readable bool) string {
+			return Print(ToFunc(ast).Ast, readable)
+		},
+		TabMacroType: func(ast Tab, readable bool) string {
+			return "#<macro>"
+		},
+		TabNativeFuncType: func(ast Tab, readable bool) string {
+			return "#<nativefunc>"
+		},
+		TabOtherType: func(ast Tab, readable bool) string {
+			return "#<other>"
+		},
+		TabNilType: func(ast Tab, readable bool) string {
+			return "nil"
+		},
+		TabVarType: func(ast Tab, readable bool) string {
+			return "(var " + Print(*ToVar(ast), readable) + ")"
+		},
+	}
+}
+
+func AddPrinter(typ TabType, printer TabPrinter) {
+	Printers[typ] = printer
+}
+
 func Print(ast Tab, readable bool) string {
-	switch ToType(GetType(ast)) {
-	case TabListType:
-		return PrintList(ast, readable)
-	case TabSymbolType:
-		return ToSymbol(ast)
-	case TabStringType:
-		if readable {
-			return "\"" + printEscape(ToString(ast)) + "\""
-		}
-		return ToString(ast)
-	case TabNumberType:
-		return fmt.Sprint(ToNumber(ast))
-	case TabBoolType:
-		if ToBool(ast) {
-			return "true"
-		}
-		return "false"
-	case TabDictType:
-		return PrintDict(ast, readable)
-	case TabTypeType:
-		// TODO: implement
-		return "#<type>"
-	case TabFuncType:
-		// TODO: implement?
-		return Print(ToFunc(ast).Ast, readable)
-	case TabMacroType:
-		// TODO: implement?
-		return "#<macro>"
-	case TabNativeFuncType:
-		// TODO: implement?
-		return "#<nativefunc>"
-	case TabOtherType:
-		return "#<other>"
-	case TabNilType:
-		return "nil"
-	case TabVarType:
-		return "(var " + Print(*ToVar(ast), readable) + ")"
+	typ := ast.Type
+	if printer, ok := Printers[typ]; ok {
+		return printer(ast, readable)
 	}
 	return "#<unknown>"
 }

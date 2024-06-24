@@ -29,34 +29,34 @@ const (
 	TabVarType        TabType = iota
 )
 
+var TabTypeNames map[TabType]string
+
+func init() {
+	TabTypeNames = map[TabType]string{
+		TabNilType:        "nil",
+		TabListType:       "list",
+		TabStringType:     "string",
+		TabSymbolType:     "symbol",
+		TabNumberType:     "number",
+		TabBoolType:       "bool",
+		TabDictType:       "dict",
+		TabTypeType:       "type",
+		TabFuncType:       "func",
+		TabNativeFuncType: "native-func",
+		TabMacroType:      "macro",
+		TabOtherType:      "other",
+		TabVarType:        "var",
+	}
+}
+
+func AddType(TT TabType, name string, printer TabPrinter) {
+	TabTypeNames[TT] = name
+	Printers[TT] = printer
+}
+
 func (TT TabType) String() string {
-	switch TT {
-	case TabNilType:
-		return "nil"
-	case TabListType:
-		return "list"
-	case TabStringType:
-		return "string"
-	case TabSymbolType:
-		return "symbol"
-	case TabNumberType:
-		return "number"
-	case TabBoolType:
-		return "bool"
-	case TabDictType:
-		return "dict"
-	case TabTypeType:
-		return "type"
-	case TabFuncType:
-		return "func"
-	case TabNativeFuncType:
-		return "native-func"
-	case TabMacroType:
-		return "macro"
-	case TabOtherType:
-		return "other"
-	case TabVarType:
-		return "var"
+	if name, ok := TabTypeNames[TT]; ok {
+		return name
 	}
 	return "unknown"
 }
@@ -69,10 +69,6 @@ type Tab struct {
 
 func (T Tab) String() string {
 	return Print(T, true)
-}
-
-func GetType(T Tab) Tab {
-	return FromType(T.Type)
 }
 
 func IsList(T Tab) bool {
