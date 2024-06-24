@@ -706,6 +706,10 @@ func VarSet(arguments Tab) Tab {
 	return tvar
 }
 
+func TGetType(arguments Tab) Tab {
+	return FromType(ToList(arguments)[0].Type)
+}
+
 func AddCore(env Tab) Tab {
 	// Math
 	EnvSet(env, FromSymbol("is-number"), FromNativeFunc(TIsNumber))
@@ -806,6 +810,9 @@ func AddCore(env Tab) Tab {
 	EnvSet(env, FromSymbol("is-var"), FromNativeFunc(TIsVar))
 	EnvSet(env, FromSymbol("deref"), FromNativeFunc(VarGet))
 	EnvSet(env, FromSymbol("reset"), FromNativeFunc(VarSet))
+
+	// Types
+	EnvSet(env, FromSymbol("get-type"), FromNativeFunc(TGetType))
 
 	return env
 }
