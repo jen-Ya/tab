@@ -1,0 +1,8 @@
+require './contains.tab'
+require '~/assert.tab'
+
+assert
+	contains (li 1 2 3 4 5) 3
+
+assert-not
+	contains (li 1 2 3 4 5) 6

@@ -1,0 +1,7 @@
+# check if list contains a value
+# e.g. (contains (li 1 2 3) 2) -> true
+fn contains (values value)
+	if (is-empty values) false
+		if (= value (first values)) true
+			# else
+			contains (rest values) value
