@@ -19,11 +19,24 @@ const initScript = `eval
 
 func EnvDefault() t.Tab {
 	env := t.Env(t.Tab{})
+	// Tru is a symbol that evaluates to itself
+	// Actually this is not needed, because tabgo has booleans
+	// But I saw this in other lisps and wanted to check it out
 	tru := t.FromSymbol("tru")
 	t.EnvSet(env, tru, tru)
+	// Save the environment as .env-root, so that it can be accessed later
 	t.EnvSet(env, t.FromSymbol(".env-root"), env)
+	// Set the TABHOME environment variable for require
 	t.EnvSet(env, t.FromSymbol(".tabhome"), t.FromString(os.Getenv("TABHOME")))
+	// Set command line arguments
+	var args t.TabList
+	for _, arg := range os.Args[1:] {
+		args = append(args, t.FromString(arg))
+	}
+	t.EnvSet(env, t.FromSymbol(".argv"), t.FromList(args))
+	// Add core functions
 	t.AddCore(env)
+	// Run init script
 	t.Eval(t.Read(initScript, false, "init"), env)
 	return env
 }
