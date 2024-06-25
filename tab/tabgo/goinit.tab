@@ -119,15 +119,15 @@ fn optget (obj .. keys)
 				get obj (first keys)
 				rest keys
 
-fn coalesce (.. vals)
-	let head (first vals)
-	if
-		not (= head nil)
-		# then
-		head
-		# else
-		apply coalesce
-			rest vals
+macro coalesce (.. args)
+	fn .coalesce (args)
+		if (is-empty args)
+			nil
+			qq
+				with (head (unq (first args)))
+					if head head
+						(unq (.coalesce (rest args)))
+	.coalesce args
 
 # TODO: turns out, this is not how macros work...
 macro while (condition .. body)
