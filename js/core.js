@@ -114,6 +114,7 @@ const stringFuncs = {
 	// TODO: remove
 	'str-replace-all': (str, from, to) => str.replaceAll(from, to),
 	'str-concat': (...args) => args.join(''),
+	'str-split': (str, separator) => str.split(separator),
 };
 
 const printFuncs = {

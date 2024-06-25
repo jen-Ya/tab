@@ -185,6 +185,18 @@ func StrJoin(arguments Tab) Tab {
 	return FromString(value)
 }
 
+func StrSplit(arguments Tab) Tab {
+	args := ToList(arguments)
+	str := ToString(args[0])
+	separator := ToString(args[1])
+	parts := strings.Split(str, separator)
+	var result TabList
+	for _, part := range parts {
+		result = append(result, FromString(part))
+	}
+	return FromList(result)
+}
+
 // Todo: should pretty print
 func Str(arguments Tab) Tab {
 	args := ToList(arguments)
@@ -735,6 +747,7 @@ func AddCore(env Tab) Tab {
 	EnvSet(env, FromSymbol("char-code"), FromNativeFunc(CharCode))
 	EnvSet(env, FromSymbol("sub-str"), FromNativeFunc(SubStr))
 	EnvSet(env, FromSymbol("str-join"), FromNativeFunc(StrJoin))
+	EnvSet(env, FromSymbol("str-split"), FromNativeFunc(StrSplit))
 	EnvSet(env, FromSymbol("str-starts-with"), FromNativeFunc(StrStartsWith))
 	EnvSet(env, FromSymbol("str-ends-with"), FromNativeFunc(StrEndsWith))
 	EnvSet(env, FromSymbol("str-len"), FromNativeFunc(StrLen))
