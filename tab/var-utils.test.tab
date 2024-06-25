@@ -7,7 +7,7 @@ assert-eq
 	*nth *l 0
 	1
 
-change-at *l 0 42
+*change-at *l 0 42
 assert-eq
 	*nth *l 0
 	42
