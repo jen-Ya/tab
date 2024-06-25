@@ -177,20 +177,20 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 			if err := ConsumeIndent(indent); err != nil {
 				return err
 			}
-			AddToken(TabEolToken, Tab{})
+			AddToken(TabEolToken, TabNil)
 		} else if indent < indentation {
 			if err := ConsumeIndent(indent); err != nil {
 				return err
 			}
 			for i := indent; i < indentation; i++ {
-				AddToken(TabDedentToken, Tab{})
+				AddToken(TabDedentToken, TabNil)
 			}
 			indentation = indent
 		} else if indent == indentation+1 {
 			if err := ConsumeIndent(indent); err != nil {
 				return err
 			}
-			AddToken(TabIndentToken, Tab{})
+			AddToken(TabIndentToken, TabNil)
 			indentation = indent
 		} else {
 			return TokenizeError(fmt.Sprintf("IndentError: unexpected indentation of %d from %d", indent, indentation))
@@ -355,7 +355,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 
 	ConsumeEof := func() {
 		// fmt.Println("ConsumeEof")
-		AddToken(TabEofToken, Tab{})
+		AddToken(TabEofToken, TabNil)
 	}
 
 	ConsumeSymbol := func() error {
@@ -379,7 +379,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 		if err := Consume("("); err != nil {
 			return err
 		}
-		AddToken(TabOpenToken, Tab{})
+		AddToken(TabOpenToken, TabNil)
 		return nil
 	}
 
@@ -388,7 +388,7 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 		if err := Consume(")"); err != nil {
 			return err
 		}
-		AddToken(TabCloseToken, Tab{})
+		AddToken(TabCloseToken, TabNil)
 		return nil
 	}
 
@@ -429,12 +429,12 @@ func Tokenize(text string, keepKomments bool, filename string) (TabTokens Tab, e
 			if err = Consume("nil"); err != nil {
 				return
 			}
-			AddToken(TabNilToken, Tab{})
+			AddToken(TabNilToken, TabNil)
 		} else if IsPeekWord("_") {
 			if err = Consume("_"); err != nil {
 				return
 			}
-			AddToken(TabNilToken, Tab{})
+			AddToken(TabNilToken, TabNil)
 		} else if IsPeekWord("true") {
 			if err = Consume("true"); err != nil {
 				return

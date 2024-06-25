@@ -174,7 +174,7 @@ func Eval(ast Tab, env Tab) (evaled Tab) {
 					continue
 				} else {
 					// falsy -> no else
-					return Tab{}
+					return TabNil
 				}
 
 			case "q":

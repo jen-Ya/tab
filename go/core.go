@@ -26,7 +26,7 @@ func Plus(arguments Tab) Tab {
 func Minus(arguments Tab) Tab {
 	args := ToList(arguments)
 	if len(args) == 0 {
-		return Tab{}
+		return TabNil
 	}
 	if len(args) == 1 {
 		return FromNumber(-ToNumber(args[0]))
@@ -286,11 +286,11 @@ func First(arguments Tab) Tab {
 	// e, g.: return ToList(ToList(arguments)[0])[0]
 	args := ToList(arguments)
 	if args[0].Type == TabNilType {
-		return Tab{}
+		return TabNil
 	}
 	list := ToList(args[0])
 	if len(list) == 0 {
-		return Tab{}
+		return TabNil
 	}
 	return list[0]
 }
@@ -304,11 +304,11 @@ func Rest(arguments Tab) Tab {
 	// TODO: this is safe if list is empty or nil, but maybe it shouldn't be?
 	args := ToList(arguments)
 	if args[0].Type == TabNilType {
-		return Tab{}
+		return TabNil
 	}
 	list := ToList(args[0])
 	if len(list) == 0 {
-		return Tab{}
+		return TabNil
 	}
 	return FromList(list[1:])
 }
@@ -350,7 +350,10 @@ func Get(arguments Tab) Tab {
 	args := ToList(arguments)
 	dict := ToDict(args[0])
 	key := ToString(args[1])
-	return dict[key]
+	if val, ok := dict[key]; ok {
+		return val
+	}
+	return TabNil
 }
 
 func Has(arguments Tab) Tab {
@@ -440,7 +443,7 @@ func TPrint(arguments Tab) Tab {
 	}
 	str := strings.Join(parts, " ")
 	fmt.Println(str)
-	return Tab{}
+	return TabNil
 }
 
 func Println(arguments Tab) Tab {
@@ -450,13 +453,13 @@ func Println(arguments Tab) Tab {
 	}
 	str := strings.Join(parts, " ")
 	fmt.Println(str)
-	return Tab{}
+	return TabNil
 }
 
 func Exit(arguments Tab) Tab {
 	code := int(ToNumber(ToList(arguments)[0]))
 	os.Exit(code)
-	return Tab{}
+	return TabNil
 }
 
 func TIsNil(arguments Tab) Tab {
@@ -511,7 +514,7 @@ func GetAstPosition(arguments Tab) Tab {
 	args := ToList(arguments)
 	ast := args[0]
 	if ast.Position == nil {
-		return Tab{}
+		return TabNil
 	}
 	return FromDict(*ast.Position)
 }
@@ -826,6 +829,19 @@ func AddCore(env Tab) Tab {
 
 	// Types
 	EnvSet(env, FromSymbol("get-type"), FromNativeFunc(TGetType))
+	EnvSet(env, FromSymbol("nil-type"), FromType(TabNilType))
+	EnvSet(env, FromSymbol("list-type"), FromType(TabListType))
+	EnvSet(env, FromSymbol("string-type"), FromType(TabStringType))
+	EnvSet(env, FromSymbol("symbol-type"), FromType(TabSymbolType))
+	EnvSet(env, FromSymbol("number-type"), FromType(TabNumberType))
+	EnvSet(env, FromSymbol("bool-type"), FromType(TabBoolType))
+	EnvSet(env, FromSymbol("dict-type"), FromType(TabDictType))
+	EnvSet(env, FromSymbol("type-type"), FromType(TabTypeType))
+	EnvSet(env, FromSymbol("func-type"), FromType(TabFuncType))
+	EnvSet(env, FromSymbol("native-func-type"), FromType(TabNativeFuncType))
+	EnvSet(env, FromSymbol("macro-type"), FromType(TabMacroType))
+	EnvSet(env, FromSymbol("other-type"), FromType(TabOtherType))
+	EnvSet(env, FromSymbol("var-type"), FromType(TabVarType))
 
 	return env
 }

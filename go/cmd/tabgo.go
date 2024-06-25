@@ -18,7 +18,7 @@ const initScript = `eval
 `
 
 func EnvDefault() t.Tab {
-	env := t.Env(t.Tab{})
+	env := t.Env(t.TabNil)
 	// Tru is a symbol that evaluates to itself
 	// Actually this is not needed, because tabgo has booleans
 	// But I saw this in other lisps and wanted to check it out

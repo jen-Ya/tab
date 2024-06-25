@@ -28,7 +28,7 @@ func SqliteClose(arguments t.Tab) t.Tab {
 	db := t.ToOther(list[0]).(*sql.DB)
 	err := db.Close()
 	panicOnError(err)
-	return t.Tab{}
+	return t.TabNil
 }
 
 func SqliteQuery(arguments t.Tab) t.Tab {

@@ -24,7 +24,7 @@ func Parse(tokens Tab) (Tab, error) {
 	Consume := func(expected TabToken) (Tab, error) {
 		// fmt.Printf("Consuming %s\n", expected.String())
 		if !IsPeek(expected) {
-			return Tab{}, ParseError(fmt.Sprintf("unexpected token %s %s, expected %s", next.Type, Print(next, true), expected))
+			return TabNil, ParseError(fmt.Sprintf("unexpected token %s %s, expected %s", next.Type, Print(next, true), expected))
 		}
 		// fmt.Println("consumed", expected, next.GetType().ToString())
 		consumed := ToDict(next)["value"]
@@ -55,7 +55,7 @@ func Parse(tokens Tab) (Tab, error) {
 		if IsPeek(TabBooleanToken) {
 			return Consume(TabBooleanToken)
 		}
-		return Tab{}, ParseError(fmt.Sprintf("atom not implemented %.0f / %s", ToNumber(ToDict(next)["kind"]), Print(next, true)))
+		return TabNil, ParseError(fmt.Sprintf("atom not implemented %.0f / %s", ToNumber(ToDict(next)["kind"]), Print(next, true)))
 	}
 
 	var ConsumeList func(explicit bool) (Tab, error)
@@ -66,12 +66,12 @@ func Parse(tokens Tab) (Tab, error) {
 			// fmt.Println("Explicit List")
 			o, err := Consume(TabOpenToken)
 			if err != nil {
-				return Tab{}, err
+				return TabNil, err
 			}
 			if IsPeek(TabCloseToken) {
 				c, err := Consume(TabCloseToken)
 				if err != nil {
-					return Tab{}, err
+					return TabNil, err
 				}
 				result := FromList(TabList{})
 				result.Position = &TabDict{
@@ -87,28 +87,28 @@ func Parse(tokens Tab) (Tab, error) {
 			if IsPeek(TabIndentToken) {
 				_, err := Consume(TabIndentToken)
 				if err != nil {
-					return Tab{}, err
+					return TabNil, err
 				}
 				exp, err = ConsumeList(true)
 
 				if err != nil {
-					return Tab{}, err
+					return TabNil, err
 				}
 				_, err = Consume(TabDedentToken)
 				if err != nil {
-					return Tab{}, err
+					return TabNil, err
 				}
 			} else {
 				var err error
 				exp, err = ConsumeList(true)
 
 				if err != nil {
-					return Tab{}, err
+					return TabNil, err
 				}
 			}
 			c, err := Consume(TabCloseToken)
 			if err != nil {
-				return Tab{}, err
+				return TabNil, err
 			}
 			exp.Position = &TabDict{
 				"filename":  (*o.Position)["filename"],
@@ -121,7 +121,7 @@ func Parse(tokens Tab) (Tab, error) {
 		}
 		_atom, err := ConsumeAtom()
 		if err != nil {
-			return Tab{}, err
+			return TabNil, err
 		}
 		return _atom, nil
 	}
@@ -177,15 +177,15 @@ func Parse(tokens Tab) (Tab, error) {
 		// fmt.Printf("ConsumeList %s\n", Print(Tab{Dict: next.Position}))
 		first, err := ConsumeExpression()
 		if err != nil {
-			return Tab{}, err
+			return TabNil, err
 		}
 		inlineArgs, err := ConsumeInlineArgs()
 		if err != nil {
-			return Tab{}, err
+			return TabNil, err
 		}
 		indentArgs, err := ConsumeIndentArgs()
 		if err != nil {
-			return Tab{}, err
+			return TabNil, err
 		}
 		// fmt.Printf("Count inline and indent args: %d %d\n", len(inlineArgs), len(indentArgs))
 		args := append(inlineArgs, indentArgs...)
@@ -222,31 +222,31 @@ func Parse(tokens Tab) (Tab, error) {
 			if IsPeek(TabEolToken) {
 				_, err := Consume(TabEolToken)
 				if err != nil {
-					return Tab{}, err
+					return TabNil, err
 				}
 				continue
 			}
 			if IsPeek(TabCommentToken) {
 				_, err := Consume(TabCommentToken)
 				if err != nil {
-					return Tab{}, err
+					return TabNil, err
 				}
 				continue
 			}
 			exp, err := ConsumeList(false)
 			if err != nil {
-				return Tab{}, err
+				return TabNil, err
 			}
 			expressions = append(expressions, exp)
 			for IsPeek(TabEolToken) {
 				_, err := Consume(TabEolToken)
 				if err != nil {
-					return Tab{}, err
+					return TabNil, err
 				}
 			}
 		}
 		if len(expressions) == 0 {
-			return Tab{}, nil
+			return TabNil, nil
 		}
 		if len(expressions) == 1 {
 			return expressions[0], nil

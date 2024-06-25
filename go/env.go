@@ -17,7 +17,7 @@ func EnvGet(env Tab, key Tab) Tab {
 		}
 		// TODO: maybe should throw error
 		if IsNil(outer) {
-			return Tab{}
+			return TabNil
 		}
 		data = ToDict(outer)["data"]
 		outer = ToDict(outer)["outer"]

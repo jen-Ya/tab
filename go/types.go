@@ -14,20 +14,24 @@ type TabVar *Tab
 type TabType int
 
 const (
-	TabNilType        TabType = iota
-	TabListType       TabType = iota
-	TabStringType     TabType = iota
-	TabSymbolType     TabType = iota
-	TabNumberType     TabType = iota
-	TabBoolType       TabType = iota
-	TabDictType       TabType = iota
-	TabTypeType       TabType = iota
-	TabFuncType       TabType = iota
-	TabNativeFuncType TabType = iota
-	TabMacroType      TabType = iota
-	TabOtherType      TabType = iota
-	TabVarType        TabType = iota
+	TabNilType TabType = iota
+	TabListType
+	TabStringType
+	TabSymbolType
+	TabNumberType
+	TabBoolType
+	TabDictType
+	TabTypeType
+	TabFuncType
+	TabNativeFuncType
+	TabMacroType
+	TabOtherType
+	TabVarType
 )
+
+var nextTypeId = TabVarType + 1
+
+var TabNil = Tab{}
 
 var TabTypeNames map[TabType]string
 
@@ -49,9 +53,16 @@ func init() {
 	}
 }
 
-func AddType(TT TabType, name string, printer TabPrinter) {
+func AddType(
+	name string,
+	print TabPrinter,
+	equals TabEquals,
+) TabType {
+	TT := TabType(nextTypeId)
+	nextTypeId++
 	TabTypeNames[TT] = name
-	Printers[TT] = printer
+	Printers[TT] = print
+	return TT
 }
 
 func (TT TabType) String() string {
