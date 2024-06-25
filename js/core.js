@@ -1,6 +1,7 @@
 import { printString } from './printer.js';
 import { readString } from './reader.js';
 import { readFile, writeFile, readdir } from 'fs/promises';
+import { exec } from 'child_process';
 import {
 	TabSymbol,
 	TabVar,
@@ -319,6 +320,14 @@ const nilFuncs = {
 
 const processFuncs = {
 	'exit': (code) => process.exit(code),
+	'exec': (command) => new Promise((resolve, reject) => {
+		exec(command, (error, stdout) => {
+			if(error) {
+				reject(error);
+			}
+			resolve(stdout);
+		});
+	}),
 };
 
 export const ns = {
