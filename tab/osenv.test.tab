@@ -1,0 +1,9 @@
+require './osenv.tab'
+require '~/assert.tab'
+
+assert
+	osenv 'TABHOME'
+	.tabhome
+
+println
+	osenv 'TABHOME'

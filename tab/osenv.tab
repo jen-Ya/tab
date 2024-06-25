@@ -1,0 +1,30 @@
+# The osenv function retrieves the value of an environment variable or all environment variables if no key is provided.
+# Usage:
+#   osenv key # returns the value of the specified environment variable
+#   (osenv) # returns a dictionary of all environment variables
+fn osenv (key)
+	# Execute the 'env' command to get raw environment variables
+	let raw (exec 'env')
+	# Split the raw output into lines
+	let lines (str-split raw '\n')
+	let pairs (map lines (f (line)
+		# ignore empty lines
+		if (= line '') () (do # else
+			# Split each line at the first '=' to separate the key and value
+			let parts
+				str-split line '='
+			# Extract the key (first part)
+			let key (first parts)
+			# Join the remaining parts to handle '=' sign in the value
+			let value (str-join (rest parts) '=')
+			# Return the key-value pair as a list
+			li key value
+		)
+	))
+	# Convert the list of pairs to a dictionary
+	let values
+		apply dict (flatten pairs)
+	# Return all values if no specific key is provided
+	if (is-nil key) values
+		# Return the value for the specified key
+		get values key
